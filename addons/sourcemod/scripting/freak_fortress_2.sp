@@ -7619,7 +7619,8 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 		{
 			SetEntityHealth(client, (BossHealth[boss]-damage)-BossHealthMax[boss]*(lives-1)); //Set the health early to avoid the boss dying from fire, etc.
 
-			int Action:action=Plugin_Continue, bossLives=BossLives[boss];  //Used for the forward
+			bossLives=BossLives[boss];  //Used for the forward
+			Action action=Plugin_Continue;
 			Call_StartForward(OnLoseLife);
 			Call_PushCell(boss);
 			Call_PushCellRef(bossLives);
