@@ -7619,7 +7619,7 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 		{
 			SetEntityHealth(client, (BossHealth[boss]-damage)-BossHealthMax[boss]*(lives-1)); //Set the health early to avoid the boss dying from fire, etc.
 
-			bossLives=BossLives[boss];  //Used for the forward
+			int bossLives = BossLives[boss];  //Used for the forward
 			Action action=Plugin_Continue;
 			Call_StartForward(OnLoseLife);
 			Call_PushCell(boss);
@@ -7972,7 +7972,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 		{
 			if(attacker<=MaxClients)
 			{
-				bool bIsTelefrag, bool:bIsBackstab, bool:bIsFacestab;
+				bool bIsTelefrag, bIsBackstab, bIsFacestab;
 				if(dmgCustomInOTD)
 				{
 					decl String:classname[32];
@@ -8342,7 +8342,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 							if(bIsGroundMarket)
 								damage /= 2.0;
 
-							int Action:action;
+							Action action;
 							float tempDamage = damage * 3.0;
 							int tempAttacker = attacker;
 
@@ -8584,7 +8584,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 						EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[boss], _, _, false);
 					}
 
-					int Action:action;
+					Action action;
 					float tempDamage = damage * 3.0;
 					int tempAttacker = attacker;
 
@@ -8672,7 +8672,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 				decl String:classname[64];
 				if(GetEntityClassname(attacker, classname, sizeof(classname)) && !strcmp(classname, "trigger_hurt", false))
 				{
-					int Action:action=Plugin_Continue;
+					Action action=Plugin_Continue;
 					Call_StartForward(OnTriggerHurt);
 					Call_PushCell(boss);
 					Call_PushCell(attacker);
@@ -9598,7 +9598,7 @@ public bool:PickCharacter(boss, companion)
 		Incoming[boss]=-1;
 		if(Special[boss]!=-1)  //We've already picked a boss through Command_SetNextBoss
 		{
-			int Action:action;
+			Action action;
 			Call_StartForward(OnSpecialSelected);
 			Call_PushCell(boss);
 			int characterIndex=Special[boss];
@@ -9743,7 +9743,7 @@ public bool:PickCharacter(boss, companion)
 	}
 
 	//All of the following uses `companion` because it will always be the boss index we want
-	int Action:action;
+	Action action;
 	Call_StartForward(OnSpecialSelected);
 	Call_PushCell(companion);
 	int characterIndex=Special[companion];
@@ -11098,7 +11098,7 @@ stock FindEntityByClassname2(startEnt, const String:classname[])
 	return FindEntityByClassname(startEnt, classname);
 }
 
-bool:UseAbility(const String:ability_name[], const String:plugin_name[], boss, slot, buttonMode=0)
+bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, slot, buttonMode=0)
 {
 	bool enabled=true;
 	Call_StartForward(PreAbility);
@@ -11114,7 +11114,7 @@ bool:UseAbility(const String:ability_name[], const String:plugin_name[], boss, s
 		return false;
 	}
 
-	int Action:action=Plugin_Continue;
+	Action action=Plugin_Continue;
 	Call_StartForward(OnAbility);
 	Call_PushCell(boss);
 	Call_PushString(plugin_name);
