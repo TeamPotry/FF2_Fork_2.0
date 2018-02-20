@@ -1991,7 +1991,7 @@ public FindCharacters()  //TODO: Investigate KvGotoFirstSubKey; KvGotoNextKey
 	FileToKeyValues(Kv, config);
 	int NumOfCharSet=FF2CharSet;
 
-	int Action:action=Plugin_Continue;
+	Action action=Plugin_Continue;
 	Call_StartForward(OnLoadCharacterSet);
 	Call_PushCellRef(NumOfCharSet);
 	strcopy(charset, sizeof(charset), FF2CharSetString);
@@ -2803,7 +2803,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 		SetArenaCapEnableTime(60.0);
 		CreateTimer(71.0, Timer_EnableCap, _, TIMER_FLAG_NO_MAPCHANGE);
 		bool toRed;
-		int TFTeam:team;
+		TFTeam team;
 		for(int client; client<=MaxClients; client++)
 		{
 			if(IsValidClient(client) && (team=TFTeam:GetClientTeam(client))>TFTeam_Spectator)
