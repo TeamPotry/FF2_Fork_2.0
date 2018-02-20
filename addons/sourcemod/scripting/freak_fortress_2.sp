@@ -3252,7 +3252,7 @@ public Action:Timer_NineThousand(Handle:timer)
 	return Plugin_Continue;
 }
 
-public Action:Timer_CalcQueuePoints(Handle:timer)
+public Action Timer_CalcQueuePoints(Handle timer)
 {
 	int damage;
 	botqueuepoints+=5;
@@ -4992,7 +4992,7 @@ public Action:CheckItems(Handle:timer, any:userid)
 	SetEntityRenderColor(client, 255, 255, 255, 255);
 	shield[client]=0;
 	int index=-1;
-	int civilianCheck[MaxClients+1];
+	int civilianCheck[MAXPLAYERS+1];
 
 	//Cloak and Dagger is NEVER allowed, even in Medieval mode
 	int weapon=GetPlayerWeaponSlot(client, 4);
@@ -5708,7 +5708,7 @@ public OnClientDisconnect(client)
 		if(IsBoss(client) && !CheckRoundState() && GetConVarBool(cvarPreroundBossDisconnect))
 		{
 			int boss=GetBossIndex(client);
-			bool omit[MaxClients+1];
+			bool omit[MAXPLAYERS+1];
 			omit[client]=true;
 			Boss[boss]=GetClientWithMostQueuePoints(omit);
 
@@ -6435,7 +6435,7 @@ public Action:BossTimer(Handle:timer)
 				float temp2=BossAbilityDuration[boss][slot];
 				float temp3=BossAbilityCooldown[boss][slot];
 				char abilityName[64];
-				int Action:action;
+				Action action;
 
 				GetArrayString(slotNamePack, count, abilityName, sizeof(abilityName));
 
@@ -7144,33 +7144,34 @@ public Action:OnJoinTeam(client, const String:command[], args)
  		return Plugin_Continue;
  	}
 
-	int team=_:TFTeam_Unassigned, oldTeam=GetClientTeam(client), String:teamString[10];
+	int team = view_as<int>(TFTeam_Unassigned), oldTeam = GetClientTeam(client);
+	char teamString[10];
 	GetCmdArg(1, teamString, sizeof(teamString));
 
 	if(StrEqual(teamString, "red", false))
 	{
-		team=_:TFTeam_Red;
+		team = view_as<int>(TFTeam_Red);
 	}
 	else if(StrEqual(teamString, "blue", false))
 	{
-		team=_:TFTeam_Blue;
+		team = view_as<int>(TFTeam_Blue);
 	}
 	else if(StrEqual(teamString, "auto", false))
 	{
-		team=OtherTeam;
+		team = view_as<int>(OtherTeam);
 	}
 	else if(StrEqual(teamString, "spectate", false) && !IsBoss(client) && GetConVarBool(FindConVar("mp_allowspectators")))
 	{
-		team=_:TFTeam_Spectator;
+		team = view_as<int>(TFTeam_Spectator);
 	}
 
-	if(team==BossTeam && !IsBoss(client))
+	if(team = =BossTeam && !IsBoss(client))
 	{
-		team=OtherTeam;
+		team = OtherTeam;
 	}
-	else if(team==OtherTeam && IsBoss(client))
+	else if(team == OtherTeam && IsBoss(client))
 	{
-		team=BossTeam;
+		team = BossTeam;
 	}
 
 	if(team>_:TFTeam_Unassigned && team!=oldTeam)
