@@ -9176,7 +9176,8 @@ stock ParseFormula(boss, const String:key[], const String:defaultFormula[], defa
 		}
 	}
 
-	Handle sumArray=CreateArray(_, size), Handle:_operator=CreateArray(_, size);
+	Handle sumArray = CreateArray(_, size);
+	Handle _operator = CreateArray(_, size);
 	int bracket;  //Each bracket denotes a separate sum (within parentheses).  At the end, they're all added together to achieve the actual sum
 	SetArrayCell(sumArray, 0, 0.0);  //TODO:  See if these can be placed naturally in the loop
 	SetArrayCell(_operator, bracket, Operator_None);
@@ -9915,7 +9916,7 @@ public Action:QueuePanelCmd(client, args)
 
 	decl String:text[64];
 	int items;
-	bool added[MaxClients+1];
+	bool added[MAXPLAYERS+1];
 
 	Handle panel=CreatePanel();
 	SetGlobalTransTarget(client);
@@ -9984,7 +9985,7 @@ public Action:ResetQueuePointsCmd(client, args)
 		return Plugin_Handled;
 	}
 
-	int AdminId:admin=GetUserAdmin(client);	 //Normal players
+	AdminId admin=GetUserAdmin(client);	 //Normal players
 	if((admin==INVALID_ADMIN_ID) || !GetAdminFlag(admin, Admin_Cheats))
 	{
 		TurnToZeroPanel(client, client);
@@ -11486,7 +11487,7 @@ public Native_GetRageDist(Handle:plugin, numParams)
 
 public Native_HasAbility(Handle:plugin, numParams)
 {
-	char pluginName[64], String:abilityName[64];
+	char pluginName[64], abilityName[64];
 
 	int boss=GetNativeCell(1);
 	GetNativeString(2, pluginName, sizeof(pluginName));
