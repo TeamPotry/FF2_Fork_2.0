@@ -2806,7 +2806,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 		TFTeam team;
 		for(int client; client<=MaxClients; client++)
 		{
-			if(IsValidClient(client) && (team=TFTeam:GetClientTeam(client))>TFTeam_Spectator)
+			if(IsValidClient(client) && (team = view_as<TFTeam>(GetClientTeam(client))) > TFTeam_Spectator)
 			{
 				SetEntProp(client, Prop_Send, "m_lifeState", 2);
 				if(toRed && team!=TFTeam_Red)
@@ -2844,12 +2844,12 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 	Boss[0]=GetClientWithMostQueuePoints(omit);
 	omit[Boss[0]]=true;
 
-	bool teamHasPlayers[TFTeam];
+	bool teamHasPlayers[4];
 	for(int client=1; client<=MaxClients; client++)  //Find out if each team has at least one player on it
 	{
 		if(IsValidClient(client))
 		{
-			int TFTeam:team=TFTeam:GetClientTeam(client);
+			TFTeam team = view_as<TFTeam>(GetClientTeam(client));
 			if(team>TFTeam_Spectator)
 			{
 				teamHasPlayers[team]=true;
@@ -3581,7 +3581,7 @@ PlayBGM(client)
 		{
 			char code[100];
 			int maxCount=0;
-			int[] indexArray = int int[maxIndex];
+			int[] indexArray = new int[maxIndex];
 
 			for(int count=1; count<maxIndex; count++)
 			{
@@ -6874,7 +6874,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 		float rageDist=KvGetFloat(BossKV[Special[boss]], "ragedist", 300.0);
 		char bossName[80];
-		int find=0; int TFTeam:team;
+		int find=0; TFTeam team;
 
 		GetEntPropVector(Boss[boss], Prop_Send, "m_vecOrigin", position);
 		for(int i=1; i<=MaxClients; i++)
