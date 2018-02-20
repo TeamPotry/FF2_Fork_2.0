@@ -13,7 +13,7 @@ Updated by Otokiru, Powerlord, and RavensBro after Rainbolt Dash got sucked into
 
 Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 */
-#pragma semicolon 1
+// #pragma semicolon 1
 
 #include <sourcemod>
 #include <freak_fortress_2>
