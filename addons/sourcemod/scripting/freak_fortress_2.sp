@@ -7165,7 +7165,7 @@ public Action:OnJoinTeam(client, const String:command[], args)
 		team = view_as<int>(TFTeam_Spectator);
 	}
 
-	if(team = =BossTeam && !IsBoss(client))
+	if(team == BossTeam && !IsBoss(client))
 	{
 		team = OtherTeam;
 	}
@@ -7174,7 +7174,7 @@ public Action:OnJoinTeam(client, const String:command[], args)
 		team = BossTeam;
 	}
 
-	if(team>_:TFTeam_Unassigned && team!=oldTeam)
+	if(team > view_as<int>(TFTeam_Unassigned) && team != oldTeam)
 	{
 		ChangeClientTeam(client, team);
 	}
