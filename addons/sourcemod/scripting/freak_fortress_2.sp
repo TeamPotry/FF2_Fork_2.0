@@ -9024,7 +9024,7 @@ stock RandomlyDisguise(client)	//Original code was mecha's, but the original cod
 		}
 
 		int class=GetRandomInt(0, 4);
-		int TFClassType:classArray[]={TFClass_Scout, TFClass_Pyro, TFClass_Medic, TFClass_Engineer, TFClass_Sniper};
+		TFClassType classArray[]={TFClass_Scout, TFClass_Pyro, TFClass_Medic, TFClass_Engineer, TFClass_Sniper};
 		CloseHandle(disguiseArray);
 
 		if(TF2_GetPlayerClass(client)==TFClass_Spy)
@@ -10376,7 +10376,7 @@ public Action:HelpPanelClass(client)
 	}
 
 	decl String:text[512];
-	int TFClassType:class=TF2_GetPlayerClass(client);
+	TFClassType class=TF2_GetPlayerClass(client);
 	SetGlobalTransTarget(client);
 	switch(class)
 	{
