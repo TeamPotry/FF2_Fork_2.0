@@ -1976,8 +1976,8 @@ public DisableFF2()
 
 public FindCharacters()  //TODO: Investigate KvGotoFirstSubKey; KvGotoNextKey
 {
-	decl String:config[PLATFORM_MAX_PATH], String:key[4], String:charset[42];
-	Specials=0;
+	char config[PLATFORM_MAX_PATH], key[4], charset[42];
+	Specials = 0;
 	BuildPath(Path_SM, config, PLATFORM_MAX_PATH, "configs/freak_fortress_2/characters.cfg");
 
 	if(!FileExists(config))
@@ -1987,17 +1987,17 @@ public FindCharacters()  //TODO: Investigate KvGotoFirstSubKey; KvGotoNextKey
 		return;
 	}
 
-	Handle Kv=CreateKeyValues("");
+	Handle Kv = CreateKeyValues("");
 	FileToKeyValues(Kv, config);
-	int NumOfCharSet=FF2CharSet;
+	int NumOfCharSet = FF2CharSet;
 
-	Action action=Plugin_Continue;
+	Action action = Plugin_Continue;
 	Call_StartForward(OnLoadCharacterSet);
 	Call_PushCellRef(NumOfCharSet);
 	strcopy(charset, sizeof(charset), FF2CharSetString);
 	Call_PushStringEx(charset, sizeof(charset), SM_PARAM_STRING_UTF8 | SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 	Call_Finish(action);
-	if(action==Plugin_Changed)
+	if(action == Plugin_Changed)
 	{
 		int i=-1;
 		if(strlen(charset))
@@ -2840,7 +2840,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 
 	SetConVarBool(FindConVar("mp_friendlyfire"), false, _, false);
 
-	bool omit[MaxClients+1];
+	bool omit[MAXPLAYERS+1];
 	Boss[0]=GetClientWithMostQueuePoints(omit);
 	omit[Boss[0]]=true;
 
@@ -3256,8 +3256,8 @@ public Action:Timer_CalcQueuePoints(Handle:timer)
 {
 	int damage;
 	botqueuepoints+=5;
-	int add_points[MaxClients+1];
-	int add_points2[MaxClients+1];
+	int add_points[MAXPLAYERS+1];
+	int add_points2[MAXPLAYERS+1];
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -3299,7 +3299,7 @@ public Action:Timer_CalcQueuePoints(Handle:timer)
 		}
 	}
 
-	int Action:action;
+	Action action;
 	Call_StartForward(OnAddQueuePoints);
 	Call_PushArrayEx(add_points2, MaxClients+1, SM_PARAM_COPYBACK);
 	Call_Finish(action);
@@ -3633,7 +3633,7 @@ PlayBGM(client)
 		KvGetString(musicKv, music, music, sizeof(music));
 		char temp[PLATFORM_MAX_PATH];
 
-		int Action:action;
+		Action action;
 		Call_StartForward(OnMusic);
 		bool notice2 = notice;
 		strcopy(temp, sizeof(temp), music);
@@ -3698,7 +3698,7 @@ PlayBGM(client)
 
 stock EmitSoundToAllExcept(exceptiontype=SOUNDEXCEPT_MUSIC, const String:sample[], entity=SOUND_FROM_PLAYER, channel=SNDCHAN_AUTO, level=SNDLEVEL_NORMAL, flags=SND_NOFLAGS, Float:volume=SNDVOL_NORMAL, pitch=SNDPITCH_NORMAL, speakerentity=-1, const Float:origin[3]=NULL_VECTOR, const Float:dir[3]=NULL_VECTOR, bool:updatePos=true, Float:soundtime=0.0)
 {
-	int clients[MaxClients], total;
+	int clients[MAXPLAYERS+1], total;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsClientInGame(client))
@@ -3856,7 +3856,7 @@ public Action:StartRound(Handle:timer)
 public Action:Timer_NextBossPanel(Handle:timer)
 {
 	int clients;
-	bool added[MaxClients+1];
+	bool added[MAXPLAYERS+1];
 	while(clients<3)  //TODO: Make this configurable?
 	{
 		int client=GetClientWithMostQueuePoints(added);
@@ -4079,8 +4079,8 @@ EquipBoss(boss)
 	}
 
 	KvGoBack(BossKV[Special[boss]]);
-	int TFClassType:class=TFClassType:KvGetNum(BossKV[Special[boss]], "class", 1);
-	if(TF2_GetPlayerClass(client)!=class)
+	TFClassType class = view_as<TFClassType>(KvGetNum(BossKV[Special[boss]], "class", 1));
+	if(TF2_GetPlayerClass(client) != class)
 	{
 		TF2_SetPlayerClass(client, class, _, !GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass") ? true : false);
 	}
@@ -4088,7 +4088,7 @@ EquipBoss(boss)
 
 public Action:MakeBoss(Handle:timer, any:boss)
 {
-	int client=Boss[boss];
+	int client = Boss[boss];
 	if(!IsValidClient(client) || CheckRoundState()==-1)
 	{
 		return Plugin_Continue;
@@ -5842,7 +5842,7 @@ public Action:ClientTimer(Handle:timer)
 	}
 
 	decl String:classname[32];
-	int TFCond:cond;
+	TFCond cond;
 
 	DPSTick++;
 	if(sizeof(PlayerDamageDPS[])-1<DPSTick)
@@ -5922,16 +5922,16 @@ public Action:ClientTimer(Handle:timer)
 			}
 			FF2_ShowSyncHudText(client, rageHUD, "데미지: %d (DPS: %.1f)", Damage[client], GetPlayerDPS(client));
 
-			int TFClassType:class=TF2_GetPlayerClass(client);
-			int weapon=GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(weapon<=MaxClients || !IsValidEntity(weapon) || !GetEntityClassname(weapon, classname, sizeof(classname)))
+			TFClassType class = TF2_GetPlayerClass(client);
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(weapon <= MaxClients || !IsValidEntity(weapon) || !GetEntityClassname(weapon, classname, sizeof(classname)))
 			{
 				strcopy(classname, sizeof(classname), "");
 			}
-			bool validwep=!StrContains(classname, "tf_weapon", false);
+			bool validwep = !StrContains(classname, "tf_weapon", false);
 
-			int index=(validwep ? GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") : -1);
-			if(class==TFClass_Medic)
+			int index = (validwep ? GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") : -1);
+			if(class == TFClass_Medic)
 			{
 				/*
 				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
