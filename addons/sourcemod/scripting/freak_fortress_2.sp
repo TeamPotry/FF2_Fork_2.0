@@ -11583,9 +11583,9 @@ public Native_GetAbilityArgumentString(Handle:plugin, numParams)
 	GetNativeString(2,plugin_name,64);
 	decl String:ability_name[64];
 	GetNativeString(3,ability_name,64);
-	int dstrlen=GetNativeCell(6);
-	char s[dstrlen+1];
-	GetAbilityArgumentString(GetNativeCell(1),plugin_name,ability_name,GetNativeCell(4),s,dstrlen);
+	int dstrlen = GetNativeCell(6);
+	char[] s = new char[dstrlen+1];
+	GetAbilityArgumentString(GetNativeCell(1), plugin_name, ability_name, GetNativeCell(4), s, dstrlen);
 	SetNativeString(5,s,dstrlen);
 }
 
@@ -11683,7 +11683,7 @@ public Native_RandomSound(Handle:plugin, numParams)
 	int length=GetNativeCell(3)+1;
 	int boss=GetNativeCell(4);
 	int slot=GetNativeCell(5);
-	char sound[length];
+	char[] sound = new char[length];
 	int kvLength;
 
 	GetNativeStringLength(1, kvLength);
