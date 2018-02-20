@@ -8894,7 +8894,8 @@ stock SpawnSmallHealthPackAt(client, team=0)
 		return;
 	}
 
-	int healthpack=CreateEntityByName("item_healthkit_small"), Float:position[3];
+	int healthpack=CreateEntityByName("item_healthkit_small");
+	float position[3];
 	GetClientAbsOrigin(client, position);
 	position[2]+=20.0;
 	if(IsValidEntity(healthpack))
