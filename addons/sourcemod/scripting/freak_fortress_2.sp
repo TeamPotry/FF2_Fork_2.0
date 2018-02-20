@@ -75,7 +75,7 @@ new bool:goomba=false;
 
 new bool:smac=false;
 new bool:CheckedFirstRound=false;
-new bool:MapIsRunning=false;
+// new bool:MapIsRunning=false;
 
 new OtherTeam=2;
 new BossTeam=3;
@@ -178,8 +178,8 @@ new Handle:cvarGoombaRebound;
 new Handle:cvarBossRTD;
 new Handle:cvarDebug;
 new Handle:cvarPreroundBossDisconnect;
-new Handle:cvarStunTime;
-new Handle:cvarStunRange;
+// new Handle:cvarStunTime;
+// new Handle:cvarStunRange;
 // Database FF2Database;
 
 new Handle:FF2Cookies;
@@ -1232,8 +1232,8 @@ public OnPluginStart()
 	cvarGoombaRebound=CreateConVar("ff2_goomba_jump", "300.0", "How high players should rebound after goomba stomping the boss (requires Goomba Stomp)", _, true, 0.0);
 	cvarBossRTD=CreateConVar("ff2_boss_rtd", "0", "Can the boss use rtd? 0 to disallow boss, 1 to allow boss (requires RTD)", _, true, 0.0, true, 1.0);
 	cvarDebug=CreateConVar("ff2_debug", "0", "0-Disable FF2 debug output, 1-Enable debugging (not recommended)", _, true, 0.0, true, 1.0);
-	cvarStunTime=CreateConVar("ff2_stun_time", "야구공 스턴 시간", "7.0", _, true, 0.0);
-	cvarStunRange=CreateConVar("ff2_stun_range", "야구공 최대 스턴을 위한 체공 시간", "2.0", _, true, 0.0);
+//	cvarStunTime=CreateConVar("ff2_stun_time", "야구공 스턴 시간", "7.0", _, true, 0.0);
+// 	cvarStunRange=CreateConVar("ff2_stun_range", "야구공 최대 스턴을 위한 체공 시간", "2.0", _, true, 0.0);
 
 	//The following are used in various subplugins
 	CreateConVar("ff2_oldjump", "0", "Use old Saxton Hale jump equations", _, true, 0.0, true, 1.0);
@@ -1817,7 +1817,7 @@ public OnMapStart()
 
 public OnMapEnd()
 {
-	MapIsRunning = false;
+	// MapIsRunning = false;
 	if(Enabled || Enabled2)
 	{
 		DisableFF2();
@@ -3901,7 +3901,7 @@ public Action:MessageTimer(Handle:timer)
 	decl String:textChat[512];
 	decl String:lives[8];
 	decl String:name[64];
-	decl String:teamname[80];
+	// decl String:teamname[80];
 	decl String:specialApproach[64];
 
 /*	KvRewind(BossKV[Special[MainBoss]]);
@@ -3941,50 +3941,50 @@ public Action:MessageTimer(Handle:timer)
 		CPrintToChatAll("%s", textChat);
 	}*/
 //	else
-		for(new client; client<=MaxClients; client++)
+	for(new client; client<=MaxClients; client++)
+	{
+		if(IsBoss(client))
 		{
-			if(IsBoss(client))
+			new boss=Boss[client];
+			KvRewind(BossKV[Special[boss]]);
+			KvGetString(BossKV[Special[boss]], "name", name, sizeof(name), "=Failed name=");
+			KvGetString(BossKV[Special[boss]], "special_approach", specialApproach, sizeof(specialApproach), "");
+
+			if(BossLives[boss]>1)
 			{
-				new boss=Boss[client];
-				KvRewind(BossKV[Special[boss]]);
-				KvGetString(BossKV[Special[boss]], "name", name, sizeof(name), "=Failed name=");
-				KvGetString(BossKV[Special[boss]], "special_approach", specialApproach, sizeof(specialApproach), "");
+				Format(lives, sizeof(lives), "x%i", BossLives[boss]);
+			}
+			else
+			{
+				strcopy(lives, 2, "");
+			}
 
-				if(BossLives[boss]>1)
-				{
-					Format(lives, sizeof(lives), "x%i", BossLives[boss]);
-				}
-				else
-				{
-					strcopy(lives, 2, "");
-				}
+			if(IsBossYou[client])
+			{
+				GetYouSpecialString(client, specialApproach, sizeof(specialApproach));
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_start_you", Boss[boss], BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
+				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat_you", Boss[boss], BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
+			}
+			else
+			{
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_start", Boss[boss], name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
+				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat", Boss[boss], name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
+			}
 
-				if(IsBossYou[client])
-				{
-					GetYouSpecialString(client, specialApproach, sizeof(specialApproach));
-					Format(text, sizeof(text), "%s\n%t", text, "ff2_start_you", Boss[boss], BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
-					Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat_you", Boss[boss], BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
-				}
-				else
-				{
-					Format(text, sizeof(text), "%s\n%t", text, "ff2_start", Boss[boss], name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
-					Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat", Boss[boss], name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
-				}
+			ReplaceString(textChat, sizeof(textChat), "\n", "");  //Get rid of newlines
+			// CPrintToChatAll("%s", textChat);
+			CPrintToChatAll("%s", textChat);
 
-				ReplaceString(textChat, sizeof(textChat), "\n", "");  //Get rid of newlines
-				// CPrintToChatAll("%s", textChat);
-				CPrintToChatAll("%s", textChat);
+			new String:diff[25];
+			new bool:gotHard=BossDiff[boss]>1;
 
-				new String:diff[25];
-				new bool:gotHard=BossDiff[boss]>1;
-
-				if(gotHard)
-				{
-					GetDifficultyString(BossDiff[boss], diff, sizeof(diff));
-					CPrintToChatAll("{olive}[FF2]{default} 이 보스는 난이도가 {green}%s{default}입니다!", diff);
-				}
+			if(gotHard)
+			{
+				GetDifficultyString(BossDiff[boss], diff, sizeof(diff));
+				CPrintToChatAll("{olive}[FF2]{default} 이 보스는 난이도가 {green}%s{default}입니다!", diff);
 			}
 		}
+	}
 
 
 
@@ -6242,7 +6242,7 @@ public Action:BossTimer(Handle:timer)
 
 		if(BossCharge[boss][0] >= 100.0)
 		{
-			bool isUpgradeRage = BossCharge[boss][0] >= 200.0 ? true : false;
+			// bool isUpgradeRage = BossCharge[boss][0] >= 200.0 ? true : false;
 			if(IsFakeClient(client) && !(FF2flags[client] & FF2FLAG_BOTRAGE))
 			{
 				CreateTimer(1.0, Timer_BotRage, boss, TIMER_FLAG_NO_MAPCHANGE);
@@ -6897,13 +6897,13 @@ public Action:OnCallForMedic(client, const String:command[], args)
 			BossAbilityDuration[boss][0]=BossAbilityDurationMax[boss][0]+2.0;
 
 			Handle SoloRageDelay;
-	        CreateDataTimer(2.0, SoloRageDelayTimer, SoloRageDelay, TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(2.0, SoloRageDelayTimer, SoloRageDelay, TIMER_FLAG_NO_MAPCHANGE);
 
-	        WritePackCell(SoloRageDelay, client);
-	        // WritePackCell(SoloRageDelay, boss);
+			WritePackCell(SoloRageDelay, client);
+			// WritePackCell(SoloRageDelay, boss);
 			WritePackCell(SoloRageDelay, doUpgradeRage);
 			// WritePackCell(SoloRageDelay, doUpgradeRage);
-	        ResetPack(SoloRageDelay);
+			ResetPack(SoloRageDelay);
 		}
 		else
 		{
@@ -11488,17 +11488,18 @@ public Native_HasAbility(Handle:plugin, numParams)
 	new boss=GetNativeCell(1);
 	GetNativeString(2, pluginName, sizeof(pluginName));
 	GetNativeString(3, abilityName, sizeof(abilityName));
-	new bool:IsUpgradeRage = false;
+	// new bool:IsUpgradeRage = false;
 	if(boss==-1 || Special[boss]==-1 || !BossKV[Special[boss]])
 	{
 		return false;
 	}
 
+/*
 	if(numParams >= 4)
 	{
 		IsUpgradeRage = GetNativeCell(4);
 	}
-
+*/
 	KvRewind(BossKV[Special[boss]]);
 	if(!BossKV[Special[boss]])
 	{
@@ -11520,6 +11521,7 @@ public Native_HasAbility(Handle:plugin, numParams)
 				KvGetString(BossKV[Special[boss]], "plugin_name", pluginName2, sizeof(pluginName2));
 				if(!pluginName[0] || !pluginName2[0] || StrEqual(pluginName, pluginName2))  //Make sure the plugin names are equal
 				{
+					/*
 					if(IsUpgradeRage)
 					{
 						if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
@@ -11530,6 +11532,11 @@ public Native_HasAbility(Handle:plugin, numParams)
 						if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
 							continue;
 					}
+					*/
+
+					if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+						continue;
+
 					return true;
 				}
 			}
@@ -12000,7 +12007,7 @@ public HealthbarEnableChanged(Handle:convar, const String:oldValue[], const Stri
 
 FormulaBossHealth(boss, bool:includeHealth=true)
 {
-	new client=Boss[boss];
+	// new client=Boss[boss];
 	int damaged = (BossHealthMax[boss]*BossLivesMax[boss]) - BossHealth[boss];
 
 	KvRewind(BossKV[Special[boss]]);
