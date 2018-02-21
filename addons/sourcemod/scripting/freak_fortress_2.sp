@@ -18,6 +18,8 @@
 
 #include "freak_fortress_2/commands.sp"
 
+#define PLUGIN_VERSION "2.0?"
+
 #if defined _steamtools_included
 bool steamtools = false;
 #endif
