@@ -1200,7 +1200,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	return APLRes_Success;
 }
 
-public OnPluginStart()
+public void OnPluginStart()
 {
 	LogMessage("===Freak Fortress 2 Initializing-v%s===", PLUGIN_VERSION);
 
@@ -1368,7 +1368,7 @@ public OnPluginStart()
 
 // 	currentBGMData=CreateDataPack(); // PATH | NAME | ARTIST
 
-	decl String:oldVersion[64];
+	char oldVersion[64];
 	GetConVarString(cvarVersion, oldVersion, sizeof(oldVersion));
 	if(strcmp(oldVersion, PLUGIN_VERSION, false))
 	{
