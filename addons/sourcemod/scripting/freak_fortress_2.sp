@@ -1398,7 +1398,7 @@ public void OnPluginStart()
 	#endif
 }
 
-public Action:OnPlayerHealed(Handle:event, const String:name[], bool:dont)
+public Action OnPlayerHealed(Handle event, const char[] name, bool dont)
 {
 	// int client = GetClientOfUserId(GetEventInt(event, "patient"));
 	int healer = GetClientOfUserId(GetEventInt(event, "healer"));
