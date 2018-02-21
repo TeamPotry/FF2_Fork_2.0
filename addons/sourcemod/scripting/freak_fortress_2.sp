@@ -1420,7 +1420,7 @@ public Action OnPlayerHealed(Handle event, const char[] name, bool dont)
 	return Plugin_Continue;
 }
 
-public Action:Listener_Say(client, const String:command[], argc)
+public Action Listener_Say(int client, const char[] command, int argc)
 {
 	if(!IsValidClient(client))	return Plugin_Continue;
 
@@ -1428,6 +1428,8 @@ public Action:Listener_Say(client, const String:command[], argc)
 	bool handleChat=false;
 
 	GetCmdArgString(chat, sizeof(chat));
+
+	// TODO: Use ConVar.
 
 	if(strlen(chat)>=2 ){
 		if(chat[1]=='!') handleChat=false;
