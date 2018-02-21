@@ -428,7 +428,7 @@ static const char ff2versiondates[][]=
 	"October 21, 2016"		//1.10.14
 };
 
-stock FindVersionData(Handle:panel, versionIndex)
+stock void FindVersionData(Handle panel, int versionIndex)
 {
 	switch(versionIndex)
 	{
@@ -1073,7 +1073,7 @@ stock FindVersionData(Handle:panel, versionIndex)
 	}
 }
 
-static const int maxVersion=sizeof(ff2versiontitles)-1;
+static const int maxVersion = sizeof(ff2versiontitles)-1;
 //
 int Specials;
 Handle BossKV[MAXSPECIALS];
@@ -1108,9 +1108,9 @@ public Plugin myinfo=
 	version=PLUGIN_VERSION,
 };
 
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	decl String:plugin[PLATFORM_MAX_PATH];
+	char plugin[PLATFORM_MAX_PATH];
 	GetPluginFilename(myself, plugin, sizeof(plugin));
 	if(!StrContains(plugin, "freaks/"))  //Prevent plugins/freaks/freak_fortress_2.ff2 from loading if it exists -.-
 	{
