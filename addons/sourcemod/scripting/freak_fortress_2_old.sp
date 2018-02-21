@@ -15,25 +15,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 */
 // #pragma semicolon 1
 
-#include <sourcemod>
-#include <freak_fortress_2>
-#include <POTRY>
-#include <adt_array>
-#include <clientprefs>
-#include <morecolors>
-#include <sdkhooks>
-#include <tf2_stocks>
-#include <tf2items>
-#undef REQUIRE_EXTENSIONS
-#tryinclude <steamtools>
-#define REQUIRE_EXTENSIONS
-#undef REQUIRE_PLUGIN
-//#tryinclude <smac>
-#tryinclude <goomba>
-#tryinclude <rtd>
-#tryinclude <tf2attributes>
-
-#include "freak_fortress_2/commands.sp"
+#
 
 #define REQUIRE_PLUGIN
 
@@ -63,19 +45,6 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #define MONOCULUS "eyeball_boss"
 #define DISABLED_PERKS "toxic,noclip,uber,ammo,instant,jump,tinyplayer"
 
-#if defined _steamtools_included
-bool steamtools = false;
-#endif
-
-#if defined _tf2attributes_included
-bool tf2attributes = false;
-#endif
-
-#if defined _goomba_included
-bool goomba = false;
-#endif
-
-bool smac = false;
 bool CheckedFirstRound = false;
 // bool MapIsRunning = false;
 
@@ -1583,64 +1552,6 @@ public bool BossTargetFilter(const char[] pattern, Handle clients)
 		}
 	}
 	return true;
-}
-
-public void OnLibraryAdded(const char[] name)
-{
-	#if defined _steamtools_included
-	if(!strcmp(name, "SteamTools", false))
-	{
-		steamtools = true;
-	}
-	#endif
-
-	#if defined _tf2attributes_included
-	if(!strcmp(name, "tf2attributes", false))
-	{
-		tf2attributes = true;
-	}
-	#endif
-
-	#if defined _goomba_included
-	if(!strcmp(name, "goomba", false))
-	{
-		goomba = true;
-	}
-	#endif
-
-	if(!strcmp(name, "smac", false))
-	{
-		smac = true;
-	}
-}
-
-public void OnLibraryRemoved(const char[] name)
-{
-	#if defined _steamtools_included
-	if(!strcmp(name, "SteamTools", false))
-	{
-		steamtools = false;
-	}
-	#endif
-
-	#if defined _tf2attributes_included
-	if(!strcmp(name, "tf2attributes", false))
-	{
-		tf2attributes = false;
-	}
-	#endif
-
-	#if defined _goomba_included
-	if(!strcmp(name, "goomba", false))
-	{
-		goomba = false;
-	}
-	#endif
-
-	if(!strcmp(name, "smac", false))
-	{
-		smac = false;
-	}
 }
 
 public void OnConfigsExecuted()
