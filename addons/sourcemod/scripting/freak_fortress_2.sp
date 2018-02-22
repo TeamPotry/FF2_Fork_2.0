@@ -11,7 +11,6 @@
 #tryinclude <steamtools>
 #define REQUIRE_EXTENSIONS
 #undef REQUIRE_PLUGIN
-//#tryinclude <smac>
 #tryinclude <goomba>
 #tryinclude <rtd>
 #tryinclude <tf2attributes>
@@ -79,10 +78,6 @@ public void OnLibraryAdded(const char[] name)
 	}
 	#endif
 
-	if(!strcmp(name, "smac", false))
-	{
-		smac = true;
-	}
 }
 
 public void OnLibraryRemoved(const char[] name)
@@ -108,8 +103,4 @@ public void OnLibraryRemoved(const char[] name)
 	}
 	#endif
 
-	if(!strcmp(name, "smac", false))
-	{
-		smac = false;
-	}
 }
