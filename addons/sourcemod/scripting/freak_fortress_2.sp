@@ -16,6 +16,7 @@
 #tryinclude <tf2attributes>
 
 #include "freak_fortress_2/commands.sp"
+#include "freak_fortress_2/stocks.sp"
 
 #define PLUGIN_VERSION "2.0?"
 
