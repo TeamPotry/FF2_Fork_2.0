@@ -9,11 +9,11 @@ public Action Listener_Say(int client, const char[] command, int argc)
 
 	// TODO: Use ConVar.
 
-	if(strlen(chat) >= 2 ){
+	if(strlen(chat) >= 2 ) {
 		if(chat[1] == '!') handleChat = false;
 		else if(chat[1] == '/') handleChat = true;
 		else return Plugin_Continue;
-		}
+	}
 	else{
 		return Plugin_Continue;
 	}
@@ -22,6 +22,7 @@ public Action Listener_Say(int client, const char[] command, int argc)
 	char specialtext[2][100];
 	ExplodeString(chat[2], " ", specialtext, sizeof(specialtext), sizeof(specialtext[]));
 
+	/*
 	if(StrEqual("프리크", chat[2], true) ||
 	StrEqual("ㄹㄹ2", chat[2], true))
 	{
@@ -81,4 +82,5 @@ public Action Listener_Say(int client, const char[] command, int argc)
 		SetYouSpecialString(client, chat[strlen(specialtext[0])+3]);
 	}
 	return handleChat ? Plugin_Handled : Plugin_Continue;
+	*/
 }
