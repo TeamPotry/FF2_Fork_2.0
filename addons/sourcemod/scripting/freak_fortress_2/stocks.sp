@@ -75,6 +75,28 @@ stock int GetHealingTarget(int client, bool checkgun = false)
 	return -1;
 }
 
+stock int GetClientCloakIndex(int client)
+{
+	if(!IsValidClient(client, false))
+	{
+		return -1;
+	}
+
+	int weapon = GetPlayerWeaponSlot(client, 4);
+	if(!IsValidEntity(weapon))
+	{
+		return -1;
+	}
+
+	char classname[64];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	if(strncmp(classname, "tf_wea", 6, false))
+	{
+		return -1;
+	}
+	return GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+}
+
 stock bool IsValidClient(int client, bool replaycheck = true)
 {
 	if(client <= 0 || client > MaxClients)

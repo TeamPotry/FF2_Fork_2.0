@@ -8868,28 +8868,6 @@ public Action:OnGetMaxHealth(client, &maxHealth)
 	return Plugin_Continue;
 }
 
-stock GetClientCloakIndex(client)
-{
-	if(!IsValidClient(client, false))
-	{
-		return -1;
-	}
-
-	int weapon=GetPlayerWeaponSlot(client, 4);
-	if(!IsValidEntity(weapon))
-	{
-		return -1;
-	}
-
-	decl String:classname[64];
-	GetEntityClassname(weapon, classname, sizeof(classname));
-	if(strncmp(classname, "tf_wea", 6, false))
-	{
-		return -1;
-	}
-	return GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-}
-
 stock SpawnSmallHealthPackAt(client, team=0)
 {
 	if(!IsValidClient(client, false) || !IsPlayerAlive(client))
