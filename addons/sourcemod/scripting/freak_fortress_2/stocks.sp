@@ -30,6 +30,55 @@ public void GetDifficultyString(int difficulty, char[] diff, buffer)
 	Format(diff, buffer, "%s", item);
 }
 
+stock bool IsFF2Map()
+{
+	char config[PLATFORM_MAX_PATH];
+	GetCurrentMap(currentmap, sizeof(currentmap));
+	if(FileExists("bNextMapToFF2"))
+	{
+		return true;
+	}
+
+	BuildPath(Path_SM, config, PLATFORM_MAX_PATH, "configs/freak_fortress_2/maps.cfg");
+	if(!FileExists(config))
+	{
+		LogError("[FF2] Unable to find %s, disabling plugin.", config);
+		return false;
+	}
+
+	Handle file = OpenFile(config, "r");
+	if(file == INVALID_HANDLE)
+	{
+		LogError("[FF2] Error reading maps from %s, disabling plugin.", config);
+		return false;
+	}
+
+	int tries;
+	while(ReadFileLine(file, config, sizeof(config)) && tries < 100)
+	{
+		tries++;
+		if(tries == 100)
+		{
+			LogError("[FF2] Breaking infinite loop when trying to check the map.");
+			return false;
+		}
+
+		Format(config, strlen(config)-1, config);
+		if(!strncmp(config, "//", 2, false))
+		{
+			continue;
+		}
+
+		if(!StrContains(currentmap, config, false) || !StrContains(config, "all", false))
+		{
+			CloseHandle(file);
+			return true;
+		}
+	}
+	CloseHandle(file);
+	return false;
+}
+
 stock void DoOverlay(const int client, const char[] overlay)
 {
 	int flags = GetCommandFlags("r_screenoverlay");
