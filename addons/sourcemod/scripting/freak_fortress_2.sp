@@ -1747,7 +1747,7 @@ public OnConfigsExecuted()
 	tf_feign_death_damage_scale=GetConVarFloat(FindConVar("tf_feign_death_damage_scale"));
 	GetConVarString(FindConVar("mp_humans_must_join_team"), mp_humans_must_join_team, sizeof(mp_humans_must_join_team));
 
-	if(IsFF2Map() && GetConVarBool(cvarEnabled))
+	if(IsFF2Map(currentmap) && GetConVarBool(cvarEnabled))
 	{
 		EnableFF2();
 	}
@@ -1764,6 +1764,7 @@ public OnMapStart()
 	RoundCount=0;
 	FF2ServerFlag=0;
 	CheckedFirstRound=false;
+	GetCurrentMap(currentmap, sizeof(currentmap));
 	CloseLoadMusicTimer();
 
 	for(int client; client<=MaxClients; client++)
@@ -8939,16 +8940,6 @@ stock RandomlyDisguise(client)	//Original code was mecha's, but the original cod
 			SetEntProp(client, Prop_Send, "m_iDisguiseHealth", 200);
 		}
 	}
-}
-
-public Action:TF2_CalcIsAttackCritical(client, weapon, String:weaponname[], &bool:result)
-{
-	if(Enabled && IsBoss(client) && CheckRoundState()==1 && !TF2_IsPlayerCritBuffed(client) && !BossCrits)
-	{
-		result=false;
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
 }
 
 stock GetClientWithMostQueuePoints(bool:omit[])

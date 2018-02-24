@@ -30,10 +30,10 @@ public void GetDifficultyString(int difficulty, char[] diff, buffer)
 	Format(diff, buffer, "%s", item);
 }
 
-stock bool IsFF2Map()
+stock bool IsFF2Map(char[] currentmap)
 {
 	char config[PLATFORM_MAX_PATH];
-	GetCurrentMap(currentmap, sizeof(currentmap));
+
 	if(FileExists("bNextMapToFF2"))
 	{
 		return true;
@@ -92,7 +92,7 @@ stock int FindHealthBar()
 	int healthBar = FindEntityByClassname(-1, HEALTHBAR_CLASS);
 	if(!IsValidEntity(healthBar))
 	{
-		return CreateEntityByName(HEALTHBAR_CLASS);
+		return healthBar;
 	}
 	return -1;
 }
