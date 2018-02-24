@@ -2114,11 +2114,11 @@ EnableSubPlugins(bool:force=false)
 		return;
 	}
 
-	areSubPluginsEnabled=true;
-	decl String:path[PLATFORM_MAX_PATH], String:filename[PLATFORM_MAX_PATH], String:filename_old[PLATFORM_MAX_PATH];
+	areSubPluginsEnabled = true;
+	char path[PLATFORM_MAX_PATH], filename[PLATFORM_MAX_PATH], filename_old[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "plugins/freaks");
-	decl FileType:filetype;
-	Handle directory=OpenDirectory(path);
+	FileType filetype;
+	Handle directory = OpenDirectory(path);
 	while(ReadDirEntry(directory, filename, PLATFORM_MAX_PATH, filetype))
 	{
 		if(filetype==FileType_File && StrContains(filename, ".smx", false)!=-1)
