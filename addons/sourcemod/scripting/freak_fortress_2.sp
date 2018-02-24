@@ -58,7 +58,6 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #define SOUNDEXCEPT_MUSIC 0
 #define SOUNDEXCEPT_VOICE 1
 
-#define HEALTHBAR_CLASS "monster_resource"
 #define HEALTHBAR_PROPERTY "m_iBossHealthPercentageByte"
 #define HEALTHBAR_MAX 255
 #define MONOCULUS "eyeball_boss"

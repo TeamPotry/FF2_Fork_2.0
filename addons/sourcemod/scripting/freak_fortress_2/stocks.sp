@@ -1,3 +1,5 @@
+#define HEALTHBAR_CLASS "monster_resource"
+
 public void GetDifficultyString(int difficulty, char[] diff, buffer)
 {
 	char item[50];
