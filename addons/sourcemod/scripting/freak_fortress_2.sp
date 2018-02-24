@@ -1398,40 +1398,7 @@ public OnPluginStart()
 	#if defined _tf2attributes_included
 	tf2attributes=LibraryExists("tf2attributes");
 	#endif
-
-	// ConnectToDatabase();
 }
-
-/*
-void ConnectToDatabase()
-{
-	if(SQL_CheckConfig("freak_fortress_2"))
-		Database.Connect(CallbackConnect, "freak_fortress_2");
-	else
-		Database.Connect(CallbackConnect, "default");
-}
-
-public void CallbackConnect(Database db, char[] error, any data)
-{
-	if(db == null)
-		LogError("Can't connect to server. Error: %s", error);
-
-	FF2Database = db;
-	CreateTableIfNotExists();
-}
-
-void CreateTableIfNotExists()
-{
-	connection.Query(CallbackCreateTable,
-	"CREATE TABLE IF NOT EXISTS freak_fortress_2 (steamId VARCHAR(64) PRIMARY KEY);");
-}
-
-public void CallbackCreateTable(Database db, DBResultSet result, char[] error, any data)
-{
-	if(result == null)
-		LogError("Error while creating table! Error: %s", error);
-}
-*/
 
 public Action:OnPlayerHealed(Handle:event, const String:name[], bool:dont)
 {
