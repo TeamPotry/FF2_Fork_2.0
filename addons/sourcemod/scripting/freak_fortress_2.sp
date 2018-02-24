@@ -33,6 +33,9 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #tryinclude <goomba>
 #tryinclude <rtd>
 #tryinclude <tf2attributes>
+
+#include "freak_fortress_2/stocks.sp"
+
 #define REQUIRE_PLUGIN
 
 #define MAJOR_REVISION "1"
@@ -1893,7 +1896,7 @@ public EnableFF2()
 	}
 
 	bMedieval=FindEntityByClassname(-1, "tf_logic_medieval")!=-1 || bool:GetConVarInt(FindConVar("tf_medieval"));
-	FindHealthBar();
+	healthbar = FindHealthBar();
 
 	#if defined _steamtools_included
 	if(steamtools)
@@ -10907,60 +10910,6 @@ public Action:HookSound(clients[64], &numClients, String:sound[PLATFORM_MAX_PATH
 	return Plugin_Continue;
 }
 
-stock GetHealingTarget(client, bool:checkgun=false)
-{
-	int medigun=GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	if(!checkgun)
-	{
-		if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-		{
-			return GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-		}
-		return -1;
-	}
-
-	if(IsValidEntity(medigun))
-	{
-		decl String:classname[64];
-		GetEntityClassname(medigun, classname, sizeof(classname));
-		if(!strcmp(classname, "tf_weapon_medigun", false))
-		{
-			if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-			{
-				return GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-			}
-		}
-	}
-	return -1;
-}
-
-stock bool:IsValidClient(client, bool:replaycheck=true)
-{
-	if(client<=0 || client>MaxClients)
-	{
-		return false;
-	}
-
-	if(!IsClientInGame(client))
-	{
-		return false;
-	}
-
-	if(GetEntProp(client, Prop_Send, "m_bIsCoaching"))
-	{
-		return false;
-	}
-
-	if(replaycheck)
-	{
-		if(IsClientSourceTV(client) || IsClientReplay(client))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
 public CvarChangeNextmap(Handle:convar, const String:oldValue[], const String:newValue[])
 {
 	CreateTimer(0.1, Timer_DisplayCharsetVote, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -11220,36 +11169,6 @@ bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, s
 	}
 
 	return true;
-}
-
-public GetDifficultyString(difficulty, String:diff[], buffer)
-{
-	char item[50];
-
-	switch(difficulty)
-	{
-	  case 1:
-	  {
-			Format(item, sizeof(item), "%s", "보통");
-	  }
-		case 2:
-		{
-			Format(item, sizeof(item), "%s", "어려움");
-		}
-		case 3:
-		{
-			Format(item, sizeof(item), "%s", "매우 어려움");
-		}
-		case 4:
-		{
-			Format(item, sizeof(item), "%s", "너무 어려움");
-		}
-		case 5:
-		{
-			Format(item, sizeof(item), "%s", "불지옥");
-		}
-	}
-	Format(diff, buffer, "%s", item);
 }
 
 public Action:Timer_UseBossCharge(Handle:timer, Handle:data)
@@ -11986,15 +11905,6 @@ public CheckRoundState()
 		}
 	}
 	return -1;  //Compiler bug-doesn't recognize 'default' as a valid catch-all
-}
-
-FindHealthBar()
-{
-	healthBar=FindEntityByClassname(-1, HEALTHBAR_CLASS);
-	if(!IsValidEntity(healthBar))
-	{
-		healthBar=CreateEntityByName(HEALTHBAR_CLASS);
-	}
 }
 
 public HealthbarEnableChanged(Handle:convar, const String:oldValue[], const String:newValue[])
