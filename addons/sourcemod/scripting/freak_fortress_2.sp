@@ -1864,7 +1864,7 @@ public EnableFF2()
 	}
 
 	bMedieval=FindEntityByClassname(-1, "tf_logic_medieval")!=-1 || bool:GetConVarInt(FindConVar("tf_medieval"));
-	healthbar = FindHealthBar();
+	healthBar = FindHealthBar();
 
 	#if defined _steamtools_included
 	if(steamtools)
