@@ -200,7 +200,7 @@ int PointDelay=6;
 float Announce=120.0;
 int AliveToEnable=5;
 int PointType;
-bool BossCrits=true;
+bool BossCrits = true;
 int arenaRounds;
 float circuitStun;
 int countdownPlayers=1;

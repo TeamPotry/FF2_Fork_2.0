@@ -30,7 +30,7 @@ public void GetDifficultyString(int difficulty, char[] diff, buffer)
 	Format(diff, buffer, "%s", item);
 }
 
-stock bool IsFF2Map(char[] currentmap)
+stock bool IsFF2Map(char[] mapName)
 {
 	char config[PLATFORM_MAX_PATH];
 
@@ -69,7 +69,7 @@ stock bool IsFF2Map(char[] currentmap)
 			continue;
 		}
 
-		if(!StrContains(currentmap, config, false) || !StrContains(config, "all", false))
+		if(!StrContains(mapName, config, false) || !StrContains(config, "all", false))
 		{
 			CloseHandle(file);
 			return true;
@@ -89,7 +89,7 @@ stock void DoOverlay(const int client, const char[] overlay)
 
 stock int FindHealthBar()
 {
-	int healthBar = FindEntityByClassname(-1, HEALTHBAR_CLASS);
+	int healthBarIndex = FindEntityByClassname(-1, HEALTHBAR_CLASS);
 	if(!IsValidEntity(healthBar))
 	{
 		return healthBar;
