@@ -2364,7 +2364,7 @@ public CvarChange(Handle:convar, const String:oldValue[], const String:newValue[
 	}
 	else if(convar==cvarCrits)
 	{
-		BossCrits=bool:StringToInt(newValue);
+		BossCrits = StringToInt(newValue) > 0;
 	}
 	else if(convar==cvarFirstRound)  //DEPRECATED
 	{
