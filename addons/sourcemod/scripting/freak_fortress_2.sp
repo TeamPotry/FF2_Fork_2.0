@@ -1536,7 +1536,7 @@ public Action:Command_SetDifficulty(client, args)
 {
 	CallDifficultyMenu(client);
 	return Plugin_Continue;
-}//MusicListCmd
+}
 
 public Action:MusicListCmd(client, args)
 {
