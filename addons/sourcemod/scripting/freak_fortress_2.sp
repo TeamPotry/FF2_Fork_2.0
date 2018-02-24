@@ -1678,13 +1678,14 @@ public Action Command_HelpBossPanel(client, args)
 
 public Action Command_DevMode(int client, int args)
 {
-	if(DEVmode)		DEVmode=false;
-	else DEVmode=true;
-	GoombaDamage=0.0; // 안일하다 안일해!!!!!!!!
-	if(GoombaDamage==0.0)
-	{
-	 	CPrintToChatAll("{olive}[FF2]{default} DEVmode: %s", DEVmode ? "ON" : "OFF");
-	}
+	if(DEVmode)
+		DEVmode = false;
+	else
+		DEVmode = true;
+
+	CPrintToChatAll("{olive}[FF2]{default} DEVmode: %s", DEVmode ? "ON" : "OFF");
+
+	return Plugin_Continue;
 }
 
 public bool:BossTargetFilter(const String:pattern[], Handle:clients)
@@ -8799,7 +8800,7 @@ public Action:OnStomp(attacker, victim, &Float:damageMultiplier, &Float:damageBo
 		JumpPower=0.0;
 		return Plugin_Changed;
 	}
-	else if(IsBoss(victim))
+	else if(IsBoss(victim) && GoombaDamage > 0.0) // TODO: 굼바 플러그인 내의 데미지 고정 삭제
 	{
 		Call_StartForward(OnTakePercentDamagePost);
 		Call_PushCell(victim);
