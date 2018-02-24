@@ -10139,14 +10139,6 @@ stock bool:IsBoss(client)
 	return false;
 }
 
-DoOverlay(client, const String:overlay[])
-{
-	int flags=GetCommandFlags("r_screenoverlay");
-	SetCommandFlags("r_screenoverlay", flags & ~FCVAR_CHEAT);
-	ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
-	SetCommandFlags("r_screenoverlay", flags);
-}
-
 public FF2PanelH(Handle:menu, MenuAction:action, client, selection)
 {
 	if(action==MenuAction_Select)

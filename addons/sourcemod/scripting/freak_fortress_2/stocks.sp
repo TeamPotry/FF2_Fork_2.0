@@ -30,6 +30,14 @@ public void GetDifficultyString(int difficulty, char[] diff, buffer)
 	Format(diff, buffer, "%s", item);
 }
 
+stock void DoOverlay(const int client, const char[] overlay)
+{
+	int flags = GetCommandFlags("r_screenoverlay");
+	SetCommandFlags("r_screenoverlay", flags & ~FCVAR_CHEAT);
+	ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
+	SetCommandFlags("r_screenoverlay", flags);
+}
+
 stock int FindHealthBar()
 {
 	int healthBar = FindEntityByClassname(-1, HEALTHBAR_CLASS);
