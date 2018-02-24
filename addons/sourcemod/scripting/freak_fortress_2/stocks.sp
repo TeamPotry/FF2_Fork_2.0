@@ -90,9 +90,9 @@ stock void DoOverlay(const int client, const char[] overlay)
 stock int FindHealthBar()
 {
 	int healthBarIndex = FindEntityByClassname(-1, HEALTHBAR_CLASS);
-	if(!IsValidEntity(healthBar))
+	if(!IsValidEntity(healthBarIndex))
 	{
-		return healthBar;
+		return healthBarIndex;
 	}
 	return -1;
 }
