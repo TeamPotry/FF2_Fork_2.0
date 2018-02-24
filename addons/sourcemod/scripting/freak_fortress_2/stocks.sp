@@ -3,7 +3,7 @@
 public void GetDifficultyString(int difficulty, char[] diff, buffer)
 {
 	char item[50];
-
+	// TODO: 다국어 지원
 	switch(difficulty)
 	{
 	  case 1:
