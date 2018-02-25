@@ -36,6 +36,8 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 
 #include "freak_fortress_2/stocks.sp"
 
+#include <freak_fortress_2/bosses>
+
 #define REQUIRE_PLUGIN
 
 #define MAJOR_REVISION "1"
