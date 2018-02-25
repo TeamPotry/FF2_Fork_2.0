@@ -4,6 +4,25 @@
 
 #define __freak_fortress_2_bosses_included
 
+enum BossValues
+{
+	Boss_ClientIndex = 0,
+	Boss_BossIndex,
+	Boss_CharacterIndex,
+	Boss_HP,
+	Boss_MaxHP,
+	Boss_Lives,
+	Boss_MaxLives,
+	Boss_RageDamage,
+	Boss_Charge, // TODO: Remember. This is array.
+	Boss_MaxRageCharge,
+	Boss_AbilityDuration, // TODO: Remember. This is array.
+	Boss_MaxAbilityDuration, // TODO: Remember. This is array.
+	Boss_AbilityCooldown, // TODO: Remember. This is array.
+	Boss_MaxAbilityCooldown, // TODO: Remember. This is array.
+	Boss_KeyValues // NOTE: Everytime when you editing this, Keep this at last.
+};
+
 methodmap FF2BossKeyValues < KeyValues {
     public FF2BossKeyValues(int characterIndex)
     {
