@@ -53,3 +53,7 @@ methodmap FF2BossKeyValues < KeyValues {
         return view_as<FF2BossKeyValues>(bossKv);
     }
 }
+
+methodmap FF2Boss < ArrayList {
+	// not sure about this.
+}
