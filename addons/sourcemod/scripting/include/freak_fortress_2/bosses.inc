@@ -57,5 +57,17 @@ methodmap FF2BossKeyValues < KeyValues {
 }
 
 methodmap FF2Boss < ArrayList {
-	// not sure about this.
+	public FF2Boss(int client)
+	{
+		int arraySize = (view_as<int>(Boss_KeyValues) + 1);
+		ArrayList bossValues = new ArrayList(16, arraySize); // 16 is boss ability slot.
+
+		bossValues.Push(client);
+		for(int loop = 1; loop < arraySize; loop++) // 0 is client index.
+		{
+			bossValues.Push(null);
+		}
+
+		return view_as<FF2Boss>(bossValues);
+	}
 }
