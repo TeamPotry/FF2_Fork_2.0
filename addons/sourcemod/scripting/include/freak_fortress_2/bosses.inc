@@ -47,6 +47,8 @@ methodmap FF2BossKeyValues < KeyValues {
 
         BuildPath(Path_SM, config, sizeof(config), "configs/freak_fortress_2/%s.cfg", character);
 
+		// TODO: Check Boss config file exist.
+
         KeyValues bossKv = new KeyValues("character");
         bossKv.FileToKeyValues(config);
 
