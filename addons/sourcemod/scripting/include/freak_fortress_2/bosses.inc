@@ -78,4 +78,13 @@ methodmap FF2Boss < ArrayList {
 
 		return view_as<FF2Boss>(bossValues);
 	}
+
+	property int HealthPoint {
+		public get() {
+			return this.Get(Boss_HP);
+		}
+		public set(int healthPoint) {
+			return this.Set(Boss_HP, healthPoint);
+		}
+	}
 }
