@@ -84,7 +84,7 @@ methodmap FF2Boss < ArrayList {
 			return this.Get(Boss_HP);
 		}
 		public set(int healthPoint) {
-			return this.Set(Boss_HP, healthPoint);
+			this.Set(Boss_HP, healthPoint);
 		}
 	}
 }
