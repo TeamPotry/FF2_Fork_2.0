@@ -14,8 +14,9 @@ enum BossValues
 	Boss_Lives,
 	Boss_MaxLives,
 	Boss_RageDamage,
-	Boss_Charge, // TODO: Remember. This is array.
 	Boss_MaxRageCharge,
+	Boss_Charge, // TODO: Remember. This is array.
+	// NOTE: Everytime when you editing this enum, Keep this at first array.
 	Boss_AbilityDuration, // TODO: Remember. This is array.
 	Boss_MaxAbilityDuration, // TODO: Remember. This is array.
 	Boss_AbilityCooldown, // TODO: Remember. This is array.
@@ -62,10 +63,17 @@ methodmap FF2Boss < ArrayList {
 		int arraySize = (view_as<int>(Boss_KeyValues) + 1);
 		ArrayList bossValues = new ArrayList(16, arraySize); // 16 is boss ability slot.
 
-		bossValues.Push(client);
+		bossValues.Push(client); // first, push client index.
 		for(int loop = 1; loop < arraySize; loop++) // 0 is client index.
 		{
-			bossValues.Push(null);
+			if(loop >= view_as<int>(Boss_Charge) && view_as<int>(Boss_KeyValues) > loop)
+			{
+				bossValues.PushArray(null, 16);
+			}
+			else
+			{
+				bossValues.Push(null);
+			}
 		}
 
 		return view_as<FF2Boss>(bossValues);
