@@ -81,6 +81,18 @@ methodmap FF2Boss < ArrayList {
 		return view_as<FF2Boss>(bossValues);
 	}
 
+	property int ClientIndex {
+		public get() {
+			return this.Get(Boss_ClientIndex);
+		}
+	}
+
+	property int CharacterIndex {
+		public get() {
+			return this.Get(Boss_CharacterIndex);
+		}
+	}
+
 	property int HealthPoint {
 		public get() {
 			return this.Get(Boss_HP);
@@ -89,4 +101,134 @@ methodmap FF2Boss < ArrayList {
 			this.Set(Boss_HP, healthPoint);
 		}
 	}
+
+	property int MaxHealthPoint {
+		public get() {
+			return this.Get(Boss_MaxHP);
+		}
+		public set(int healthPoint) {
+			this.Set(Boss_MaxHP, healthPoint);
+		}
+	}
+
+	property int Lives {
+		public get() {
+			return this.Get(Boss_Lives);
+		}
+		public set(int lives) {
+			this.Set(Boss_Lives, lives);
+		}
+	}
+
+	property int MaxLives {
+		public get() {
+			return this.Get(Boss_MaxLives);
+		}
+		public set(int lives) {
+			this.Set(Boss_MaxLives, lives);
+		}
+	}
+
+	property int RageDamage {
+		public get() {
+			return this.Get(Boss_RageDamage);
+		}
+		public set(int damage) {
+			this.Set(Boss_RageDamage, damage);
+		}
+	}
+
+	property float MaxRageCharge {
+		public get() {
+			return this.Get(Boss_MaxRageCharge);
+		}
+		public set(float maxRageCharge) {
+			this.Set(Boss_MaxRageCharge, maxRageCharge);
+		}
+	}
+
+	property FF2BossKeyValues KeyValue {
+		public get() {
+			return this.Get(Boss_KeyValue);
+		}
+		public set(FF2BossKeyValues keyValue) {
+			this.Set(Boss_KeyValue, keyValue);
+		}
+	}
+
+	public float GetCharge(const int index)
+	{
+		float charges[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_Charge, charges, MAX_BOSS_SLOT_COUNT);
+		return charges[index];
+	}
+
+	public void SetCharge(const int index, const float charge)
+	{
+		float charges[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_Charge, charges, MAX_BOSS_SLOT_COUNT);
+		charges[index] = charge;
+		this.SetArray(Boss_Charge, charges, MAX_BOSS_SLOT_COUNT);
+	}
+
+	public float GetAbilityDuration(const int index)
+	{
+		float duration[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_AbilityDuration, charges, MAX_BOSS_SLOT_COUNT);
+		return duration[index] - GetGameTime();
+	}
+
+	public void SetAbilityDuration(const int index, const float time)
+	{
+		float duration[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_AbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
+		duration[index] = time + GetGameTime();
+		this.SetArray(Boss_AbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
+	}
+
+	public float GetMaxAbilityDuration(const int index)
+	{
+		float duration[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_MaxAbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
+		return duration[index];
+	}
+
+	public void SetMaxAbilityDuration(const int index, const float time)
+	{
+		float duration[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_MaxAbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
+		duration[index] = time;
+		this.SetArray(Boss_MaxAbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
+	}
+
+	public float GetAbilityCooldown(const int index)
+	{
+		float cooldownTime[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_AbilityCooldown, cooldownTime, MAX_BOSS_SLOT_COUNT);
+		return cooldownTime[index] - GetGameTime();
+	}
+
+	public void SetAbilityCooldown(const int index, const float time)
+	{
+		float cooldownTime[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_AbilityCooldown, cooldownTime, MAX_BOSS_SLOT_COUNT);
+		cooldownTime[index] = time + GetGameTime();
+		this.SetArray(Boss_AbilityCooldown, cooldownTime, MAX_BOSS_SLOT_COUNT);
+	}
+
+	public float GetMaxAbilityCooldown(const int index)
+	{
+		float cooldownTime[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
+		return cooldownTime[index];
+	}
+
+	public void SetMaxAbilityCooldown(const int index, const float time)
+	{
+		float cooldownTime[MAX_BOSS_SLOT_COUNT];
+		this.GetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
+		cooldownTime[index] = time;
+		this.SetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
+	}
+
 }
