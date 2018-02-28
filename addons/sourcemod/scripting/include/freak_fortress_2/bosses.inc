@@ -23,7 +23,7 @@ enum BossValues
 	Boss_MaxAbilityDuration, // TODO: Remember. This is array.
 	Boss_AbilityCooldown, // TODO: Remember. This is array.
 	Boss_MaxAbilityCooldown, // TODO: Remember. This is array.
-	Boss_KeyValues // NOTE: Everytime when you editing this enum, Keep this at last.
+	Boss_KeyValue // NOTE: Everytime when you editing this enum, Keep this at last.
 };
 
 methodmap FF2BossKeyValues < KeyValues {
