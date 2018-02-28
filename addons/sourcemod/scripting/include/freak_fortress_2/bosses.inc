@@ -174,7 +174,7 @@ methodmap FF2Boss < ArrayList {
 	public float GetAbilityDuration(const int index)
 	{
 		float duration[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_AbilityDuration, charges, MAX_BOSS_SLOT_COUNT);
+		this.GetArray(Boss_AbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
 		return duration[index] - GetGameTime();
 	}
 
