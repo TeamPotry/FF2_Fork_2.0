@@ -83,19 +83,19 @@ methodmap FF2Boss < ArrayList {
 
 	property int ClientIndex {
 		public get() {
-			return this.Get(Boss_ClientIndex);
+			return view_as<int>(this.Get(Boss_ClientIndex));
 		}
 	}
 
 	property int CharacterIndex {
 		public get() {
-			return this.Get(Boss_CharacterIndex);
+			return view_as<int>(this.Get(Boss_CharacterIndex));
 		}
 	}
 
 	property int HealthPoint {
 		public get() {
-			return this.Get(Boss_HP);
+			return view_as<int>(this.Get(Boss_HP));
 		}
 		public set(int healthPoint) {
 			this.Set(Boss_HP, healthPoint);
@@ -104,7 +104,7 @@ methodmap FF2Boss < ArrayList {
 
 	property int MaxHealthPoint {
 		public get() {
-			return this.Get(Boss_MaxHP);
+			return view_as<int>(this.Get(Boss_MaxHP));
 		}
 		public set(int healthPoint) {
 			this.Set(Boss_MaxHP, healthPoint);
@@ -113,7 +113,7 @@ methodmap FF2Boss < ArrayList {
 
 	property int Lives {
 		public get() {
-			return this.Get(Boss_Lives);
+			return view_as<int>(this.Get(Boss_Lives));
 		}
 		public set(int lives) {
 			this.Set(Boss_Lives, lives);
@@ -122,7 +122,7 @@ methodmap FF2Boss < ArrayList {
 
 	property int MaxLives {
 		public get() {
-			return this.Get(Boss_MaxLives);
+			return view_as<int>(this.Get(Boss_MaxLives));
 		}
 		public set(int lives) {
 			this.Set(Boss_MaxLives, lives);
@@ -131,7 +131,7 @@ methodmap FF2Boss < ArrayList {
 
 	property int RageDamage {
 		public get() {
-			return this.Get(Boss_RageDamage);
+			return view_as<int>(this.Get(Boss_RageDamage));
 		}
 		public set(int damage) {
 			this.Set(Boss_RageDamage, damage);
@@ -140,7 +140,7 @@ methodmap FF2Boss < ArrayList {
 
 	property float MaxRageCharge {
 		public get() {
-			return this.Get(Boss_MaxRageCharge);
+			return view_as<float>(this.Get(Boss_MaxRageCharge));
 		}
 		public set(float maxRageCharge) {
 			this.Set(Boss_MaxRageCharge, maxRageCharge);
@@ -149,7 +149,7 @@ methodmap FF2Boss < ArrayList {
 
 	property FF2BossKeyValues KeyValue {
 		public get() {
-			return this.Get(Boss_KeyValue);
+			return view_as<FF2BossKeyValues>(this.Get(Boss_KeyValue));
 		}
 		public set(FF2BossKeyValues keyValue) {
 			this.Set(Boss_KeyValue, keyValue);
