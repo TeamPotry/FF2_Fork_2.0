@@ -82,24 +82,16 @@ methodmap FF2Boss < ArrayList {
 	}
 
 	property int ClientIndex {
-		public get() {
-			public native get();
-		}
+		public native get();
 	}
 
 	property int CharacterIndex {
-		public get() {
 			public native get();
-		}
 	}
 
 	property int HealthPoint {
-		public get() {
 			public native get();
-		}
-		public set(int healthPoint) {
-			public native set(healthPoint);
-		}
+			public native set(int healthPoint);
 	}
 
 	property int MaxHealthPoint {
