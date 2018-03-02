@@ -1,6 +1,6 @@
 public int Native_FF2Boss_ClientIndex_Get(Handle plugin, int numParams)
 {
-    FF2Boss boss = GetNativeCell(1);
+    ArrayList boss = view_as<ArrayList>(GetNativeCell(1));
     return boss.Get(Boss_ClientIndex);
 }
 
