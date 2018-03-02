@@ -83,7 +83,8 @@ methodmap FF2Boss < ArrayList {
 
 	property int ClientIndex {
 		public get() {
-			return view_as<int>(this.Get(Boss_ClientIndex));
+			int clientIndex = view_as<int>(this.Get(Boss_ClientIndex));
+			return clientIndex;
 		}
 	}
 
