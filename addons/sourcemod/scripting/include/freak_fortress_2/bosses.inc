@@ -90,16 +90,18 @@ methodmap FF2Boss < ArrayList {
 
 	property int CharacterIndex {
 		public get() {
-			return view_as<int>(this.Get(Boss_CharacterIndex));
+			int characterIndex = view_as<int>(this.Get(Boss_CharacterIndex));
+			return characterIndex;
 		}
 	}
 
 	property int HealthPoint {
 		public get() {
-			return view_as<int>(this.Get(Boss_HP));
+			int healthPoint = view_as<int>(this.Get(Boss_HP));
+			return healthPoint;
 		}
 		public set(int healthPoint) {
-			this.Set(Boss_HP, healthPoint);
+			this.Set(Boss_HP, view_as<any>(healthPoint));
 		}
 	}
 
