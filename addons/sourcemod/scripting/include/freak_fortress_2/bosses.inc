@@ -83,40 +83,37 @@ methodmap FF2Boss < ArrayList {
 
 	property int ClientIndex {
 		public get() {
-			int clientIndex = view_as<ArrayList>(this).Get(Boss_ClientIndex);
-			return clientIndex;
+			public native get();
 		}
 	}
 
 	property int CharacterIndex {
 		public get() {
-			int characterIndex = view_as<int>(this.Get(Boss_CharacterIndex));
-			return characterIndex;
+			public native get();
 		}
 	}
 
 	property int HealthPoint {
 		public get() {
-			int healthPoint = view_as<int>(this.Get(Boss_HP));
-			return healthPoint;
+			public native get();
 		}
 		public set(int healthPoint) {
-			this.Set(Boss_HP, view_as<any>(healthPoint));
+			public native set(healthPoint);
 		}
 	}
 
 	property int MaxHealthPoint {
 		public get() {
-			return view_as<int>(this.Get(Boss_MaxHP));
+			public native get();
 		}
 		public set(int healthPoint) {
-			this.Set(Boss_MaxHP, healthPoint);
+			public native set(healthPoint);
 		}
 	}
 
 	property int Lives {
 		public get() {
-			return view_as<int>(this.Get(Boss_Lives));
+			public native get();
 		}
 		public set(int lives) {
 			this.Set(Boss_Lives, lives);
@@ -125,40 +122,41 @@ methodmap FF2Boss < ArrayList {
 
 	property int MaxLives {
 		public get() {
-			return view_as<int>(this.Get(Boss_MaxLives));
+			public native get();
 		}
 		public set(int lives) {
-			this.Set(Boss_MaxLives, lives);
+			public native set(lives);
 		}
 	}
 
 	property int RageDamage {
 		public get() {
-			return view_as<int>(this.Get(Boss_RageDamage));
+			public native get();
 		}
 		public set(int damage) {
-			this.Set(Boss_RageDamage, damage);
+			public native set(damage);
 		}
 	}
 
 	property float MaxRageCharge {
 		public get() {
-			return view_as<float>(this.Get(Boss_MaxRageCharge));
+			public native get();
 		}
 		public set(float maxRageCharge) {
-			this.Set(Boss_MaxRageCharge, maxRageCharge);
+			public native set(maxRageCharge);
 		}
 	}
 
 	property FF2BossKeyValues KeyValue {
 		public get() {
-			return view_as<FF2BossKeyValues>(this.Get(Boss_KeyValue));
+			public native get();
 		}
 		public set(FF2BossKeyValues keyValue) {
-			this.Set(Boss_KeyValue, keyValue);
+			public native set(keyValue);
 		}
 	}
 
+	/*
 	public float GetCharge(const int index)
 	{
 		float charges[MAX_BOSS_SLOT_COUNT];
@@ -233,5 +231,6 @@ methodmap FF2Boss < ArrayList {
 		cooldownTime[index] = time;
 		this.SetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
 	}
+	*/
 
 }

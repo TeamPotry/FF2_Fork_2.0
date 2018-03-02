@@ -35,6 +35,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #tryinclude <tf2attributes>
 
 #include "freak_fortress_2/stocks.sp"
+#include "freak_fortress_2/natives/ff2boss.sp"
 
 #include <freak_fortress_2/bosses>
 
@@ -1174,6 +1175,24 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("FF2_GetBossMaxRageCharge", Native_GetBossMaxRageCharge);
 	CreateNative("FF2_SetBossMaxRageCharge", Native_SetBossMaxRageCharge);
 	CreateNative("FF2_MakeClientToBoss", Native_MakeClientToBoss);
+
+	CreateNative("FF2Boss.ClientIndex.get", Native_FF2Boss_ClientIndex_Get);
+	CreateNative("FF2Boss.CharacterIndex.get", Native_FF2Boss_CharacterIndex_Get);
+	CreateNative("FF2Boss.HealthPoint.get", Native_FF2Boss_HealthPoint_Get);
+	CreateNative("FF2Boss.HealthPoint.set", Native_FF2Boss_HealthPoint_Set);
+	CreateNative("FF2Boss.MaxHealthPoint.get", Native_FF2Boss_MaxHealthPoint_Get);
+	CreateNative("FF2Boss.MaxHealthPoint.set", Native_FF2Boss_MaxHealthPoint_Set);
+	CreateNative("FF2Boss.Lives.get", Native_FF2Boss_Lives_Get);
+	CreateNative("FF2Boss.Lives.set", Native_FF2Boss_Lives_Set);
+	CreateNative("FF2Boss.MaxLives.get", Native_FF2Boss_MaxLives_Get);
+	CreateNative("FF2Boss.MaxLives.set", Native_FF2Boss_MaxLives_Set);
+	CreateNative("FF2Boss.RageDamage.get", Native_FF2Boss_RageDamage_Get);
+	CreateNative("FF2Boss.RageDamage.set", Native_FF2Boss_RageDamage_Set);
+	CreateNative("FF2Boss.MaxRageCharge.get", Native_FF2Boss_MaxRageCharge_Get);
+	CreateNative("FF2Boss.MaxRageCharge.set", Native_FF2Boss_MaxRageCharge_Set);
+	CreateNative("FF2Boss.KeyValue.get", Native_FF2Boss_KeyValue_Get);
+	CreateNative("FF2Boss.KeyValue.set", Native_FF2Boss_KeyValue_Set);
+
 
 	PreAbility=CreateGlobalForward("FF2_PreAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell, Param_CellByRef);  //Boss, plugin name, ability name, slot, enabled
 	OnAbility=CreateGlobalForward("FF2_OnAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell);  //Boss, plugin name, ability name, status
