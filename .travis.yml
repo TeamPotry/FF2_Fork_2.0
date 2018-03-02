@@ -9,7 +9,7 @@ addons:
 
 # Set the build environment
 env:
-    - SMVERSION=1.9 # Unstable
+    - SMVERSION=1.8
 
 # And compile!
 install:
