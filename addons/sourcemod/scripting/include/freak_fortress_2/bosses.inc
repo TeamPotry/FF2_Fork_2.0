@@ -95,57 +95,34 @@ methodmap FF2Boss < ArrayList {
 	}
 
 	property int MaxHealthPoint {
-		public get() {
-			public native get();
-		}
-		public set(int healthPoint) {
-			public native set(healthPoint);
-		}
+		public native get();
+		public native set(int healthPoint);
 	}
 
 	property int Lives {
-		public get() {
-			public native get();
-		}
-		public set(int lives) {
-			this.Set(Boss_Lives, lives);
-		}
+		public native get();
+		public native set(int lives);
+
 	}
 
 	property int MaxLives {
-		public get() {
-			public native get();
-		}
-		public set(int lives) {
-			public native set(lives);
-		}
+		public native get();
+		public native set(int lives);
 	}
 
 	property int RageDamage {
-		public get() {
-			public native get();
-		}
-		public set(int damage) {
-			public native set(damage);
-		}
+		public native get();
+		public native set(int damage);
 	}
 
 	property float MaxRageCharge {
-		public get() {
-			public native get();
-		}
-		public set(float maxRageCharge) {
-			public native set(maxRageCharge);
-		}
+		public native get();
+		public native set(float maxRageCharge);
 	}
 
 	property FF2BossKeyValues KeyValue {
-		public get() {
-			public native get();
-		}
-		public set(FF2BossKeyValues keyValue) {
-			public native set(keyValue);
-		}
+		public native get();
+		public native set(FF2BossKeyValues keyValue);
 	}
 
 	/*
