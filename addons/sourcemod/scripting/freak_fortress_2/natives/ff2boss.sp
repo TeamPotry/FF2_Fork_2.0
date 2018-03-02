@@ -1,13 +1,11 @@
 public int Native_FF2Boss_ClientIndex_Get(Handle plugin, int numParams)
 {
-    ArrayList boss = view_as<ArrayList>(GetNativeCell(1));
-    return boss.Get(Boss_ClientIndex);
+    return GetNativeCell(1).Get(view_as<int>(Boss_ClientIndex));
 }
 
 public int Native_FF2Boss_CharacterIndex_Get(Handle plugin, int numParams)
 {
-    FF2Boss boss = GetNativeCell(1);
-    return boss.Get(Boss_CharacterIndex);
+    return GetNativeCell(1).Get(view_as<int>(Boss_CharacterIndex));
 }
 
 public int Native_FF2Boss_HealthPoint_Get(Handle plugin, int numParams)
