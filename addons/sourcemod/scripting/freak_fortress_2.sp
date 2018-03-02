@@ -34,10 +34,10 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #tryinclude <rtd>
 #tryinclude <tf2attributes>
 
+#include <freak_fortress_2/bosses>
+
 #include "freak_fortress_2/stocks.sp"
 #include "freak_fortress_2/natives/ff2boss.sp"
-
-#include <freak_fortress_2/bosses>
 
 #define REQUIRE_PLUGIN
 
