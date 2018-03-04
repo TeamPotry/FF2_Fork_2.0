@@ -1224,7 +1224,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 	RegPluginLibrary("freak_fortress_2");
 
-	AskPluginLoad_VSH();
+	// AskPluginLoad_VSH();
 	#if defined _steamtools_included
 	MarkNativeAsOptional("Steam_SetGameDescription");
 	#endif
