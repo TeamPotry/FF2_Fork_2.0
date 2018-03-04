@@ -70,11 +70,11 @@ methodmap FF2Boss < ArrayList {
 		{
 			if(loop >= view_as<int>(Boss_Charge) && view_as<int>(Boss_KeyValue) > loop)
 			{
-				bossValues.PushArray(null, MAX_BOSS_SLOT_COUNT);
+				bossValues.PushArray({0.0, 0.0}, MAX_BOSS_SLOT_COUNT);
 			}
 			else
 			{
-				bossValues.Push(null);
+				bossValues.Push(0.0);
 			}
 		}
 
