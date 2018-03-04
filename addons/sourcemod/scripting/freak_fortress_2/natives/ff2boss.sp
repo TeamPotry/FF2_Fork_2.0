@@ -156,7 +156,7 @@ public int Native_FF2Boss_GetAbilityCooldown(Handle plugin, int numParams)
     float cooldownTime[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_AbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
-    return cooldownTime[index] - GetGameTime();
+    return view_as<any>(cooldownTime[index] - GetGameTime());
 }
 
 public int Native_FF2Boss_SetAbilityCooldown(Handle plugin, int numParams)
