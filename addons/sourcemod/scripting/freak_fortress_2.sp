@@ -2801,7 +2801,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 
 	bool omit[MAXPLAYERS+1];
 	Boss[0] = new FF2Boss(GetClientWithMostQueuePoints(omit));
-	omit[Boss[0]]=true;
+	omit[Boss[0].ClientIndex]=true;
 
 	bool teamHasPlayers[4];
 	for(int client=1; client<=MaxClients; client++)  //Find out if each team has at least one player on it
@@ -2823,9 +2823,9 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 
 	if(!teamHasPlayers[TFTeam_Blue] || !teamHasPlayers[TFTeam_Red])  //If there's an empty team make sure it gets populated
 	{
-		if(IsValidClient(Boss[0]) && GetClientTeam(Boss[0])!=BossTeam)
+		if(IsValidClient(Boss[0].ClientIndex) && GetClientTeam(Boss[0].ClientIndex)!=BossTeam)
 		{
-			AssignTeam(Boss[0], BossTeam);
+			AssignTeam(Boss[0].ClientIndex, BossTeam);
 		}
 
 		for(int client=1; client<=MaxClients; client++)
@@ -2852,7 +2852,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 		BossInfoTimer[boss][0]=INVALID_HANDLE;
 		BossInfoTimer[boss][1]=INVALID_HANDLE;
 		IsBossYou[boss]=false;
-		if(Boss[boss])
+		if(Boss[boss].ClientIndex)
 		{
 			CreateTimer(0.3, MakeBoss, boss, TIMER_FLAG_NO_MAPCHANGE);
 			BossInfoTimer[boss][0]=CreateTimer(30.2, BossInfoTimer_Begin, boss, TIMER_FLAG_NO_MAPCHANGE);
@@ -2888,7 +2888,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 	return Plugin_Continue;
 }
 
-public Action:ReUpdateBossHealth(Handle timer)
+public Action ReUpdateBossHealth(Handle timer)
 {
 	int boss;
 	for(int client = 1; client<=MaxClients; client++)
@@ -2931,7 +2931,7 @@ public Action:BossInfoTimer_Begin(Handle:timer, any:boss)
 
 public Action:BossInfoTimer_ShowInfo(Handle:timer, any:boss)
 {
-	if(!IsValidClient(Boss[boss]))
+	if(!IsValidClient(Boss[boss].ClientIndex))
  	{
  		BossInfoTimer[boss][1]=INVALID_HANDLE;
  		return Plugin_Stop;
@@ -2940,21 +2940,21 @@ public Action:BossInfoTimer_ShowInfo(Handle:timer, any:boss)
 	if(bossHasReloadAbility[boss])
 	{
 		SetHudTextParams(0.75, 0.7, 0.15, 255, 255, 255, 255);
-		SetGlobalTransTarget(Boss[boss]);
+		SetGlobalTransTarget(Boss[boss].ClientIndex);
 		if(bossHasRightMouseAbility[boss])
 		{
-			FF2_ShowSyncHudText(Boss[boss], abilitiesHUD, "%t\n%t", "ff2_buttons_reload", "ff2_buttons_rmb");
+			FF2_ShowSyncHudText(Boss[boss].ClientIndex, abilitiesHUD, "%t\n%t", "ff2_buttons_reload", "ff2_buttons_rmb");
 		}
 		else
 		{
-			FF2_ShowSyncHudText(Boss[boss], abilitiesHUD, "%t", "ff2_buttons_reload");
+			FF2_ShowSyncHudText(Boss[boss].ClientIndex, abilitiesHUD, "%t", "ff2_buttons_reload");
 		}
 	}
 	else if(bossHasRightMouseAbility[boss])
 	{
 		SetHudTextParams(0.75, 0.7, 0.15, 255, 255, 255, 255);
-		SetGlobalTransTarget(Boss[boss]);
-		FF2_ShowSyncHudText(Boss[boss], abilitiesHUD, "%t", "ff2_buttons_rmb");
+		SetGlobalTransTarget(Boss[boss].ClientIndex);
+		FF2_ShowSyncHudText(Boss[boss].ClientIndex, abilitiesHUD, "%t", "ff2_buttons_rmb");
 	}
 	else
 	{
@@ -3025,8 +3025,8 @@ public Action:OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 		bossWin=true;
 		if(RandomSound("sound_win", sound, sizeof(sound)))
 		{
-			EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[0], _, _, false);
-			EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[0], _, _, false);
+			EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[0].ClientIndex, _, _, false);
+			EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[0].ClientIndex, _, _, false);
 		}
 	}
 
@@ -3040,11 +3040,11 @@ public Action:OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 		selectedBGM[boss]=0;
 		playingCustomBossBGM[boss]=false;
 		playingCustomBGM[boss]=false;
-		if(IsValidClient(Boss[boss]))
+		if(IsValidClient(Boss[boss].ClientIndex))
 		{
-			SetClientGlow(Boss[boss], 0.0, 0.0);
+			SetClientGlow(Boss[boss].ClientIndex, 0.0, 0.0);
 			SDKUnhook(boss, SDKHook_GetMaxHealth, OnGetMaxHealth);  //Temporary:  Used to prevent boss overheal
-			if(IsPlayerAlive(Boss[boss]))
+			if(IsPlayerAlive(Boss[boss].ClientIndex))
 			{
 				isBossAlive=true;
 			}
@@ -3098,7 +3098,6 @@ public Action:OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 				CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_alive", bossName, target, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), BossHealthMax[boss], lives);
 			}
 			*/
-			// TODO: 보스 이름을 광역변수로 정해둘것.
 		}
 
 		SetHudTextParams(-1.0, 0.2, 10.0, 255, 255, 255, 255);
@@ -3316,10 +3315,10 @@ public Action:StartBossTimer(Handle:timer)
 	bool isBossAlive;
 	for(int boss; boss<=MaxClients; boss++)
 	{
-		if(IsValidClient(Boss[boss]) && IsPlayerAlive(Boss[boss]))
+		if(IsValidClient(Boss[boss].ClientIndex) && IsPlayerAlive(Boss[boss].ClientIndex))
 		{
 			isBossAlive=true;
-			SetEntityMoveType(Boss[boss], MOVETYPE_NONE);
+			SetEntityMoveType(Boss[boss].ClientIndex, MOVETYPE_NONE);
 		}
 	}
 
@@ -3904,7 +3903,7 @@ public Action:MessageTimer(Handle:timer)
 	{
 		if(IsBoss(client))
 		{
-			int boss=Boss[client];
+			int boss = Boss[client].ClientIndex;
 			KvRewind(BossKV[Special[boss]]);
 			KvGetString(BossKV[Special[boss]], "name", name, sizeof(name), "=Failed name=");
 			KvGetString(BossKV[Special[boss]], "special_approach", specialApproach, sizeof(specialApproach), "");
@@ -3921,13 +3920,13 @@ public Action:MessageTimer(Handle:timer)
 			if(IsBossYou[client])
 			{
 				GetYouSpecialString(client, specialApproach, sizeof(specialApproach));
-				Format(text, sizeof(text), "%s\n%t", text, "ff2_start_you", Boss[boss], BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
-				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat_you", Boss[boss], BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_start_you", Boss[boss].ClientIndex, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
+				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat_you", Boss[boss].ClientIndex, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
 			}
 			else
 			{
-				Format(text, sizeof(text), "%s\n%t", text, "ff2_start", Boss[boss], name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
-				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat", Boss[boss], name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_start", Boss[boss].ClientIndex, name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
+				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat", Boss[boss].ClientIndex, name, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), lives);
 			}
 
 			ReplaceString(textChat, sizeof(textChat), "\n", "");  //Get rid of newlines
@@ -3960,14 +3959,14 @@ public Action:MessageTimer(Handle:timer)
 
 public Action:MakeModelTimer(Handle:timer, any:client)
 {
-	if(IsValidClient(Boss[client]) && IsPlayerAlive(Boss[client]) && CheckRoundState()!=2)
+	if(IsValidClient(Boss[client].ClientIndex) && IsPlayerAlive(Boss[client].ClientIndex) && CheckRoundState()!=2)
 	{
 		decl String:model[PLATFORM_MAX_PATH];
 		KvRewind(BossKV[Special[client]]);
 		KvGetString(BossKV[Special[client]], "model", model, PLATFORM_MAX_PATH);
 		SetVariantString(model);
-		AcceptEntityInput(Boss[client], "SetCustomModel");
-		SetEntProp(Boss[client], Prop_Send, "m_bUseClassAnimations", 1);
+		AcceptEntityInput(Boss[client].ClientIndex, "SetCustomModel");
+		SetEntProp(Boss[client].ClientIndex, Prop_Send, "m_bUseClassAnimations", 1);
 		return Plugin_Continue;
 	}
 	return Plugin_Stop;
@@ -3975,7 +3974,7 @@ public Action:MakeModelTimer(Handle:timer, any:client)
 
 EquipBoss(boss)
 {
-	int client=Boss[boss];
+	int client=Boss[boss].ClientIndex;
 	DoOverlay(client, "");
 	TF2_RemoveAllWeapons(client);
 	decl String:key[10], String:classname[64], String:attributes[256];
@@ -4047,7 +4046,7 @@ EquipBoss(boss)
 
 public Action:MakeBoss(Handle:timer, any:boss)
 {
-	int client = Boss[boss];
+	int client = Boss[boss].ClientIndex;
 	if(!IsValidClient(client) || CheckRoundState()==-1)
 	{
 		return Plugin_Continue;
@@ -4230,7 +4229,7 @@ public Action:MakeBoss(Handle:timer, any:boss)
 
 void MakeClientToBoss(int boss)
 {
-	int client = Boss[boss];
+	int client = Boss[boss].ClientIndex;
 	if(!IsValidClient(client) || CheckRoundState()==-1)
 	{
 		return;
@@ -5290,7 +5289,7 @@ public Action:Command_GetHP(client)  //TODO: This can rarely show a very large n
 		{
 			if(IsBoss(target) && IsPlayerAlive(target))
 			{
-				int boss=Boss[target];
+				int boss = Boss[target].ClientIndex;
 				KvRewind(BossKV[Special[boss]]);
 				KvGetString(BossKV[Special[boss]], "name", name, sizeof(name), "=Failed name=");
 				if(BossLives[boss]>1)
@@ -5352,7 +5351,7 @@ public Action:Command_GetHP(client)  //TODO: This can rarely show a very large n
 		{
 			if(IsBoss(target))
 			{
-				Format(waitTime, sizeof(waitTime), "%s %i,", waitTime, BossHealthLast[Boss[target]]);
+				Format(waitTime, sizeof(waitTime), "%s %i,", waitTime, BossHealthLast[Boss[target].ClientIndex]);
 			}
 		}
 		CPrintToChat(client, "{olive}[FF2]{default} %t", "wait_hp", RoundFloat(HPTime-GetGameTime()), waitTime);
@@ -5360,9 +5359,9 @@ public Action:Command_GetHP(client)  //TODO: This can rarely show a very large n
 	return Plugin_Continue;
 }
 
-public Action:Command_SetNextBoss(client, args)
+public Action Command_SetNextBoss(int client, int args)
 {
-	decl String:name[64], String:boss[64];
+	char name[64], boss[64];
 
 	if(args<1)
 	{
@@ -5669,13 +5668,15 @@ public OnClientDisconnect(client)
 			int boss=GetBossIndex(client);
 			bool omit[MAXPLAYERS+1];
 			omit[client]=true;
-			Boss[boss]=GetClientWithMostQueuePoints(omit);
 
-			if(Boss[boss])
+			delete Boss[boss];
+			Boss[boss] = new FF2boss(GetClientWithMostQueuePoints(omit));
+
+			if(Boss[boss].ClientIndex)
 			{
 				CreateTimer(0.1, MakeBoss, boss, TIMER_FLAG_NO_MAPCHANGE);
-				CPrintToChat(Boss[boss], "{olive}[FF2]{default} %t", "Replace Disconnected Boss");
-				CPrintToChatAll("{olive}[FF2]{default} %t", "Boss Disconnected", client, Boss[boss]);
+				CPrintToChat(Boss[boss].ClientIndex, "{olive}[FF2]{default} %t", "Replace Disconnected Boss");
+				CPrintToChatAll("{olive}[FF2]{default} %t", "Boss Disconnected", client, Boss[boss].ClientIndex);
 			}
 		}
 
@@ -6154,7 +6155,7 @@ public Action:BossTimer(Handle:timer)
 	bool validBoss=false;
 	for(int boss; boss<=MaxClients; boss++)
 	{
-		int client=Boss[boss];
+		int client = Boss[boss].ClientIndex;
 
 		if(!IsValidClient(client) || !IsPlayerAlive(client) || !(FF2flags[client] & FF2FLAG_USEBOSSTIMER))
 		{
@@ -6563,7 +6564,7 @@ public Action:BossTimer(Handle:timer)
 
 public Action:Timer_BotRage(Handle:timer, any:bot)
 {
-	if(IsValidClient(Boss[bot], false))
+	if(IsValidClient(Boss[bot].ClientIndex, false))
 	{
 		FakeClientCommandEx(Boss[bot], "voicemenu 0 0");
 	}
@@ -6661,7 +6662,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 	}
 
 	int boss=GetBossIndex(client);
-	if(boss==-1 || !Boss[boss] || !IsValidEntity(Boss[boss]))
+	if(boss==-1 || !Boss[boss].ClientIndex || !IsValidEntity(Boss[boss].ClientIndex))
 	{
 		return Plugin_Continue;
 	}
@@ -6835,7 +6836,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		char bossName[80];
 		int find=0; TFTeam team;
 
-		GetEntPropVector(Boss[boss], Prop_Send, "m_vecOrigin", position);
+		GetEntPropVector(Boss[boss].ClientIndex, Prop_Send, "m_vecOrigin", position);
 		for(int i=1; i<=MaxClients; i++)
 		{
 			if(IsValidClient(i) && IsPlayerAlive(i))
@@ -6944,19 +6945,19 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		decl String:sound[PLATFORM_MAX_PATH];
 		if(RandomSoundAbility("sound_ability", sound, sizeof(sound), boss))
 		{
-			FF2flags[Boss[boss]]|=FF2FLAG_TALKING;
+			FF2flags[Boss[boss].ClientIndex]|=FF2FLAG_TALKING;
 			EmitSoundToAll(sound, client, _, _, _, _, _, client, position);
 			EmitSoundToAll(sound, client, _, _, _, _, _, client, position);
 
 			for(int target=1; target<=MaxClients; target++)
 			{
-				if(IsClientInGame(target) && target!=Boss[boss])
+				if(IsClientInGame(target) && target!=Boss[boss].ClientIndex)
 				{
 					EmitSoundToClient(target, sound, client, _, _, _, _, _, client, position);
 					EmitSoundToClient(target, sound, client, _, _, _, _, _, client, position);
 				}
 			}
-			FF2flags[Boss[boss]]&=~FF2FLAG_TALKING;
+			FF2flags[Boss[boss].ClientIndex]&=~FF2FLAG_TALKING;
 		}
 		emitRageSound[boss]=true;
 		return Plugin_Handled;
@@ -7381,9 +7382,9 @@ public Action:CheckAlivePlayers(Handle:timer, int except)
 		if(except)	ForceTeamWin(BossTeam);
 		else CreateTimer(0.05, CheckAlivePlayers, 1);
 	}
-	else if(RedAlivePlayers==1 && BlueAlivePlayers && Boss[0] && !DrawGameTimer && !NoticedLastman)
+	else if(RedAlivePlayers==1 && BlueAlivePlayers && Boss[0].ClientIndex && !DrawGameTimer && !NoticedLastman)
 	{
-		decl String:sound[PLATFORM_MAX_PATH];
+		char sound[PLATFORM_MAX_PATH];
 		NoticedLastman=true;
 		if(RandomSound("sound_lastman", sound, sizeof(sound)))
 		{
@@ -7525,7 +7526,7 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 	int custom=GetEventInt(event, "custom");
 	// bool changeResult=false;
 
-	if(boss==-1 || !Boss[boss] || !IsValidEntity(Boss[boss]) || client==attacker)
+	if(boss==-1 || !Boss[boss].ClientIndex || !IsValidEntity(Boss[boss].ClientIndex) || client==attacker)
 	{
 		return Plugin_Continue;
 	}
@@ -8023,7 +8024,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 						{
 							float time=(GlowTimer[boss]>10 ? 1.0 : 2.0);
 							time+=(GlowTimer[boss]>10 ? (GlowTimer[boss]>20 ? 1.0 : 2.0) : 4.0)*(charge/100.0);
-							SetClientGlow(Boss[boss], time);
+							SetClientGlow(Boss[boss].ClientIndex, time);
 							if(GlowTimer[boss]>30.0)
 							{
 								GlowTimer[boss]=30.0;
@@ -8539,8 +8540,8 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 					decl String:sound[PLATFORM_MAX_PATH];
 					if(RandomSound("sound_stabbed", sound, sizeof(sound), boss))
 					{
-						EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[boss], _, _, false);
-						EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[boss], _, _, false);
+						EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[boss].ClientIndex, _, _, false);
+						EmitSoundToAllExcept(SOUNDEXCEPT_VOICE, sound, _, _, _, _, _, _, Boss[boss].ClientIndex, _, _, false);
 					}
 
 					Action action;
@@ -8602,7 +8603,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 						damage=1.0;
 						return Plugin_Changed;
 					}
-					damage=(BossHealth[boss]>9001 ? 9001.0 : float(GetEntProp(Boss[boss], Prop_Send, "m_iHealth"))+90.0);
+					damage=(BossHealth[boss]>9001 ? 9001.0 : float(GetEntProp(Boss[boss].ClientIndex, Prop_Send, "m_iHealth"))+90.0);
 
 					int teleowner=FindTeleOwner(attacker);
 					if(IsValidClient(teleowner) && teleowner!=attacker)
@@ -8903,7 +8904,7 @@ stock AssignTeam(client, team)
 		Debug("%N does not have a desired class!", client);
 		if(IsBoss(client))
 		{
-			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", KvGetNum(BossKV[Special[Boss[client]]], "class", 1));  //So we assign one to prevent living spectators
+			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", KvGetNum(BossKV[Special[Boss[client].ClientIndex]], "class", 1));  //So we assign one to prevent living spectators
 		}
 		else
 		{
@@ -8920,7 +8921,7 @@ stock AssignTeam(client, team)
 		Debug("%N is a living spectator!  Please report this to https://github.com/50DKP/FF2-Official", client);
 		if(IsBoss(client))
 		{
-			TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Special[Boss[client]]], "class", 1));
+			TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Special[Boss[client].ClientIndex]], "class", 1));
 		}
 		else
 		{
@@ -8999,7 +9000,7 @@ stock LastBossIndex()
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(!Boss[client])
+		if(!Boss[client].ClientIndex)
 		{
 			return client-1;
 		}
@@ -9007,7 +9008,7 @@ stock LastBossIndex()
 	return 0;
 }
 
-stock GetBossIndex(client)
+stock GetBossIndex(int client)
 {
 	if(client == 0)
 	{
@@ -9018,7 +9019,7 @@ stock GetBossIndex(client)
 	{
 		for(int boss; boss<=MaxClients; boss++)
 		{
-			if(Boss[boss]==client)
+			if(Boss[boss].ClientIndex == client)
 			{
 				return boss;
 			}
@@ -9747,8 +9748,8 @@ FindCompanion(boss, players, bool:omit[])
 	KvGetString(BossKV[Special[boss]], "companion", companionName, sizeof(companionName));
 	if(playersNeeded<players && strlen(companionName))  //Only continue if we have enough players and if the boss has a companion
 	{
-		int companion=GetClientWithMostQueuePoints(omit);
-		Boss[companion]=companion;  //Woo boss indexes!
+		int companion = GetClientWithMostQueuePoints(omit);
+		Boss[companion] = new FF2Boss(companion);  //Woo boss indexes!
 		omit[companion]=true;
 		if(PickCharacter(boss, companion))  //TODO: This is a bit misleading
 		{
@@ -9759,7 +9760,7 @@ FindCompanion(boss, players, bool:omit[])
 		else  //Can't find the companion's character, so just play without the companion
 		{
 			LogError("[FF2 Bosses] Could not find boss %s!", companionName);
-			Boss[companion]=0;
+			delete Boss[companion];
 			omit[companion]=false;
 		}
 	}
@@ -10049,13 +10050,13 @@ SetClientQueuePoints(client, points)
 	}
 }
 
-stock bool:IsBoss(client)
+stock bool IsBoss(int client)
 {
 	if(IsValidClient(client))
 	{
 		for(int boss; boss<=MaxClients; boss++)
 		{
-			if(Boss[boss]==client)
+			if(Boss[boss].ClientIndex == client)
 			{
 				return true;
 			}
@@ -10809,7 +10810,7 @@ public Action:HookSound(clients[64], &numClients, String:sound[PLATFORM_MAX_PATH
 		return Plugin_Continue;
 	}
 
-	if(channel==SNDCHAN_VOICE && !(FF2flags[Boss[boss]] & FF2FLAG_TALKING))
+	if(channel==SNDCHAN_VOICE && !(FF2flags[Boss[boss].ClientIndex] & FF2FLAG_TALKING))
 	{
 		decl String:newSound[PLATFORM_MAX_PATH];
 		if(RandomSound("catch_phrase", newSound, PLATFORM_MAX_PATH, boss))
@@ -10993,8 +10994,8 @@ bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, s
 	}
 	else if(!slot)
 	{
-		if(FF2flags[Boss[boss]] & FF2FLAG_NOTALLOW_RAGE) return false;
-		FF2flags[Boss[boss]]&=~FF2FLAG_BOTRAGE;
+		if(FF2flags[Boss[boss].ClientIndex] & FF2FLAG_NOTALLOW_RAGE) return false;
+		FF2flags[Boss[boss].ClientIndex]&=~FF2FLAG_BOTRAGE;
 		Call_PushCell(3);  //Status - we're assuming here a rage ability will always be in use if it gets called
 		Call_Finish(action);
 		// BossCharge[boss][slot]=0.0;
@@ -11017,7 +11018,7 @@ bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, s
 			}
 		}
 
-		if(GetClientButtons(Boss[boss]) & button)
+		if(GetClientButtons(Boss[boss].ClientIndex) & button)
 		{
 			for(int timer; timer<=1; timer++)
 			{
@@ -11052,7 +11053,7 @@ bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, s
 		else if(BossCharge[boss][slot]>0.3)
 		{
 			float angles[3];
-			GetClientEyeAngles(Boss[boss], angles);
+			GetClientEyeAngles(Boss[boss].ClientIndex, angles);
 			if(angles[0]<-45.0)
 			{
 				Call_PushCell(3);
@@ -11141,9 +11142,9 @@ public Native_MakeClientToBoss(Handle:plugin, numParams)
 	*/
 	// boss = bossArray.Get(GetRandomInt(0, bossCount-1));
 	IsBossDoing[client] = true;
-	if(boss > 0 && Boss[boss] <= 0)
+	if(boss > 0 && Boss[boss].ClientIndex <= 0)
 	{
-		Boss[boss] = client;
+		Boss[boss].ClientIndex = client;
 		Special[boss] = boss;
 
 		Debug("MakeClientToBoss: %N %i", client, boss);
@@ -11168,9 +11169,9 @@ public Native_FF2Version(Handle:plugin, numParams)
 public Native_GetBoss(Handle:plugin, numParams)
 {
 	int boss=GetNativeCell(1);
-	if(boss>=0 && boss<=MaxClients && IsValidClient(Boss[boss]))
+	if(boss>=0 && boss<=MaxClients && IsValidClient(Boss[boss].ClientIndex))
 	{
-		return GetClientUserId(Boss[boss]);
+		return GetClientUserId(Boss[boss].ClientIndex);
 	}
 	return -1;
 }
@@ -11640,9 +11641,9 @@ public Action:VSH_OnGetSaxtonHaleTeam(&result)
 
 public Action:VSH_OnGetSaxtonHaleUserId(&result)
 {
-	if(Enabled && IsClientConnected(Boss[0]))
+	if(Enabled && IsClientConnected(Boss[0].ClientIndex))
 	{
-		result=GetClientUserId(Boss[0]);
+		result=GetClientUserId(Boss[0].ClientIndex);
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
@@ -11907,7 +11908,7 @@ UpdateHealthBar()
 	int healthAmount, maxHealthAmount, bosses, healthPercent;
 	for(int boss; boss<=MaxClients; boss++)
 	{
-		if(IsValidClient(Boss[boss]) && IsPlayerAlive(Boss[boss]))
+		if(IsValidClient(Boss[boss].ClientIndex) && IsPlayerAlive(Boss[boss].ClientIndex))
 		{
 			bosses++;
 			healthAmount+=BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1);
