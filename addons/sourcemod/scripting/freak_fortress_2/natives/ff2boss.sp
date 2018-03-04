@@ -90,7 +90,7 @@ public int Native_FF2Boss_GetCharge(Handle plugin, int numParams)
     float charges[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
-    return charges[index];
+    return view_as<any>(charges[index]);
 }
 
 public int Native_FF2Boss_SetCharge(Handle plugin, int numParams)
@@ -112,7 +112,7 @@ public int Native_FF2Boss_GetAbilityDuration(Handle plugin, int numParams)
     float duration[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_AbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
-    return duration[index] - GetGameTime();
+    return view_as<any>(duration[index] - GetGameTime());
 }
 
 public int Native_FF2Boss_SetAbilityDuration(Handle plugin, int numParams)
@@ -134,7 +134,7 @@ public int Native_FF2Boss_GetMaxAbilityDuration(Handle plugin, int numParams)
     float duration[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_MaxAbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
-    return duration[index];
+    return view_as<any>(duration[index]);
 }
 
 public int Native_FF2Boss_SetMaxAbilityDuration(Handle plugin, int numParams)
@@ -145,7 +145,7 @@ public int Native_FF2Boss_SetMaxAbilityDuration(Handle plugin, int numParams)
     float duration[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_MaxAbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
-    duration[index] = charge;
+    duration[index] = time;
     boss.SetArray(view_as<int>(Boss_MaxAbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
 }
 
@@ -178,7 +178,7 @@ public int Native_FF2Boss_GetMaxAbilityCooldown(Handle plugin, int numParams)
     float cooldownTime[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_MaxAbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
-    return cooldownTime[index];
+    return view_as<any>(cooldownTime[index]);
 }
 
 public int Native_FF2Boss_SetMaxAbilityCooldown(Handle plugin, int numParams)
