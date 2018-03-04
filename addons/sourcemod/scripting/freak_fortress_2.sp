@@ -119,15 +119,10 @@ int Boss[MAXPLAYERS+1];
 int BossDiff[MAXPLAYERS+1];
 int BossHealthMax[MAXPLAYERS+1];
 int BossHealth[MAXPLAYERS+1];
-int BossHealthLast[MAXPLAYERS+1];
+
 int BossLives[MAXPLAYERS+1];
 int BossLivesMax[MAXPLAYERS+1];
 int BossRageDamage[MAXPLAYERS+1];
-// char BossRageName[MAXPLAYERS+1][9][68];
-
-char BossRageName[MAXPLAYERS+1][68];
-char BossUpgradeRageName[MAXPLAYERS+1][68];
-bool IsUpgradeRage[MAXPLAYERS+1];
 
 float BossAbilityCooldown[MAXPLAYERS+1][9];
 float BossAbilityCooldownMax[MAXPLAYERS+1][9];
@@ -136,6 +131,14 @@ float BossAbilityDurationMax[MAXPLAYERS+1][9];
 
 float BossCharge[MAXPLAYERS+1][9];
 float BossMaxRageCharge[MAXPLAYERS+1];
+
+int BossHealthLast[MAXPLAYERS+1];
+int BossDiff[MAXPLAYERS+1];
+
+char BossRageName[MAXPLAYERS+1][68];
+char BossUpgradeRageName[MAXPLAYERS+1][68];
+bool IsUpgradeRage[MAXPLAYERS+1];
+
 bool IsBossYou[MAXPLAYERS+1];
 int Stabbed[MAXPLAYERS+1];
 int Marketed[MAXPLAYERS+1];
