@@ -11986,4 +11986,4 @@ SetYouSpecialString(client, String:cookie[])
 	CPrintToChat(client, "{olive}[FF2]{default} {green}%s{default}로 설정되었습니다.", cookie);
 }
 
-#include <freak_fortress_2_vsh_feedback>
+// #include <freak_fortress_2_vsh_feedback>
