@@ -87,119 +87,62 @@ methodmap FF2Boss < ArrayList {
 
 	property int CharacterIndex {
 			public native get();
+			public native set(const int characterIndex);
 	}
 
 	property int HealthPoint {
 			public native get();
-			public native set(int healthPoint);
+			public native set(const int healthPoint);
 	}
 
 	property int MaxHealthPoint {
 		public native get();
-		public native set(int healthPoint);
+		public native set(const int healthPoint);
 	}
 
 	property int Lives {
 		public native get();
-		public native set(int lives);
+		public native set(const int lives);
 
 	}
 
 	property int MaxLives {
 		public native get();
-		public native set(int lives);
+		public native set(const int lives);
 	}
 
 	property int RageDamage {
 		public native get();
-		public native set(int damage);
+		public native set(const int damage);
 	}
 
 	property float MaxRageCharge {
 		public native get();
-		public native set(float maxRageCharge);
+		public native set(const float maxRageCharge);
 	}
 
 	property FF2BossKeyValues KeyValue {
 		public native get();
-		public native set(FF2BossKeyValues keyValue);
+		public native set(const FF2BossKeyValues keyValue);
 	}
 
-	/*
-	public float GetCharge(const int index)
-	{
-		float charges[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_Charge, charges, MAX_BOSS_SLOT_COUNT);
-		return charges[index];
-	}
+	public native float GetCharge(const int index);
 
-	public void SetCharge(const int index, const float charge)
-	{
-		float charges[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_Charge, charges, MAX_BOSS_SLOT_COUNT);
-		charges[index] = charge;
-		this.SetArray(Boss_Charge, charges, MAX_BOSS_SLOT_COUNT);
-	}
+	public native void SetCharge(const int index, const float charge);
 
-	public float GetAbilityDuration(const int index)
-	{
-		float duration[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_AbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
-		return duration[index] - GetGameTime();
-	}
+	public native float GetAbilityDuration(const int index);
 
-	public void SetAbilityDuration(const int index, const float time)
-	{
-		float duration[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_AbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
-		duration[index] = time + GetGameTime();
-		this.SetArray(Boss_AbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
-	}
+	public native void SetAbilityDuration(const int index, const float time);
 
-	public float GetMaxAbilityDuration(const int index)
-	{
-		float duration[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_MaxAbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
-		return duration[index];
-	}
+	public native float GetMaxAbilityDuration(const int index);
 
-	public void SetMaxAbilityDuration(const int index, const float time)
-	{
-		float duration[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_MaxAbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
-		duration[index] = time;
-		this.SetArray(Boss_MaxAbilityDuration, duration, MAX_BOSS_SLOT_COUNT);
-	}
+	public native void SetMaxAbilityDuration(const int index, const float time);
 
-	public float GetAbilityCooldown(const int index)
-	{
-		float cooldownTime[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_AbilityCooldown, cooldownTime, MAX_BOSS_SLOT_COUNT);
-		return cooldownTime[index] - GetGameTime();
-	}
+	public native float GetAbilityCooldown(const int index);
 
-	public void SetAbilityCooldown(const int index, const float time)
-	{
-		float cooldownTime[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_AbilityCooldown, cooldownTime, MAX_BOSS_SLOT_COUNT);
-		cooldownTime[index] = time + GetGameTime();
-		this.SetArray(Boss_AbilityCooldown, cooldownTime, MAX_BOSS_SLOT_COUNT);
-	}
+	public native void SetAbilityCooldown(const int index, const float time);
 
-	public float GetMaxAbilityCooldown(const int index)
-	{
-		float cooldownTime[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
-		return cooldownTime[index];
-	}
+	public native float GetMaxAbilityCooldown(const int index);
 
-	public void SetMaxAbilityCooldown(const int index, const float time)
-	{
-		float cooldownTime[MAX_BOSS_SLOT_COUNT];
-		this.GetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
-		cooldownTime[index] = time;
-		this.SetArray(Boss_Charge, cooldownTime, MAX_BOSS_SLOT_COUNT);
-	}
-	*/
-
+	public native void SetMaxAbilityCooldown(const int index, const float time);
 }

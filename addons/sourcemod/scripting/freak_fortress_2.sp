@@ -1178,6 +1178,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 	CreateNative("FF2Boss.ClientIndex.get", Native_FF2Boss_ClientIndex_Get);
 	CreateNative("FF2Boss.CharacterIndex.get", Native_FF2Boss_CharacterIndex_Get);
+	CreateNative("FF2Boss.CharacterIndex.set", Native_FF2Boss_CharacterIndex_Set);
 	CreateNative("FF2Boss.HealthPoint.get", Native_FF2Boss_HealthPoint_Get);
 	CreateNative("FF2Boss.HealthPoint.set", Native_FF2Boss_HealthPoint_Set);
 	CreateNative("FF2Boss.MaxHealthPoint.get", Native_FF2Boss_MaxHealthPoint_Get);
@@ -1192,6 +1193,16 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("FF2Boss.MaxRageCharge.set", Native_FF2Boss_MaxRageCharge_Set);
 	CreateNative("FF2Boss.KeyValue.get", Native_FF2Boss_KeyValue_Get);
 	CreateNative("FF2Boss.KeyValue.set", Native_FF2Boss_KeyValue_Set);
+	CreateNative("FF2Boss.GetCharge", Native_FF2Boss_GetCharge);
+	CreateNative("FF2Boss.SetCharge", Native_FF2Boss_SetCharge);
+	CreateNative("FF2Boss.GetAbilityDuration", Native_FF2Boss_GetAbilityDuration);
+	CreateNative("FF2Boss.SetAbilityDuration", Native_FF2Boss_SetAbilityDuration);
+	CreateNative("FF2Boss.GetMaxAbilityDuration", Native_FF2Boss_GetMaxAbilityDuration);
+	CreateNative("FF2Boss.SetMaxAbilityDuration", Native_FF2Boss_SetMaxAbilityDuration);
+	CreateNative("FF2Boss.GetAbilityCooldown", Native_FF2Boss_GetAbilityCooldown);
+	CreateNative("FF2Boss.SetAbilityCooldown", Native_FF2Boss_SetAbilityCooldown);
+	CreateNative("FF2Boss.GetMaxAbilityCooldown", Native_FF2Boss_GetMaxAbilityCooldown);
+	CreateNative("FF2Boss.SetMaxAbilityCooldown", Native_FF2Boss_SetMaxAbilityCooldown);
 
 
 	PreAbility=CreateGlobalForward("FF2_PreAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell, Param_CellByRef);  //Boss, plugin name, ability name, slot, enabled

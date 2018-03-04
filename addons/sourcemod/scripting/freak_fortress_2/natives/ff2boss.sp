@@ -8,6 +8,11 @@ public int Native_FF2Boss_CharacterIndex_Get(Handle plugin, int numParams)
     return view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_CharacterIndex));
 }
 
+public int Native_FF2Boss_CharacterIndex_Set(Handle plugin, int numParams)
+{
+    view_as<FF2Boss>(GetNativeCell(1)).Set(view_as<int>(Boss_CharacterIndex), GetNativeCell(2));
+}
+
 public int Native_FF2Boss_HealthPoint_Get(Handle plugin, int numParams)
 {
     return view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_HP));
@@ -76,4 +81,114 @@ public int Native_FF2Boss_KeyValue_Get(Handle plugin, int numParams)
 public int Native_FF2Boss_KeyValue_Set(Handle plugin, int numParams)
 {
     view_as<FF2Boss>(GetNativeCell(1)).Set(view_as<int>(Boss_KeyValue), GetNativeCell(2));
+}
+
+public int Native_FF2Boss_GetCharge(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float charges[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
+    return charges[index];
+}
+
+public int Native_FF2Boss_SetCharge(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float charge = GetNativeCell(3);
+    float charges[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
+    charges[index] = charge;
+    boss.SetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
+}
+
+public int Native_FF2Boss_GetAbilityDuration(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float duration[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_AbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
+    return duration[index] - GetGameTime();
+}
+
+public int Native_FF2Boss_SetAbilityDuration(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float time = GetNativeCell(3);
+    float duration[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_AbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
+    duration[index] = time + GetGameTime();
+    boss.SetArray(view_as<int>(Boss_AbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
+}
+
+public int Native_FF2Boss_GetMaxAbilityDuration(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float duration[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_MaxAbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
+    return duration[index];
+}
+
+public int Native_FF2Boss_SetMaxAbilityDuration(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float time = GetNativeCell(3);
+    float duration[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_MaxAbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
+    duration[index] = charge;
+    boss.SetArray(view_as<int>(Boss_MaxAbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
+}
+
+public int Native_FF2Boss_GetAbilityCooldown(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float cooldownTime[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_AbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
+    return cooldownTime[index] - GetGameTime();
+}
+
+public int Native_FF2Boss_SetAbilityCooldown(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float time = GetNativeCell(3);
+    float cooldownTime[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_AbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
+    cooldownTime[index] = time + GetGameTime();
+    boss.SetArray(view_as<int>(Boss_AbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
+}
+
+public int Native_FF2Boss_GetMaxAbilityCooldown(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float cooldownTime[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_MaxAbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
+    return cooldownTime[index];
+}
+
+public int Native_FF2Boss_SetMaxAbilityCooldown(Handle plugin, int numParams)
+{
+    FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
+    int index = GetNativeCell(2);
+    float time = GetNativeCell(3);
+    float cooldownTime[MAX_BOSS_SLOT_COUNT];
+
+    boss.GetArray(view_as<int>(Boss_MaxAbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
+    cooldownTime[index] = time;
+    boss.SetArray(view_as<int>(Boss_MaxAbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
 }
