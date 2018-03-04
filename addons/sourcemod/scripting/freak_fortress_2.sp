@@ -115,7 +115,7 @@ int HighestDPSClient;
 float HighestDPS;
 
 int MainBoss;
-int Boss[MAXPLAYERS+1];
+FF2Boss Boss[MAXPLAYERS+1];
 int BossHealthMax[MAXPLAYERS+1];
 int BossHealth[MAXPLAYERS+1];
 
@@ -2783,7 +2783,10 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 
 	for(int client; client<=MaxClients; client++)
 	{
-		Boss[client]=0;
+		if(Boss[client] != null)
+			delete Boss[client];
+
+		Boss[client] = null;
 		if(IsValidClient(client) && IsPlayerAlive(client) && !(FF2flags[client] & FF2FLAG_HASONGIVED))
 		{
 			TF2_RespawnPlayer(client);
@@ -2797,7 +2800,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 	SetConVarBool(FindConVar("mp_friendlyfire"), false, _, false);
 
 	bool omit[MAXPLAYERS+1];
-	Boss[0]=GetClientWithMostQueuePoints(omit);
+	Boss[0] = new FF2Boss(GetClientWithMostQueuePoints(omit));
 	omit[Boss[0]]=true;
 
 	bool teamHasPlayers[4];
