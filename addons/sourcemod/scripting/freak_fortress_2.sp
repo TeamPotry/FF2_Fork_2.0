@@ -5670,7 +5670,7 @@ public OnClientDisconnect(client)
 			omit[client]=true;
 
 			delete Boss[boss];
-			Boss[boss] = new FF2boss(GetClientWithMostQueuePoints(omit));
+			Boss[boss] = new FF2Boss(GetClientWithMostQueuePoints(omit));
 
 			if(Boss[boss].ClientIndex)
 			{
@@ -6566,7 +6566,7 @@ public Action:Timer_BotRage(Handle:timer, any:bot)
 {
 	if(IsValidClient(Boss[bot].ClientIndex, false))
 	{
-		FakeClientCommandEx(Boss[bot], "voicemenu 0 0");
+		FakeClientCommandEx(Boss[bot].ClientIndex, "voicemenu 0 0");
 	}
 }
 
@@ -11144,7 +11144,7 @@ public Native_MakeClientToBoss(Handle:plugin, numParams)
 	IsBossDoing[client] = true;
 	if(boss > 0 && Boss[boss].ClientIndex <= 0)
 	{
-		Boss[boss].ClientIndex = client;
+		delete Boss[boss];
 		Special[boss] = boss;
 
 		Debug("MakeClientToBoss: %N %i", client, boss);
