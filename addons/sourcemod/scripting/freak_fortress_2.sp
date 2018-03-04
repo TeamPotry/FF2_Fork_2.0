@@ -116,7 +116,6 @@ float HighestDPS;
 
 int MainBoss;
 int Boss[MAXPLAYERS+1];
-int BossDiff[MAXPLAYERS+1];
 int BossHealthMax[MAXPLAYERS+1];
 int BossHealth[MAXPLAYERS+1];
 
