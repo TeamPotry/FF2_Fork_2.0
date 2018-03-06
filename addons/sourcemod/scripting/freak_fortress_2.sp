@@ -11829,7 +11829,7 @@ public HealthbarEnableChanged(Handle:convar, const String:oldValue[], const Stri
 FormulaBossHealth(int boss, bool includeHealth = true)
 {
 	// int client=Boss[boss];
-	int damaged = (BossHealthMax[boss]*BossLivesMax[boss]) - Boss[boss].HealthPoint;;
+	int damaged = (BossHealthMax[boss]*BossLivesMax[boss]) - Boss[boss].HealthPoint;
 
 	KvRewind(BossKV[Special[boss]]);
 
