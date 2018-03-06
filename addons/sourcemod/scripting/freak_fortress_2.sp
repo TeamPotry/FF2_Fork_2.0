@@ -9353,7 +9353,7 @@ public void GetSoundCode(String:musicPath[],  String:codeString[], int buffer)
 	*/
 }
 
-stock bool RandomSound(const char sound[], char file[], int length, int boss = 0)
+stock bool RandomSound(const char[] sound, char[] file, int length, int boss = 0)
 {
 	if(boss<0 || Special[boss]<0 || !BossKV[Special[boss]])
 	{
@@ -9422,7 +9422,7 @@ stock bool RandomSound(const char sound[], char file[], int length, int boss = 0
 	return true;
 }
 
-stock bool RandomSoundAbility(const char[] sound, char file[], int length, int boss = 0, int slot=0)
+stock bool RandomSoundAbility(const char[] sound, char[] file, int length, int boss = 0, int slot=0)
 {
 	if(boss<0 || Special[boss]<0 || !BossKV[Special[boss]])
 	{
@@ -11514,7 +11514,7 @@ public Native_RandomSound(Handle:plugin, numParams)
 	GetNativeStringLength(1, kvLength);
 	kvLength++;
 
-	char keyvalue[kvLength];
+	char[] keyvalue = new char[kvLength];
 	GetNativeString(1, keyvalue, kvLength);
 
 	bool soundExists;
