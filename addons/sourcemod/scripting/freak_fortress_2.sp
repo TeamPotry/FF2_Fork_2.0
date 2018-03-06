@@ -9353,7 +9353,7 @@ public void GetSoundCode(String:musicPath[],  String:codeString[], int buffer)
 	*/
 }
 
-stock bool:RandomSound(const String:sound[], file[], length, boss=0)
+stock bool RandomSound(const char sound[], char file[], int length, int boss = 0)
 {
 	if(boss<0 || Special[boss]<0 || !BossKV[Special[boss]])
 	{
@@ -9422,7 +9422,7 @@ stock bool:RandomSound(const String:sound[], file[], length, boss=0)
 	return true;
 }
 
-stock bool:RandomSoundAbility(const String:sound[], file[], length, boss=0, slot=0)
+stock bool RandomSoundAbility(const char[] sound, char file[], int length, int boss = 0, int slot=0)
 {
 	if(boss<0 || Special[boss]<0 || !BossKV[Special[boss]])
 	{
@@ -11177,8 +11177,8 @@ public Native_GetTeam(Handle:plugin, numParams)
 
 public Native_GetSpecial(Handle:plugin, numParams)
 {
-	int index=GetNativeCell(1), dstrlen=GetNativeCell(3), see=GetNativeCell(4);
-	char s[dstrlen];
+	int index = GetNativeCell(1), dstrlen = GetNativeCell(3), see = GetNativeCell(4);
+	char[] s= new char[dstrlen];
 	if(see)
 	{
 		if(index<0) return false;
