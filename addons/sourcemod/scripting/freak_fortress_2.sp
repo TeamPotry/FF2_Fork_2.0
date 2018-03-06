@@ -116,7 +116,7 @@ float HighestDPS;
 
 int MainBoss;
 FF2Boss Boss[MAXPLAYERS+1];
-int BossHealthMax[MAXPLAYERS+1];
+// int BossHealthMax[MAXPLAYERS+1];
 // int BossHealth[MAXPLAYERS+1];
 
 int BossLives[MAXPLAYERS+1];
@@ -3094,8 +3094,8 @@ public Action:OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 				KvRewind(BossKV[Special[boss]]);
 				KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "=Failed name=");
 				BossLives[boss]>1 ? Format(lives, sizeof(lives), "x%i", BossLives[boss]) : strcopy(lives, 2, "");
-				Format(text, sizeof(text), "%s\n%t", text, "ff2_alive", bossName, target, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), BossHealthMax[boss], lives);
-				CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_alive", bossName, target, BossHealth[boss]-BossHealthMax[boss]*(BossLives[boss]-1), BossHealthMax[boss], lives);
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_alive", bossName, target, BossHealth[boss]-Boss[boss].MaxHealthPoint*(BossLives[boss]-1), Boss[boss].MaxHealthPoint, lives);
+				CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_alive", bossName, target, BossHealth[boss]-Boss[boss].MaxHealthPoint*(BossLives[boss]-1), Boss[boss].MaxHealthPoint, lives);
 			}
 			*/
 		}
@@ -3920,13 +3920,13 @@ public Action:MessageTimer(Handle:timer)
 			if(IsBossYou[client])
 			{
 				GetYouSpecialString(client, specialApproach, sizeof(specialApproach));
-				Format(text, sizeof(text), "%s\n%t", text, "ff2_start_you", Boss[boss].ClientIndex, Boss[boss].HealthPoint - BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
-				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat_you", Boss[boss].ClientIndex, Boss[boss].HealthPoint - BossHealthMax[boss]*(BossLives[boss]-1), lives);
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_start_you", Boss[boss].ClientIndex, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), lives, specialApproach);
+				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat_you", Boss[boss].ClientIndex, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), lives);
 			}
 			else
 			{
-				Format(text, sizeof(text), "%s\n%t", text, "ff2_start", Boss[boss].ClientIndex, name, Boss[boss].HealthPoint - BossHealthMax[boss]*(BossLives[boss]-1), lives, specialApproach);
-				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat", Boss[boss].ClientIndex, name, Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss]-1), lives);
+				Format(text, sizeof(text), "%s\n%t", text, "ff2_start", Boss[boss].ClientIndex, name, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), lives, specialApproach);
+				Format(textChat, sizeof(textChat), "{olive}[FF2]{default} %t!", "ff2_start_chat", Boss[boss].ClientIndex, name, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss]-1), lives);
 			}
 
 			ReplaceString(textChat, sizeof(textChat), "\n", "");  //Get rid of newlines
@@ -4217,7 +4217,7 @@ public Action:MakeBoss(Handle:timer, any:boss)
 	BossCharge[boss][0]=0.0;
 	BossMaxRageCharge[boss] = 100.0;
 
-	// BossHealthMax[boss]=RoundFloat(float(BossHealth[boss])/float(BossLivesMax[boss]))+1; // TODO: wat.
+	// Boss[boss].MaxHealthPoint=RoundFloat(float(BossHealth[boss])/float(BossLivesMax[boss]))+1; // TODO: wat.
 
 	if (boss == MainBoss) SetClientQueuePoints(client, 0);
 	return Plugin_Continue;
@@ -5300,23 +5300,23 @@ public Action:Command_GetHP(client)  //TODO: This can rarely show a very large n
 				{
 					char playerName[50];
 					GetClientName(target, playerName, sizeof(playerName));
-					Format(text, sizeof(text), "%s\n%t", text, "ff2_hp", playerName, Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1), BossHealthMax[boss], lives, (!IsFakeClient(target) ? diffItem : "BOT"));
+					Format(text, sizeof(text), "%s\n%t", text, "ff2_hp", playerName, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), Boss[boss].MaxHealthPoint, lives, (!IsFakeClient(target) ? diffItem : "BOT"));
 				}
 
 				else
-					Format(text, sizeof(text), "%s\n%t", text, "ff2_hp", name, Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1), BossHealthMax[boss], lives, (!IsFakeClient(target) ? diffItem : "BOT"));
+					Format(text, sizeof(text), "%s\n%t", text, "ff2_hp", name, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), Boss[boss].MaxHealthPoint, lives, (!IsFakeClient(target) ? diffItem : "BOT"));
 
 				if(IsBossYou[target])
 				{
 					char playerName[50];
 					GetClientName(target, playerName, sizeof(playerName));
-					CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_hp", playerName, Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1), BossHealthMax[boss], lives, (!IsFakeClient(target) ? diffItem : "BOT"));
+					CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_hp", playerName, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), Boss[boss].MaxHealthPoint, lives, (!IsFakeClient(target) ? diffItem : "BOT"));
 
 				}
 				else
-					CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_hp", name, Boss[boss].HealthPoint-BossHealthMax[boss]*(BossLives[boss]-1), BossHealthMax[boss], lives, (!IsFakeClient(target) ? diffItem : "BOT"));
+					CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_hp", name, Boss[boss].HealthPoint-Boss[boss].MaxHealthPoint*(BossLives[boss]-1), Boss[boss].MaxHealthPoint, lives, (!IsFakeClient(target) ? diffItem : "BOT"));
 
-				BossHealthLast[boss] = Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1);
+				BossHealthLast[boss] = Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1);
 			}
 		}
 		if(HasCompanions)
@@ -5832,11 +5832,11 @@ public Action:ClientTimer(Handle:timer)
 
 						if(BossLives[boss]>1)
 						{
-							Format(temp, sizeof(temp), "%t", "ff2_client_timer_observer_lifes", Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1), BossHealthMax[boss], BossLives[boss]);
+							Format(temp, sizeof(temp), "%t", "ff2_client_timer_observer_lifes", Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1), Boss[boss].MaxHealthPoint, BossLives[boss]);
 						}
 						else
 						{
-							Format(temp, sizeof(temp), "%t", "ff2_client_timer_observer_nolife", Boss[boss].HealthPoint, BossHealthMax[boss]);
+							Format(temp, sizeof(temp), "%t", "ff2_client_timer_observer_nolife", Boss[boss].HealthPoint, Boss[boss].MaxHealthPoint);
 							// RoundFloat(BossCharge[boss][0]), 100, ragemeter, BossRageDamage[boss]
 						}
 
@@ -6175,11 +6175,11 @@ public Action:BossTimer(Handle:timer)
 		//
 		if(!IsBossYou[client] && IsBoss(client))
 		{
-			if(Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1) > BossHealthMax[boss])
+			if(Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1) > Boss[boss].MaxHealthPoint)
 				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7);
 
 			else
-				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7*(100-Boss[boss].HealthPoint*100/BossLivesMax[boss]/BossHealthMax[boss]));
+				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7*(100-Boss[boss].HealthPoint*100/BossLivesMax[boss]/Boss[boss].MaxHealthPoint));
 		}
 		//
 
@@ -6500,11 +6500,11 @@ public Action:BossTimer(Handle:timer)
 					{
 						char playerName[50];
 						GetClientName(target, playerName, sizeof(playerName));
-						Format(message, sizeof(message), "%s\n%t", message, "ff2_hp", playerName, Boss[boss2].HealthPoint - BossHealthMax[boss2]*(BossLives[boss2]-1), BossHealthMax[boss2], bossLives, (!IsFakeClient(target) ? diffItem : "BOT"));
+						Format(message, sizeof(message), "%s\n%t", message, "ff2_hp", playerName, Boss[boss2].HealthPoint - Boss[boss2].MaxHealthPoint*(BossLives[boss2]-1), Boss[boss2].MaxHealthPoint, bossLives, (!IsFakeClient(target) ? diffItem : "BOT"));
 					}
 
 					else
-						Format(message, sizeof(message), "%s\n%t", message, "ff2_hp", name, Boss[boss2].HealthPoint-BossHealthMax[boss2]*(BossLives[boss2]-1), BossHealthMax[boss2], bossLives, (!IsFakeClient(target) ? diffItem : "BOT"));
+						Format(message, sizeof(message), "%s\n%t", message, "ff2_hp", name, Boss[boss2].HealthPoint-Boss[boss2].MaxHealthPoint*(BossLives[boss2]-1), Boss[boss2].MaxHealthPoint, bossLives, (!IsFakeClient(target) ? diffItem : "BOT"));
 
 				}
 			}
@@ -7558,7 +7558,7 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 		BossDiff[boss] = 1;
 		FormulaBossHealth(boss, false);
 
-		SetEntityHealth(client, Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss]-1));
+		SetEntityHealth(client, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss]-1));
 
 		CPrintToChatAll("{olive}[FF2]{default} 이 보스는 {red}보스 스탠다드 플레이{default}가 활성화된 상태입니다. '{green}보통{default}' 난이도로 되돌아가 다시 싸웁니다!");
 		SetEventInt(event, "damageamount", 0);
@@ -7569,9 +7569,9 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 
 	for(int lives=1; lives<BossLives[boss]; lives++)
 	{
-		if(Boss[boss].HealthPoint - damage <= BossHealthMax[boss] * lives)
+		if(Boss[boss].HealthPoint - damage <= Boss[boss].MaxHealthPoint * lives)
 		{
-			SetEntityHealth(client, (Boss[boss].HealthPoint - damage) - BossHealthMax[boss] * (lives - 1)); //Set the health early to avoid the boss dying from fire, etc.
+			SetEntityHealth(client, (Boss[boss].HealthPoint - damage) - Boss[boss].MaxHealthPoint * (lives - 1)); //Set the health early to avoid the boss dying from fire, etc.
 
 			int bossLives = BossLives[boss];  //Used for the forward
 			Action action = Plugin_Continue;
@@ -8283,7 +8283,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 							KvRewind(BossKV[Special[boss]]);
 							KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "ERROR NAME");
 
-							damage=(((float(BossHealthMax[boss])*float(BossLivesMax[boss]))*0.07)/3.0);
+							damage=(((float(Boss[boss].MaxHealthPoint)*float(BossLivesMax[boss]))*0.07)/3.0);
 							damagetype|=DMG_CRIT;
 
 							if(damage < 200.0)
@@ -8432,7 +8432,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 					float sliencedTime=6.0; // TODO: 광역변수.
 					bool slienced=false;
 
-					damage=(((float(BossHealthMax[boss])*float(BossLivesMax[boss]))*0.075)/3.0);
+					damage=(((float(Boss[boss].MaxHealthPoint)*float(BossLivesMax[boss]))*0.075)/3.0);
 
 					if(damage < 200.0)
 					{
@@ -8807,8 +8807,8 @@ public Action OnGetMaxHealth(int client, int &maxHealth)
 	if(Enabled && IsBoss(client))
 	{
 		int boss = GetBossIndex(client);
-		SetEntityHealth(client, Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss] - 1));
-		maxHealth = BossHealthMax[boss];
+		SetEntityHealth(client, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss] - 1));
+		maxHealth = Boss[boss].MaxHealthPoint;
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
@@ -11214,12 +11214,12 @@ public Native_SetBossHealth(Handle:plugin, numParams)
 public Native_GetBossMaxHealth(Handle:plugin, numParams)
 {
 	UpdateHealthBar();
-	return BossHealthMax[GetNativeCell(1)];
+	return Boss[GetNativeCell(1)].MaxHealthPoint;
 }
 
 public Native_SetBossMaxHealth(Handle:plugin, numParams)
 {
-	BossHealthMax[GetNativeCell(1)]=GetNativeCell(2);
+	Boss[GetNativeCell(1)].MaxHealthPoint = GetNativeCell(2);
 }
 
 public Native_GetBossLives(Handle:plugin, numParams)
@@ -11829,7 +11829,7 @@ public HealthbarEnableChanged(Handle:convar, const String:oldValue[], const Stri
 FormulaBossHealth(int boss, bool includeHealth = true)
 {
 	// int client=Boss[boss];
-	int damaged = (BossHealthMax[boss]*BossLivesMax[boss]) - Boss[boss].HealthPoint;
+	int damaged = (Boss[boss].MaxHealthPoint*BossLivesMax[boss]) - Boss[boss].HealthPoint;
 
 	KvRewind(BossKV[Special[boss]]);
 
@@ -11842,7 +11842,7 @@ FormulaBossHealth(int boss, bool includeHealth = true)
 		BossLivesMax[boss]=1;
 	}
 
-	BossHealthMax[boss] = ParseFormula(boss, "health_formula", "(((960.8+n)*(n-1))^1.0341)+2046", RoundFloat(Pow((760.8+float(playing))*(float(playing)-1.0), 1.0341)+2046.0));
+	Boss[boss].MaxHealthPoint = ParseFormula(boss, "health_formula", "(((960.8+n)*(n-1))^1.0341)+2046", RoundFloat(Pow((760.8+float(playing))*(float(playing)-1.0), 1.0341)+2046.0));
 	BossHealthLast[boss] = Boss[boss].HealthPoint;
 /*
 	if(FF2Boss_IsPlayerBlasterReady(client))
@@ -11853,33 +11853,33 @@ FormulaBossHealth(int boss, bool includeHealth = true)
 	{
 	  case 2: // 하드
 	  {
-			BossHealthMax[boss]-=RoundFloat(float(BossHealthMax[boss])*0.2);
+			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.2);
 	  }
 		case 3: // 배리 하드
 		{
-			BossHealthMax[boss]-=RoundFloat(float(BossHealthMax[boss])*0.3);
+			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.3);
 		}
 		case 4:
 		{
-			BossHealthMax[boss]-=RoundFloat(float(BossHealthMax[boss])*0.4);
+			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.4);
 		}
 		case 5:
 		{
-			BossHealthMax[boss]-=RoundFloat(float(BossHealthMax[boss])*0.5);
+			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.5);
 			// FF2flags[client]|=FF2FLAG_NOTALLOW_RAGE;
 		}
 	}
 
-	Boss[boss].HealthPoint = BossHealthMax[boss] * BossLivesMax[boss];
+	Boss[boss].HealthPoint = Boss[boss].MaxHealthPoint * BossLivesMax[boss];
 	BossLives[boss]=BossLivesMax[boss];
 
 	if(!includeHealth)
 	{
 		Boss[boss].HealthPoint -= damaged;
 
-		while(damaged > BossHealthMax[boss])
+		while(damaged > Boss[boss].MaxHealthPoint)
 		{
-		  damaged -= BossHealthMax[boss];
+		  damaged -= Boss[boss].MaxHealthPoint;
 		  BossLives[boss]--;
 		}
 	}
@@ -11901,8 +11901,8 @@ UpdateHealthBar()
 		if(IsValidClient(Boss[boss].ClientIndex) && IsPlayerAlive(Boss[boss].ClientIndex))
 		{
 			bosses++;
-			healthAmount += Boss[boss].HealthPoint - BossHealthMax[boss] * (BossLives[boss]-1);
-			maxHealthAmount += BossHealthMax[boss];
+			healthAmount += Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (BossLives[boss]-1);
+			maxHealthAmount += Boss[boss].MaxHealthPoint;
 		}
 	}
 
