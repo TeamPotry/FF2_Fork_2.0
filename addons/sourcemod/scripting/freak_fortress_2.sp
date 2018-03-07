@@ -120,7 +120,7 @@ FF2Boss Boss[MAXPLAYERS+1];
 // int BossHealth[MAXPLAYERS+1];
 
 // int BossLives[MAXPLAYERS+1];
-int BossLivesMax[MAXPLAYERS+1];
+// int BossLivesMax[MAXPLAYERS+1];
 int BossRageDamage[MAXPLAYERS+1];
 
 float BossAbilityCooldown[MAXPLAYERS+1][9];
