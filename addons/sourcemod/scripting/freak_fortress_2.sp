@@ -11196,12 +11196,12 @@ public Native_SetBossMaxLives(Handle:plugin, numParams)
 
 public Native_GetBossCharge(Handle:plugin, numParams)
 {
-	return _:BossCharge[GetNativeCell(1)][GetNativeCell(2)];
+	return view_as<any>(Boss[GetNativeCell(1)].GetCharge(GetNativeCell(2)));
 }
 
 public Native_SetBossCharge(Handle:plugin, numParams)  //TODO: This duplicates logic found in Timer_UseBossCharge
 {
-	BossCharge[GetNativeCell(1)][GetNativeCell(2)]=Float:GetNativeCell(3);
+	Boss[GetNativeCell(1)].SetCharge(GetNativeCell(2), view_as<float>(GetNativeCell(3)));
 }
 
 public Native_GetBossRageDamage(Handle:plugin, numParams)
