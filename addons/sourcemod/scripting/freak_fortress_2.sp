@@ -1582,7 +1582,6 @@ public Action:MusicListCmd(client, args)
 
 CallDifficultyMenu(client)
 {
-	// int BossDifficulty:difficulty=GetClientDifficultyCookie(client);
 	Handle menu=CreateMenu(Menu_SetDifficulty);
 	char item[80];
 
@@ -1617,10 +1616,10 @@ public Menu_SetDifficulty(Handle:menu, MenuAction:action, param1, param2)
 			char item[50];
 			switch(param2)
 			{
-			  case 0:
-			  {
-			    CPrintToChat(param1, "그거 참 흥미롭네요.. {red}대체 어떻게 이걸 고른거죠{default}?");
-			  }
+				case 0:
+				{
+					CPrintToChat(param1, "그거 참 흥미롭네요.. {red}대체 어떻게 이걸 고른거죠{default}?");
+				}
 				case 1:
 				{
 					SetClientDifficultyCookie(param1, 1);
@@ -1648,7 +1647,7 @@ public Menu_SetDifficulty(Handle:menu, MenuAction:action, param1, param2)
 	}
 }
 
-SetClientDifficultyCookie(client, difficulty)
+void SetClientDifficultyCookie(int client, int difficulty)
 {
 	char CookieV[24];
 	char CookieExpV[8][5];
@@ -1659,7 +1658,7 @@ SetClientDifficultyCookie(client, difficulty)
 	SetClientCookie(client, FF2Cookies, CookieV);
 }
 
-stock GetClientDifficultyCookie(client)
+stock BossDifficulty GetClientDifficultyCookie(int client)
 {
 	char CookieV[24];
 	char CookieExpV[8][5];
@@ -1670,7 +1669,7 @@ stock GetClientDifficultyCookie(client)
 	GetClientCookie(client, FF2Cookies, CookieV, sizeof(CookieV));
 
 	ExplodeString(CookieV, " ", CookieExpV, 8, 5);
-	return StringToInt(CookieExpV[4]);
+	return view_as<BossDifficulty>(StringToInt(CookieExpV[4]));
 }
 
 public Action Command_HelpBossPanel(client, args)
@@ -3930,11 +3929,11 @@ public Action:MessageTimer(Handle:timer)
 			CPrintToChatAll("%s", textChat);
 
 			char diff[25];
-			bool gotHard=BossDiff[boss]>1;
+			bool gotHard = view_as<int>(Boss[boss].Difficulty) > 1; // Difficulty_Normal
 
 			if(gotHard)
 			{
-				GetDifficultyString(BossDiff[boss], diff, sizeof(diff));
+				GetDifficultyString(Boss[boss].Difficulty, diff, sizeof(diff));
 				CPrintToChatAll("{olive}[FF2]{default} 이 보스는 난이도가 {green}%s{default}입니다!", diff);
 			}
 		}
@@ -4101,7 +4100,7 @@ public Action:MakeBoss(Handle:timer, any:boss)
 		Boss[boss].MaxLives=1;
 	}
 */
-	BossDiff[boss] = GetClientDifficultyCookie(client);
+	Boss[boss].Difficulty = GetClientDifficultyCookie(client);
 	FormulaBossHealth(boss);
 
 	if(StrEqual(bossName, "You", true) ||
@@ -4254,7 +4253,7 @@ void MakeClientToBoss(int boss)
 		Boss[boss].RageDamage=1900;
 	}
 
-	BossDiff[boss] = GetClientDifficultyCookie(client);
+	Boss[boss].Difficulty = GetClientDifficultyCookie(client);
 	FormulaBossHealth(boss);
 
 	if(StrEqual(bossName, "You", true) ||
@@ -5291,7 +5290,7 @@ public Action:Command_GetHP(client)  //TODO: This can rarely show a very large n
 					strcopy(lives, 2, "");
 				}
 				char diffItem[50];
-				GetDifficultyString(BossDiff[boss], diffItem, sizeof(diffItem));
+				GetDifficultyString(Boss[boss].Difficulty, diffItem, sizeof(diffItem));
 				if(IsBossYou[target])
 				{
 					char playerName[50];
@@ -6490,7 +6489,7 @@ public Action:BossTimer(Handle:timer)
 					}
 
 					char diffItem[50];
-					GetDifficultyString(BossDiff[boss2], diffItem, sizeof(diffItem));
+					GetDifficultyString(Boss[boss2].Difficulty, diffItem, sizeof(diffItem));
 
 					if(IsBossYou[target])
 					{
@@ -7545,13 +7544,13 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 	}
 
 /*
-	if(Boss[boss].HealthPoint - damage < 1 && BossDiff[boss] > 1 &&
+	if(Boss[boss].HealthPoint - damage < 1 && Boss[boss].Difficulty > 1 &&
 		(FF2_GetGameState() != Game_LastManStanding && FF2_GetGameState() != Game_SpecialLastManStanding)
 	&& POTRY_IsClientVIP(client) && POTRY_IsClientEnableVIPEffect(client, VIPEffect_BossStandard))
 	{
 		// changeResult = true;
 		// BossCharge[boss][0] = 100.0;
-		BossDiff[boss] = 1;
+		Boss[boss].Difficulty = 1;
 		FormulaBossHealth(boss, false);
 
 		SetEntityHealth(client, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (Boss[boss].Lives-1));
@@ -11823,7 +11822,6 @@ public HealthbarEnableChanged(Handle:convar, const String:oldValue[], const Stri
 
 FormulaBossHealth(int boss, bool includeHealth = true)
 {
-	// int client=Boss[boss];
 	int damaged = (Boss[boss].MaxHealthPoint*Boss[boss].MaxLives) - Boss[boss].HealthPoint;
 
 	KvRewind(BossKV[Special[boss]]);
@@ -11839,29 +11837,25 @@ FormulaBossHealth(int boss, bool includeHealth = true)
 
 	Boss[boss].MaxHealthPoint = ParseFormula(boss, "health_formula", "(((960.8+n)*(n-1))^1.0341)+2046", RoundFloat(Pow((760.8+float(playing))*(float(playing)-1.0), 1.0341)+2046.0));
 	BossHealthLast[boss] = Boss[boss].HealthPoint;
-/*
-	if(FF2Boss_IsPlayerBlasterReady(client))
-		BossDiff[boss]=1;
-*/
 
-	switch(BossDiff[boss])
+	switch(Boss[boss].Difficulty)
 	{
-	  case 2: // 하드
-	  {
+		case Difficulty_Hard: // 하드
+		{
 			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.2);
-	  }
-		case 3: // 배리 하드
+		}
+		case Difficulty_Tryhard: // 배리 하드
 		{
 			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.3);
 		}
-		case 4:
+		case Difficulty_Expert:
 		{
 			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.4);
 		}
-		case 5:
+		case Difficulty_Hell:
 		{
 			Boss[boss].MaxHealthPoint-=RoundFloat(float(Boss[boss].MaxHealthPoint)*0.5);
-			// FF2flags[client]|=FF2FLAG_NOTALLOW_RAGE;
+		// FF2flags[client]|=FF2FLAG_NOTALLOW_RAGE;
 		}
 	}
 
