@@ -129,7 +129,7 @@ float BossAbilityDuration[MAXPLAYERS+1][9];
 float BossAbilityDurationMax[MAXPLAYERS+1][9];
 
 float BossCharge[MAXPLAYERS+1][9];
-int BossDiff[MAXPLAYERS+1];
+// int BossDiff[MAXPLAYERS+1];
 // float BossMaxRageCharge[MAXPLAYERS+1];
 
 int BossHealthLast[MAXPLAYERS+1];
@@ -3508,7 +3508,7 @@ PlayBGM(client)
 
 	KvRewind(musicKv);
 	if((!selected &&
-		(((FF2_GetGameState() == Game_SpecialLastManStanding && KvJumpToKey(musicKv, "sound_special_bgm")) || (BossDiff[MainBoss] >= 5 && KvJumpToKey(musicKv, "sound_hell_bgm"))))
+		(((FF2_GetGameState() == Game_SpecialLastManStanding && KvJumpToKey(musicKv, "sound_special_bgm")) || (Boss[MainBoss].Difficulty == Difficulty_Hell && KvJumpToKey(musicKv, "sound_hell_bgm"))))
 	|| KvJumpToKey(musicKv, "sound_bgm"))
 	)
 	{
