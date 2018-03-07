@@ -103,7 +103,6 @@ methodmap FF2Boss < ArrayList {
 	property int Lives {
 		public native get();
 		public native set(const int lives);
-
 	}
 
 	property int MaxLives {
