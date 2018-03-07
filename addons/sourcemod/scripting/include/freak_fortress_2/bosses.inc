@@ -17,6 +17,7 @@ enum BossValues
 	Boss_MaxLives,
 	Boss_RageDamage,
 	Boss_MaxRageCharge,
+	Boss_Difficulty,
 	Boss_Charge, // TODO: Remember. This is array.
 	// NOTE: Everytime when you editing this enum, Keep this at first array.
 	Boss_AbilityDuration, // TODO: Remember. This is array.
@@ -24,6 +25,16 @@ enum BossValues
 	Boss_AbilityCooldown, // TODO: Remember. This is array.
 	Boss_MaxAbilityCooldown, // TODO: Remember. This is array.
 	Boss_KeyValue // NOTE: Everytime when you editing this enum, Keep this at last.
+};
+
+enum BossDifficulty
+{
+	Difficulty_Easy = 0, // 2연패 이상에만 선택 가능. 체력 30% 추가. 분노 생성률 40% 증가
+	Difficulty_Normal, // 표준
+	Difficulty_Hard, // 체력 15% 감소, 분노 쿨타임 12초 추가
+	Difficulty_Tryhard, // 체력 25% 감소, 분노 쿨타임 16초 증가, 분노 지연 2초 추가
+	Difficulty_Expert, // 체력 30% 감소,  분노 쿨타임 20초 증가, 분노 지연 3초 추가, 피해량 20% 감소
+	Difficulty_Hell //  체력 40% 감소,  한 게임에서 분노를 최대 3번만 사용 가능.
 };
 
 methodmap FF2BossKeyValues < KeyValues {
@@ -103,7 +114,6 @@ methodmap FF2Boss < ArrayList {
 	property int Lives {
 		public native get();
 		public native set(const int lives);
-
 	}
 
 	property int MaxLives {
@@ -124,6 +134,11 @@ methodmap FF2Boss < ArrayList {
 	property FF2BossKeyValues KeyValue {
 		public native get();
 		public native set(const FF2BossKeyValues keyValue);
+	}
+
+	property int Difficulty {
+			public native get();
+			public native set(const BossDifficulty difficulty);
 	}
 
 	public native float GetCharge(const int index);

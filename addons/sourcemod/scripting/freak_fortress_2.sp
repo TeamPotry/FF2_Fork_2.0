@@ -1195,6 +1195,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("FF2Boss.MaxRageCharge.set", Native_FF2Boss_MaxRageCharge_Set);
 	CreateNative("FF2Boss.KeyValue.get", Native_FF2Boss_KeyValue_Get);
 	CreateNative("FF2Boss.KeyValue.set", Native_FF2Boss_KeyValue_Set);
+	CreateNative("FF2Boss.Difficulty.get", Native_FF2Boss_Difficulty_Get);
+	CreateNative("FF2Boss.Difficulty.set", Native_FF2Boss_Difficulty_Set);
 	CreateNative("FF2Boss.GetCharge", Native_FF2Boss_GetCharge);
 	CreateNative("FF2Boss.SetCharge", Native_FF2Boss_SetCharge);
 	CreateNative("FF2Boss.GetAbilityDuration", Native_FF2Boss_GetAbilityDuration);
