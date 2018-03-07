@@ -1664,7 +1664,7 @@ stock BossDifficulty GetClientDifficultyCookie(int client)
 	char CookieExpV[8][5];
 	if(!IsValidClient(client) || !AreClientCookiesCached(client))
 	{
-		return 0;
+		return Difficulty_Normal;
 	}
 	GetClientCookie(client, FF2Cookies, CookieV, sizeof(CookieV));
 
