@@ -113,7 +113,7 @@ public int Native_FF2Boss_SetCharge(Handle plugin, int numParams)
     boss.GetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
     charges[index] = charge;
 
-    if(charge[index] < 0.0)
+    if(charges[index] < 0.0)
         charges[index] = 0.0;
     else if(charge[index] > boss.MaxRageCharge)
         charges[index] = boss.MaxRageCharge;
