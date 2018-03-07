@@ -73,6 +73,16 @@ public int Native_FF2Boss_MaxRageCharge_Set(Handle plugin, int numParams)
     view_as<FF2Boss>(GetNativeCell(1)).Set(view_as<int>(Boss_MaxRageCharge), GetNativeCell(2));
 }
 
+public int Native_FF2Boss_Difficulty_Get(Handle plugin, int numParams)
+{
+    return view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_Difficulty));
+}
+
+public int Native_FF2Boss_Difficulty_Set(Handle plugin, int numParams)
+{
+    view_as<FF2Boss>(GetNativeCell(1)).Set(view_as<int>(Boss_Difficulty), GetNativeCell(2));
+}
+
 public int Native_FF2Boss_KeyValue_Get(Handle plugin, int numParams)
 {
     return view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_KeyValue));
