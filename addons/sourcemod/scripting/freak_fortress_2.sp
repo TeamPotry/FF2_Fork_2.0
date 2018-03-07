@@ -125,7 +125,7 @@ FF2Boss Boss[MAXPLAYERS+1];
 
 float BossAbilityCooldown[MAXPLAYERS+1][9];
 float BossAbilityCooldownMax[MAXPLAYERS+1][9];
-float BossAbilityDuration[MAXPLAYERS+1][9];
+// float BossAbilityDuration[MAXPLAYERS+1][9];
 float BossAbilityDurationMax[MAXPLAYERS+1][9];
 
 // float BossCharge[MAXPLAYERS+1][9];
@@ -3053,7 +3053,7 @@ public Action:OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 			for(int slot=0; slot<9; slot++)
 			{
 				Boss[boss].SetCharge(slot, 0.0);
-				BossAbilityDuration[boss][slot]=0.0;
+				Boss[boss].SetAbilityDuration(slot, 0.0);
 				BossAbilityCooldown[boss][slot]=0.0;
 				BossAbilityDurationMax[boss][slot]=0.0;
 				BossAbilityCooldownMax[boss][slot]=0.0;
@@ -5843,12 +5843,12 @@ public Action:ClientTimer(Handle:timer)
 						{
 							Format(temp, sizeof(temp), "%s | %t", temp, "ff2_notallow_rage");
 						}
-						else if(BossAbilityDuration[boss][0] > 0.0 || BossAbilityCooldown[boss][0] > 0.0)
+						else if(Boss[boss].GetAbilityDuration(0) > 0.0 || BossAbilityCooldown[boss][0] > 0.0)
 						{
 							char temp2[25];
-							if(BossAbilityDuration[boss][0] > 0.0)
+							if(Boss[boss].GetAbilityDuration(0) > 0.0)
 							{
-								Format(temp2, sizeof(temp), "%.1f", BossAbilityDuration[boss][0]);
+								Format(temp2, sizeof(temp), "%.1f", Boss[boss].GetAbilityDuration(0));
 								Format(temp, sizeof(temp), "%s | %t", temp, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp2);
 							}
 							else if(BossAbilityCooldown[boss][0]>0.0)
@@ -6204,10 +6204,10 @@ public Action:BossTimer(Handle:timer)
 				char temp[150];
 				char temp3[100];
 
-				if(BossAbilityDuration[boss][0] > 0.0 || BossAbilityCooldown[boss][0] > 0.0)
+				if(Boss[boss].GetAbilityDuration(0) > 0.0 || BossAbilityCooldown[boss][0] > 0.0)
 				{
 					char temp2[30];
-					if(BossAbilityDuration[boss][0] > 0.0)
+					if(Boss[boss].GetAbilityDuration(0) > 0.0)
 					{
 						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(Boss[boss].GetCharge(0)), RoundFloat(Boss[boss].MaxRageCharge), RoundFloat(Boss[boss].GetCharge(0)*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 						Format(temp2, sizeof(temp2), "%.1f", Boss[boss].GetAbilityDuration(0));
@@ -6285,15 +6285,15 @@ public Action:BossTimer(Handle:timer)
 				SetHudTextParams(-1.0, 0.83, 0.04, 255, 255, 255, 255);
 				FF2_ShowSyncHudText(client, rageHUD, "%t", "ff2_notallow_rage");
 			}
-			else if(BossAbilityDuration[boss][0] > 0.0 || BossAbilityCooldown[boss][0] > 0.0)
+			else if(Boss[boss].GetAbilityDuration(0) > 0.0 || BossAbilityCooldown[boss][0] > 0.0)
 			{
 				char temp[42];
 				char temp3[100];
 
-				if(BossAbilityDuration[boss][0] > 0.0)
+				if(Boss[boss].GetAbilityDuration(0) > 0.0)
 				{
 					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(Boss[boss].GetCharge(0)), RoundFloat(Boss[boss].MaxRageCharge), RoundFloat(Boss[boss].GetCharge(0)*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
-					Format(temp, sizeof(temp), "%.1f", BossAbilityDuration[boss][0]);
+					Format(temp, sizeof(temp), "%.1f", Boss[boss].GetAbilityDuration(0));
 					SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
 					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp);
 				}
@@ -6347,11 +6347,11 @@ public Action:BossTimer(Handle:timer)
 				}
 			}
 
-			if(BossAbilityDuration[boss][slot] > 0.0)
+			if(Boss[boss].GetAbilityDuration(slot) > 0.0)
 			{
-				BossAbilityDuration[boss][slot]-=0.1;
+				Boss[boss].SetAbilityDuration(slot, Boss[boss].GetAbilityDuration(slot) - 0.1);
 
-				if(BossAbilityDuration[boss][slot] <= 0.0)
+				if(Boss[boss].GetAbilityDuration(slot) <= 0.0)
 				{
 					if(IsPlayerAlive(client))
 					{
@@ -6381,8 +6381,8 @@ public Action:BossTimer(Handle:timer)
 
 			for(int count=0; count<slotNameCount; count++)
 			{
-				float temp2=BossAbilityDuration[boss][slot];
-				float temp3=BossAbilityCooldown[boss][slot];
+				float temp2 = Boss[boss].GetAbilityDuration(slot);
+				float temp3 = BossAbilityCooldown[boss][slot];
 				char abilityName[64];
 				Action action;
 
@@ -6400,7 +6400,7 @@ public Action:BossTimer(Handle:timer)
 				{
 					case Plugin_Changed:
 					{
-						BossAbilityDuration[boss][slot]=temp2;
+						Boss[boss].SetAbilityDuration(slot, temp2);
 						BossAbilityCooldown[boss][slot]=temp3;
 						// Format(BossRageName[boss], sizeof(BossRageName[]), "%s", temp);
 				  	}
@@ -6667,7 +6667,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		doUpgradeRage = false;
 		//
 		bool hasUpgradeRage = false;
-		if(BossAbilityDuration[boss][0] > 0.0 || BossAbilityCooldown[boss][0] > 0.0 || (!DEVmode && FF2flags[client] & FF2FLAG_NOTALLOW_RAGE))
+		if(Boss[boss].GetAbilityDuration(0) > 0.0 || BossAbilityCooldown[boss][0] > 0.0 || (!DEVmode && FF2flags[client] & FF2FLAG_NOTALLOW_RAGE))
 		{
 			CPrintToChat(client, "{olive}[FF2]{default} %t", "ff2_can_not_rage");
 			return Plugin_Continue;
@@ -6801,13 +6801,13 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		{
 			IsUpgradeRage[boss] = true;
 			KvRewind(BossKV[Special[boss]]);
-			BossAbilityDuration[boss][0] = KvGetFloat(BossKV[Special[boss]], "upgrade_ability_duration");
+			Boss[boss].SetAbilityDuration(0, KvGetFloat(BossKV[Special[boss]], "upgrade_ability_duration"));
 			Boss[boss].SetCharge(0, Boss[boss].GetCharge(0) - 200.0);
 		}
 		else
 		{
 			IsUpgradeRage[boss] = false;
-			BossAbilityDuration[boss][0] = BossAbilityDurationMax[boss][0];
+			Boss[boss].SetAbilityDuration(0, BossAbilityDurationMax[boss][0]);
 
 			if(doUpgradeRage)
 				CPrintToChat(client, "{olive}[FF2]{default} 이 보스에게 강화분노가 등록되지 않아서 일반 분노로 대체됩니다!");
@@ -6839,7 +6839,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 			KvRewind(BossKV[Special[boss]]);
 			KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "ERROR NAME");
 			CPrintToChatAll("{olive}[FF2]{default} %t", "oneperson_rage", bossName);
-			BossAbilityDuration[boss][0]=BossAbilityDurationMax[boss][0]+2.0;
+			Boss[boss].SetAbilityDuration(0, BossAbilityDurationMax[boss][0] + 2.0);
 
 			Handle SoloRageDelay;
 			CreateDataTimer(2.0, SoloRageDelayTimer, SoloRageDelay, TIMER_FLAG_NO_MAPCHANGE);
@@ -6852,7 +6852,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		}
 		else
 		{
-			BossAbilityDuration[boss][0]=BossAbilityDurationMax[boss][0];
+			Boss[boss].SetAbilityDuration(0, BossAbilityDurationMax[boss][0]);
 		}
 
 		if(!isSoloRage)
@@ -11532,12 +11532,12 @@ public Native_SetServerFlags(Handle:plugin, numParams)
 
 public Native_GetAbilityDuration(Handle:plugin, numParams)
 {
-	return _:BossAbilityDuration[GetNativeCell(1)][GetNativeCell(2)];
+	return view_as<any>(Boss[GetNativeCell(1)].GetAbilityDuration(GetNativeCell(2));
 }
 
 public Native_SetAbilityDuration(Handle:plugin, numParams)
 {
-	BossAbilityDuration[GetNativeCell(1)][GetNativeCell(3)]=GetNativeCell(2);
+	Boss[GetNativeCell(1)].SetAbilityDuration(GetNativeCell(3), GetNativeCell(2));
 }
 
 public Native_GetAbilityCooldown(Handle:plugin, numParams)
