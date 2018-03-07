@@ -129,10 +129,10 @@ float BossAbilityDuration[MAXPLAYERS+1][9];
 float BossAbilityDurationMax[MAXPLAYERS+1][9];
 
 float BossCharge[MAXPLAYERS+1][9];
+int BossDiff[MAXPLAYERS+1];
 // float BossMaxRageCharge[MAXPLAYERS+1];
 
 int BossHealthLast[MAXPLAYERS+1];
-int BossDiff[MAXPLAYERS+1];
 
 char BossRageName[MAXPLAYERS+1][68];
 char BossUpgradeRageName[MAXPLAYERS+1][68];
