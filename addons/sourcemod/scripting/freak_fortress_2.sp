@@ -11532,7 +11532,7 @@ public Native_SetServerFlags(Handle:plugin, numParams)
 
 public Native_GetAbilityDuration(Handle:plugin, numParams)
 {
-	return view_as<any>(Boss[GetNativeCell(1)].GetAbilityDuration(GetNativeCell(2));
+	return view_as<any>(Boss[GetNativeCell(1)].GetAbilityDuration(GetNativeCell(2)));
 }
 
 public Native_SetAbilityDuration(Handle:plugin, numParams)
