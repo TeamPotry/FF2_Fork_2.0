@@ -3513,12 +3513,6 @@ PlayBGM(client)
 	|| KvJumpToKey(musicKv, "sound_bgm"))
 	)
 	{
-		// char keyName[80];
-		// KvGetSectionName(musicKv, keyName, sizeof(keyName));
-		// Debug("key: %s", keyName);
-
-		// Debug("%N", client);
-
 		char music[PLATFORM_MAX_PATH];
 		char artist[80];
 		char name[100];
