@@ -10975,7 +10975,7 @@ bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, s
 				Call_PushCell(2);  //Status
 				Call_Finish(action);
 				float charge = 100.0 * 0.1 / GetAbilityArgumentFloat(boss, plugin_name, ability_name, 1, 1.5);
-				if((Boss[boss].GetCharge(slot) + charge < 100.0)
+				if(Boss[boss].GetCharge(slot) + charge < 100.0)
 				{
 					Boss[boss].SetCharge(slot, Boss[boss].GetCharge(slot) + charge);
 				}
