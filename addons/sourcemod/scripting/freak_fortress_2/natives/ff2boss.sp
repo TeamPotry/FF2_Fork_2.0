@@ -112,6 +112,12 @@ public int Native_FF2Boss_SetCharge(Handle plugin, int numParams)
 
     boss.GetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
     charges[index] = charge;
+
+    if(charge[index] < 0.0)
+        charges[index] = 0.0;
+    else if(charge[index] > boss.MaxRageCharge)
+        charges[index] = boss.MaxRageCharge;
+
     boss.SetArray(view_as<int>(Boss_Charge), charges, MAX_BOSS_SLOT_COUNT);
 }
 
@@ -134,6 +140,9 @@ public int Native_FF2Boss_SetAbilityDuration(Handle plugin, int numParams)
 
     boss.GetArray(view_as<int>(Boss_AbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
     duration[index] = time + GetGameTime();
+
+    if(duration[index] < GetGameTime())
+        duration[index] = -1.0;
     boss.SetArray(view_as<int>(Boss_AbilityDuration), duration, MAX_BOSS_SLOT_COUNT);
 }
 
@@ -174,10 +183,23 @@ public int Native_FF2Boss_SetAbilityCooldown(Handle plugin, int numParams)
     FF2Boss boss = view_as<FF2Boss>(GetNativeCell(1));
     int index = GetNativeCell(2);
     float time = GetNativeCell(3);
+    float duration = boss.GetAbilityDuration(index);
     float cooldownTime[MAX_BOSS_SLOT_COUNT];
 
     boss.GetArray(view_as<int>(Boss_AbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
-    cooldownTime[index] = time + GetGameTime();
+    if(duration > 0.0) {
+        cooldownTime[index] = time + duration;
+    }
+    else {
+        cooldownTime[index] = GetGameTime();
+    }
+
+
+    if(cooldownTime[index] < GetGameTime())
+    {
+        cooldownTime[index] = -1.0;
+    }
+
     boss.SetArray(view_as<int>(Boss_AbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
 }
 
