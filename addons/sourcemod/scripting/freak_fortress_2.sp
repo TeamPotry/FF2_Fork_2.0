@@ -4097,12 +4097,12 @@ public Action:MakeBoss(Handle:timer, any:boss)
 		BossRageDamage[boss]=1900;
 	}
 /*
-	BossLivesMax[boss]=KvGetNum(BossKV[Special[boss]], "lives", 1);
-	if(BossLivesMax[boss]<=0)
+	Boss[boss].MaxLives=KvGetNum(BossKV[Special[boss]], "lives", 1);
+	if(Boss[boss].MaxLives<=0)
 	{
 		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s has an invalid amount of lives, setting to 1", bossName);
-		BossLivesMax[boss]=1;
+		Boss[boss].MaxLives=1;
 	}
 */
 	BossDiff[boss] = GetClientDifficultyCookie(client);
@@ -4217,7 +4217,7 @@ public Action:MakeBoss(Handle:timer, any:boss)
 	BossCharge[boss][0]=0.0;
 	BossMaxRageCharge[boss] = 100.0;
 
-	// Boss[boss].MaxHealthPoint=RoundFloat(float(BossHealth[boss])/float(BossLivesMax[boss]))+1; // TODO: wat.
+	// Boss[boss].MaxHealthPoint=RoundFloat(float(BossHealth[boss])/float(Boss[boss].MaxLives))+1; // TODO: wat.
 
 	if (boss == MainBoss) SetClientQueuePoints(client, 0);
 	return Plugin_Continue;
@@ -6179,7 +6179,7 @@ public Action:BossTimer(Handle:timer)
 				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7);
 
 			else
-				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7*(100-Boss[boss].HealthPoint*100/BossLivesMax[boss]/Boss[boss].MaxHealthPoint));
+				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7*(100-Boss[boss].HealthPoint*100/Boss[boss].MaxLives/Boss[boss].MaxHealthPoint));
 		}
 		//
 
@@ -6188,10 +6188,10 @@ public Action:BossTimer(Handle:timer)
 			Boss[boss].HealthPoint = 1;
 		}
 
-		if(BossLivesMax[boss]>1)
+		if(Boss[boss].MaxLives>1)
 		{
 			SetHudTextParams(-1.0, 0.77, 0.15, 255, 255, 255, 255);
-			FF2_ShowSyncHudText(client, livesHUD, "%t", "Boss Lives Left", Boss[boss].Lives, BossLivesMax[boss]);
+			FF2_ShowSyncHudText(client, livesHUD, "%t", "Boss Lives Left", Boss[boss].Lives, Boss[boss].MaxLives);
 		}
 
 		if(BossCharge[boss][0] >= 100.0)
@@ -7578,7 +7578,7 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 			Call_StartForward(OnLoseLife);
 			Call_PushCell(boss);
 			Call_PushCellRef(bossLives);
-			Call_PushCell(BossLivesMax[boss]);
+			Call_PushCell(Boss[boss].MaxLives);
 			Call_Finish(action);
 			if(action == Plugin_Stop || action == Plugin_Handled)
 			{
@@ -7586,9 +7586,9 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 			}
 			else if(action == Plugin_Changed)
 			{
-				if(bossLives>BossLivesMax[boss])
+				if(bossLives>Boss[boss].MaxLives)
 				{
-					BossLivesMax[boss]=bossLives;
+					Boss[boss].MaxLives=bossLives;
 				}
 				Boss[boss].Lives=bossLives;
 			}
@@ -8283,7 +8283,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 							KvRewind(BossKV[Special[boss]]);
 							KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "ERROR NAME");
 
-							damage=(((float(Boss[boss].MaxHealthPoint)*float(BossLivesMax[boss]))*0.07)/3.0);
+							damage=(((float(Boss[boss].MaxHealthPoint)*float(Boss[boss].MaxLives))*0.07)/3.0);
 							damagetype|=DMG_CRIT;
 
 							if(damage < 200.0)
@@ -8432,7 +8432,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 					float sliencedTime=6.0; // TODO: 광역변수.
 					bool slienced=false;
 
-					damage=(((float(Boss[boss].MaxHealthPoint)*float(BossLivesMax[boss]))*0.075)/3.0);
+					damage=(((float(Boss[boss].MaxHealthPoint)*float(Boss[boss].MaxLives))*0.075)/3.0);
 
 					if(damage < 200.0)
 					{
@@ -11234,12 +11234,12 @@ public Native_SetBossLives(Handle:plugin, numParams)
 
 public Native_GetBossMaxLives(Handle:plugin, numParams)
 {
-	return BossLivesMax[GetNativeCell(1)];
+	return Boss[GetNativeCell(1)].MaxLives;
 }
 
 public Native_SetBossMaxLives(Handle:plugin, numParams)
 {
-	BossLivesMax[GetNativeCell(1)]=GetNativeCell(2);
+	Boss[GetNativeCell(1)].MaxLives = GetNativeCell(2);
 }
 
 public Native_GetBossCharge(Handle:plugin, numParams)
@@ -11829,17 +11829,17 @@ public HealthbarEnableChanged(Handle:convar, const String:oldValue[], const Stri
 FormulaBossHealth(int boss, bool includeHealth = true)
 {
 	// int client=Boss[boss];
-	int damaged = (Boss[boss].MaxHealthPoint*BossLivesMax[boss]) - Boss[boss].HealthPoint;
+	int damaged = (Boss[boss].MaxHealthPoint*Boss[boss].MaxLives) - Boss[boss].HealthPoint;
 
 	KvRewind(BossKV[Special[boss]]);
 
-	BossLivesMax[boss]=KvGetNum(BossKV[Special[boss]], "lives", 1);
-	if(BossLivesMax[boss]<=0)
+	Boss[boss].MaxLives=KvGetNum(BossKV[Special[boss]], "lives", 1);
+	if(Boss[boss].MaxLives<=0)
 	{
 		char bossName[80];
 		KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s has an invalid amount of lives, setting to 1", bossName);
-		BossLivesMax[boss]=1;
+		Boss[boss].MaxLives=1;
 	}
 
 	Boss[boss].MaxHealthPoint = ParseFormula(boss, "health_formula", "(((960.8+n)*(n-1))^1.0341)+2046", RoundFloat(Pow((760.8+float(playing))*(float(playing)-1.0), 1.0341)+2046.0));
@@ -11870,8 +11870,8 @@ FormulaBossHealth(int boss, bool includeHealth = true)
 		}
 	}
 
-	Boss[boss].HealthPoint = Boss[boss].MaxHealthPoint * BossLivesMax[boss];
-	Boss[boss].Lives=BossLivesMax[boss];
+	Boss[boss].HealthPoint = Boss[boss].MaxHealthPoint * Boss[boss].MaxLives;
+	Boss[boss].Lives=Boss[boss].MaxLives;
 
 	if(!includeHealth)
 	{
