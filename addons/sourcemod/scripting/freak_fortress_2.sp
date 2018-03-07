@@ -121,7 +121,7 @@ FF2Boss Boss[MAXPLAYERS+1];
 
 // int BossLives[MAXPLAYERS+1];
 // int BossLivesMax[MAXPLAYERS+1];
-int BossRageDamage[MAXPLAYERS+1];
+// int BossRageDamage[MAXPLAYERS+1];
 
 float BossAbilityCooldown[MAXPLAYERS+1][9];
 float BossAbilityCooldownMax[MAXPLAYERS+1][9];
@@ -4089,12 +4089,12 @@ public Action:MakeBoss(Handle:timer, any:boss)
 	char bossName[64];
 	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 
-	BossRageDamage[boss]=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
-	if(BossRageDamage[boss]<=0)
+	Boss[boss].RageDamage=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
+	if(Boss[boss].RageDamage<=0)
 	{
 		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s's rage damage is 0 or below, setting to 1900", bossName);
-		BossRageDamage[boss]=1900;
+		Boss[boss].RageDamage=1900;
 	}
 /*
 	Boss[boss].MaxLives=KvGetNum(BossKV[Special[boss]], "lives", 1);
@@ -4250,12 +4250,12 @@ void MakeClientToBoss(int boss)
 
 	Debug("OnPlayBoss: %s", bossName);
 
-	BossRageDamage[boss]=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
-	if(BossRageDamage[boss]<=0)
+	Boss[boss].RageDamage=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
+	if(Boss[boss].RageDamage<=0)
 	{
 		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s's rage damage is 0 or below, setting to 1900", bossName);
-		BossRageDamage[boss]=1900;
+		Boss[boss].RageDamage=1900;
 	}
 
 	BossDiff[boss] = GetClientDifficultyCookie(client);
@@ -5837,7 +5837,7 @@ public Action:ClientTimer(Handle:timer)
 						else
 						{
 							Format(temp, sizeof(temp), "%t", "ff2_client_timer_observer_nolife", Boss[boss].HealthPoint, Boss[boss].MaxHealthPoint);
-							// RoundFloat(BossCharge[boss][0]), 100, ragemeter, BossRageDamage[boss]
+							// RoundFloat(BossCharge[boss][0]), 100, ragemeter, Boss[boss].RageDamage
 						}
 
 						if(DEVmode)
@@ -5864,8 +5864,8 @@ public Action:ClientTimer(Handle:timer)
 						}
 						else
 						{
-							int ragemeter = RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0));
-							Format(temp, sizeof(temp), "%s | %t", temp, "observer_rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), ragemeter, BossRageDamage[boss]);
+							int ragemeter = RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0));
+							Format(temp, sizeof(temp), "%s | %t", temp, "observer_rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), ragemeter, Boss[boss].RageDamage);
 						}
 						FF2_ShowSyncHudText(client, rageHUD, "%s", temp);
 						continue;
@@ -6214,14 +6214,14 @@ public Action:BossTimer(Handle:timer)
 					char temp2[30];
 					if(BossAbilityDuration[boss][0] > 0.0)
 					{
-						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0)), BossRageDamage[boss]);
+						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 						Format(temp2, sizeof(temp2), "%.1f", BossAbilityDuration[boss][0]);
 						SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
 						Format(temp, sizeof(temp), "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp2);
 					}
 					else if(BossAbilityCooldown[boss][0] > 0.0)
 					{
-						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0)), BossRageDamage[boss]);
+						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 						Format(temp2, sizeof(temp2), "%.1f", BossAbilityCooldown[boss][0]);
 						SetHudTextParams(-1.0, 0.83, 0.04, 255, 255, 255, 255);
 						Format(temp, sizeof(temp), "%s %t", temp3, "rage_meter_cooldown_easy", temp2);
@@ -6229,7 +6229,7 @@ public Action:BossTimer(Handle:timer)
 				}
 				else
 				{
-					Format(temp, sizeof(temp), "%t", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0)), BossRageDamage[boss]);
+					Format(temp, sizeof(temp), "%t", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 					Format(temp, sizeof(temp), "%s | %t", temp, "do_rage");
 
 					/*
@@ -6297,19 +6297,19 @@ public Action:BossTimer(Handle:timer)
 
 				if(BossAbilityDuration[boss][0] > 0.0)
 				{
-					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0)), BossRageDamage[boss]);
+					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 					Format(temp, sizeof(temp), "%.1f", BossAbilityDuration[boss][0]);
 					SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
 					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp);
 				}
 				else if(BossAbilityCooldown[boss][0] > 0.0)
 				{
-					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0)), BossRageDamage[boss]);
+					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 					Format(temp, sizeof(temp), "%.1f", BossAbilityCooldown[boss][0]);
 					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_cooldown_easy", temp);
 				}
 			}
-			else	FF2_ShowSyncHudText(client, rageHUD, "%t", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(BossRageDamage[boss]/100.0)), BossRageDamage[boss]);
+			else	FF2_ShowSyncHudText(client, rageHUD, "%t", "rage_meter", RoundFloat(BossCharge[boss][0]), RoundFloat(BossMaxRageCharge[boss]), RoundFloat(BossCharge[boss][0]*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 		}
 
 		Handle slotNamePack = CreateArray();
@@ -7663,7 +7663,7 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 	}
 
 	Boss[boss].HealthPoint -= damage;
-	BossCharge[boss][0] += damage*100.0/BossRageDamage[boss];
+	BossCharge[boss][0] += damage*100.0/Boss[boss].RageDamage;
 
 	if(BossCharge[boss][0] > BossMaxRageCharge[boss])
 	{
@@ -8645,7 +8645,7 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 							damage=490.0;
 						}
 						Boss[boss].HealthPoint -= RoundFloat(damage);
-						BossCharge[boss][0] += damage * 100.0 / BossRageDamage[boss];
+						BossCharge[boss][0] += damage * 100.0 / Boss[boss].RageDamage;
 						if(Boss[boss].HealthPoint <= 0)  //Wat
 						{
 							damage *= 5;
@@ -11254,12 +11254,12 @@ public Native_SetBossCharge(Handle:plugin, numParams)  //TODO: This duplicates l
 
 public Native_GetBossRageDamage(Handle:plugin, numParams)
 {
-	return BossRageDamage[GetNativeCell(1)];
+	return Boss[GetNativeCell(1)].RageDamage;
 }
 
 public Native_SetBossRageDamage(Handle:plugin, numParams)
 {
-	BossRageDamage[GetNativeCell(1)]=GetNativeCell(2);
+	Boss[GetNativeCell(1)].RageDamage = GetNativeCell(2);
 }
 
 public Native_GetRoundState(Handle:plugin, numParams)
