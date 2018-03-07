@@ -136,7 +136,7 @@ methodmap FF2Boss < ArrayList {
 		public native set(const FF2BossKeyValues keyValue);
 	}
 
-	property int Difficulty {
+	property BossDifficulty Difficulty {
 			public native get();
 			public native set(const BossDifficulty difficulty);
 	}
