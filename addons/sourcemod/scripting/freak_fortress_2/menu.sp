@@ -6,24 +6,24 @@ public Action Command_SetDifficulty(int client, int args)
 
 void CallDifficultyMenu(int client)
 {
-	Menu menu = CreateMenu(Menu_SetDifficulty);
-	char item[80]; // TODO: 다국어
+    Menu menu = CreateMenu(Menu_SetDifficulty);
+    char item[80]; // TODO: 다국어
 
-	GetDifficultyString(GetClientDifficultyCookie(client), item, sizeof(item));
+    GetDifficultyString(GetClientDifficultyCookie(client), item, sizeof(item));
 
-	menu.SetTitle("보스 난이도 설정 (현재 난이도: %s)", item);
-	menu.AddItem("이지", "쉬움: 엥? 이거 완전 \"응애\" 난이도 아니냐!?", ITEMDRAW_DISABLED);
-	Format(item, sizeof(item), "%t", "difficulty_normal");
-	menu.AddItem("노말", item);
-	Format(item, sizeof(item), "%t", "difficulty_hard");
-	menu.AddItem("어려움", item);
-	Format(item, sizeof(item), "%t", "difficulty_veryhard");
-	menu.AddItem("매우 어려움", item);
-	Format(item, sizeof(item), "%t", "difficulty_tryhard");
-	menu.AddItem("너무 어려움", item);
-	Format(item, sizeof(item), "%t", "difficulty_nothuman");
-	menu.AddItem("사람이 아니다.", item);
-	SetMenuExitButton(menu, true);
+    menu.SetTitle("보스 난이도 설정 (현재 난이도: %s)", item);
+    menu.AddItem("이지", "쉬움: 엥? 이거 완전 \"응애\" 난이도 아니냐!?", ITEMDRAW_DISABLED);
+    Format(item, sizeof(item), "%t", "difficulty_normal");
+    menu.AddItem("노말", item);
+    Format(item, sizeof(item), "%t", "difficulty_hard");
+    menu.AddItem("어려움", item);
+    Format(item, sizeof(item), "%t", "difficulty_veryhard");
+    menu.AddItem("매우 어려움", item);
+    Format(item, sizeof(item), "%t", "difficulty_tryhard");
+    menu.AddItem("너무 어려움", item);
+    Format(item, sizeof(item), "%t", "difficulty_nothuman");
+    menu.AddItem("사람이 아니다.", item);
+    SetMenuExitButton(menu, true);
     menu.Display(client, 60);
 }
 
@@ -43,7 +43,7 @@ public Menu_SetDifficulty(Menu menu, MenuAction action, int client, int item)
             {
                 case 0:
                 {
-                    CPrintToChat(param1, "그거 참 흥미롭네요.. {red}대체 어떻게 이걸 고른거죠{default}?");
+                    CPrintToChat(client, "그거 참 흥미롭네요.. {red}대체 어떻게 이걸 고른거죠{default}?");
                 }
                 case 1:
                 {
