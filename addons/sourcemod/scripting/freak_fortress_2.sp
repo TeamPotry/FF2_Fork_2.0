@@ -37,6 +37,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #include <freak_fortress_2/bosses>
 
 #include "freak_fortress_2/stocks.sp"
+#include "freak_fortress_2/menu.sp"
 #include "freak_fortress_2/natives/ff2boss.sp"
 
 #define REQUIRE_PLUGIN
