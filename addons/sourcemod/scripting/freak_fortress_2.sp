@@ -5828,7 +5828,7 @@ public Action:ClientTimer(Handle:timer)
 						{
 							Format(temp, sizeof(temp), "%s | %t", temp, "ff2_notallow_rage");
 						}
-						else if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0.0) > 0.0)
+						else if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0) > 0.0)
 						{
 							char temp2[25];
 							if(Boss[boss].GetAbilityDuration(0) > 0.0)
@@ -6189,7 +6189,7 @@ public Action:BossTimer(Handle:timer)
 				char temp[150];
 				char temp3[100];
 
-				if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0.0) > 0.0)
+				if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0) > 0.0)
 				{
 					char temp2[30];
 					if(Boss[boss].GetAbilityDuration(0) > 0.0)
@@ -6199,10 +6199,10 @@ public Action:BossTimer(Handle:timer)
 						SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
 						Format(temp, sizeof(temp), "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp2);
 					}
-					else if(Boss[boss].GetAbilityCooldown(0.0) > 0.0)
+					else if(Boss[boss].GetAbilityCooldown(0) > 0.0)
 					{
 						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(Boss[boss].GetCharge(0)), RoundFloat(Boss[boss].MaxRageCharge), RoundFloat(Boss[boss].GetCharge(0)*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
-						Format(temp2, sizeof(temp2), "%.1f", Boss[boss].GetAbilityCooldown(0.0));
+						Format(temp2, sizeof(temp2), "%.1f", Boss[boss].GetAbilityCooldown(0));
 						SetHudTextParams(-1.0, 0.83, 0.04, 255, 255, 255, 255);
 						Format(temp, sizeof(temp), "%s %t", temp3, "rage_meter_cooldown_easy", temp2);
 					}
@@ -6270,7 +6270,7 @@ public Action:BossTimer(Handle:timer)
 				SetHudTextParams(-1.0, 0.83, 0.04, 255, 255, 255, 255);
 				FF2_ShowSyncHudText(client, rageHUD, "%t", "ff2_notallow_rage");
 			}
-			else if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0.0) > 0.0)
+			else if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0) > 0.0)
 			{
 				char temp[42];
 				char temp3[100];
@@ -6282,10 +6282,10 @@ public Action:BossTimer(Handle:timer)
 					SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
 					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp);
 				}
-				else if(Boss[boss].GetAbilityCooldown(0.0) > 0.0)
+				else if(Boss[boss].GetAbilityCooldown(0) > 0.0)
 				{
 					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(Boss[boss].GetCharge(0)), RoundFloat(Boss[boss].MaxRageCharge), RoundFloat(Boss[boss].GetCharge(0)*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
-					Format(temp, sizeof(temp), "%.1f", Boss[boss].GetAbilityCooldown(0.0));
+					Format(temp, sizeof(temp), "%.1f", Boss[boss].GetAbilityCooldown(0));
 					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_cooldown_easy", temp);
 				}
 			}
