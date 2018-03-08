@@ -253,12 +253,12 @@ stock void SetArenaCapEnableTime(float time)
 	}
 }
 
-stock int OnlyParisLeft()
+stock int OnlyParisLeft(int bossTeam)
 {
 	int scouts;
 	for(int client; client <= MaxClients; client++)
 	{
-		if(IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client)!=BossTeam)
+		if(IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) != bossTeam)
 		{
 			if(TF2_GetPlayerClass(client) == TFClass_Scout
 			|| (TF2_GetPlayerClass(client) == TFClass_Soldier && GetIndexOfWeaponSlot(client, TFWeaponSlot_Primary) == 237)

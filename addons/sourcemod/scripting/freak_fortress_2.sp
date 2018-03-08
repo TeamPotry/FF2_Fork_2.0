@@ -6369,7 +6369,7 @@ public Action:BossTimer(Handle:timer)
 
 		if(BossCharge[boss][0]<BossMaxRageCharge[boss])
 		{
-			BossCharge[boss][0] += (OnlyParisLeft()*0.2)/3.5;
+			BossCharge[boss][0] += (OnlyParisLeft(BossTeam)*0.2)/3.5;
 			if(BossCharge[boss][0] > BossMaxRageCharge[boss])
 			{
 				BossCharge[boss][0] = BossMaxRageCharge[boss];
