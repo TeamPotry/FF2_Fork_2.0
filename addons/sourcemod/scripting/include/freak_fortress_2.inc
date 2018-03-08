@@ -13,6 +13,9 @@ enum PercentDamageType
   Percent_GroundMarketed
 };
 
+#define SOUNDEXCEPT_MUSIC 0
+#define SOUNDEXCEPT_VOICE 1
+
 #define FF2FLAG_UBERREADY				(1<<1)		//Used when medic says "I'm charged!"
 #define FF2FLAG_ISBUFFED				(1<<2)		//Used when soldier uses the Battalion's Backup
 #define FF2FLAG_CLASSTIMERDISABLED 		(1<<3)		//Used to prevent clients' timer
