@@ -1567,86 +1567,6 @@ public Action:OnRPS_Timer(Handle:timer, any:client)
 	return Plugin_Continue;
 }
 
-public Action:Command_SetDifficulty(client, args)
-{
-	CallDifficultyMenu(client);
-	return Plugin_Continue;
-}
-
-public Action:MusicListCmd(client, args)
-{
-	ViewClientMusicMenu(client);
-	return Plugin_Continue;
-}
-
-CallDifficultyMenu(client)
-{
-	// int BossDifficulty:difficulty=GetClientDifficultyCookie(client);
-	Handle menu=CreateMenu(Menu_SetDifficulty);
-	char item[80];
-
-	GetDifficultyString(GetClientDifficultyCookie(client), item, sizeof(item));
-
-	SetMenuTitle(menu, "보스 난이도 설정 (현재 난이도: %s)", item);
-	AddMenuItem(menu, "이지", "쉬움: 엥? 이거 완전 \"응애\" 난이도 아니냐!?", ITEMDRAW_DISABLED);
-	Format(item, sizeof(item), "%t", "difficulty_normal");
-	AddMenuItem(menu, "노말", item);
-	Format(item, sizeof(item), "%t", "difficulty_hard");
-	AddMenuItem(menu, "어려움", item);
-	Format(item, sizeof(item), "%t", "difficulty_veryhard");
-	AddMenuItem(menu, "매우 어려움", item);
-	Format(item, sizeof(item), "%t", "difficulty_tryhard");
-	AddMenuItem(menu, "너무 어려움", item);
-	Format(item, sizeof(item), "%t", "difficulty_nothuman");
-	AddMenuItem(menu, "사람이 아니다.", item);
-	SetMenuExitButton(menu, true);
-	DisplayMenu(menu, client, 60);
-}
-
-public Menu_SetDifficulty(Handle:menu, MenuAction:action, param1, param2)
-{
-	switch(action)
-	{
-	  case MenuAction_End:
-	  {
-	  	CloseHandle(menu);
-	  }
-	  case MenuAction_Select:
-		{
-			char item[50];
-			switch(param2)
-			{
-			  case 0:
-			  {
-			    CPrintToChat(param1, "그거 참 흥미롭네요.. {red}대체 어떻게 이걸 고른거죠{default}?");
-			  }
-				case 1:
-				{
-					SetClientDifficultyCookie(param1, 1);
-				}
-				case 2:
-				{
-					SetClientDifficultyCookie(param1, 2);
-				}
-				case 3:
-				{
-					SetClientDifficultyCookie(param1, 3);
-				}
-				case 4:
-				{
-					SetClientDifficultyCookie(param1, 4);
-				}
-				case 5:
-				{
-					SetClientDifficultyCookie(param1, 5);
-				}
-			}
-			GetDifficultyString(GetClientDifficultyCookie(param1), item, sizeof(item));
-			CPrintToChat(param1, "{olive}[FF2]{default} %t", "ff2_set_difficulty", item);
-		}
-	}
-}
-
 SetClientDifficultyCookie(client, difficulty)
 {
 	char CookieV[24];
@@ -10170,6 +10090,13 @@ public MusicTogglePanelH(Handle:menu, MenuAction:action, client, selection)
 }
 
 
+public Action MusicListCmd(int client, int args)
+{
+	ViewClientMusicMenu(client);
+	return Plugin_Continue;
+}
+
+
 void CreateClientMuteMenu(client)
 {
 	// Handle BossMusicKv = CloneHandle(LoadedMusicData ? LoadedMusicData : BossKV[Special[0]]);
@@ -10428,57 +10355,6 @@ public MusicSelectionMenu(Handle:menu, MenuAction:action, client, selection)
 		selectedBGM[client]=selection+1;
 		CPrintToChat(client, "{olive}[FF2]{default} 선택하신 곡으로 재생합니다..");
 		StartMusic(client);
-	}
-}
-
-public Action:VoiceTogglePanelCmd(client, args)
-{
-	if(!IsValidClient(client))
-	{
-		return Plugin_Continue;
-	}
-
-	VoiceTogglePanel(client);
-	return Plugin_Handled;
-}
-
-public Action:VoiceTogglePanel(client)
-{
-	if(!Enabled || !IsValidClient(client))
-	{
-		return Plugin_Continue;
-	}
-
-	Handle panel=CreatePanel();
-	SetPanelTitle(panel, "보스들의 대사/효과음을..");
-	DrawPanelItem(panel, "켜기");
-	DrawPanelItem(panel, "끄기");
-	SendPanelToClient(panel, client, VoiceTogglePanelH, MENU_TIME_FOREVER);
-	CloseHandle(panel);
-	return Plugin_Continue;
-}
-
-public VoiceTogglePanelH(Handle:menu, MenuAction:action, client, selection)
-{
-	if(IsValidClient(client))
-	{
-		if(action==MenuAction_Select)
-		{
-			if(selection==2)
-			{
-				SetClientSoundOptions(client, SOUNDEXCEPT_VOICE, false);
-			}
-			else
-			{
-				SetClientSoundOptions(client, SOUNDEXCEPT_VOICE, true);
-			}
-
-			CPrintToChat(client, "{olive}[FF2]{default} %t", "ff2_voice", selection==2 ? "off" : "on");
-			if(selection==2)
-			{
-				CPrintToChat(client, "%t", "ff2_voice2");
-			}
-		}
 	}
 }
 
