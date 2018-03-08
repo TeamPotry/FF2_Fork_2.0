@@ -2569,33 +2569,6 @@ public Action:Timer_Announce(Handle:timer)
 	return Plugin_Continue;
 }
 
-stock bool:MapHasMusic(bool:forceRecalc=false)  //SAAAAAARGE
-{
-	static bool:hasMusic;
-	static bool:found;
-	if(forceRecalc)
-	{
-		found=false;
-		hasMusic=false;
-	}
-
-	if(!found)
-	{
-		int entity=-1;
-		char name[64];
-		while((entity=FindEntityByClassname2(entity, "info_target"))!=-1)
-		{
-			GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-			if(!strcmp(name, "hale_no_music", false))
-			{
-				hasMusic=true;
-			}
-		}
-		found=true;
-	}
-	return hasMusic;
-}
-
 stock bool:CheckToChangeMapDoors()
 {
 	if(!Enabled || !Enabled2)
@@ -3654,33 +3627,6 @@ stock EmitSoundToAllExcept(exceptiontype=SOUNDEXCEPT_MUSIC, const String:sample[
 	}
 
 	EmitSound(clients, total, sample, entity, channel, level, flags, volume, pitch, speakerentity, origin, dir, updatePos, soundtime);
-}
-
-stock ShowGameText(String:buffer[], any:...)
-{
-    int iEntity = CreateEntityByName("game_text_tf");
-    if(IsValidEntity(iEntity))
-    {
-        char message[512];
-        VFormat(message, sizeof(message), buffer, 2);
-        DispatchKeyValue(iEntity,"message", message);
-        DispatchKeyValue(iEntity,"display_to_team", "0");
-        DispatchKeyValue(iEntity,"icon", "ico_notify_sixty_seconds");
-        DispatchKeyValue(iEntity,"targetname", "game_text1");
-        DispatchKeyValue(iEntity,"background", "0");
-        DispatchSpawn(iEntity);
-        AcceptEntityInput(iEntity, "Display", iEntity, iEntity);
-        CreateTimer(2.5, KillGameText, iEntity);
-        return iEntity;
-    }
-    return -1;
-}
-
-public Action:KillGameText(Handle:hTimer, any:iEntity)
-{
-    if ((iEntity > 0) && IsValidEntity(iEntity))
-        AcceptEntityInput(iEntity, "kill");
-    return Plugin_Stop;
 }
 
 stock bool:CheckSoundException(client, soundException, String:code[]="")
@@ -5085,76 +5031,6 @@ public Action:CheckItems(Handle:timer, any:userid)
 	return Plugin_Continue;
 }
 
-stock RemovePlayerTarge(client)
-{
-	int entity=MaxClients+1;
-	while((entity=FindEntityByClassname2(entity, "tf_wearable_demoshield"))!=-1)
-	{
-		int index=GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")==client && !GetEntProp(entity, Prop_Send, "m_bDisguiseWearable"))
-		{
-			if(index==131 || index==406 || index==1099 || index==1144)  //Chargin' Targe, Splendid Screen, Tide Turner, Festive Chargin' Targe
-			{
-				TF2_RemoveWearable(client, entity);
-			}
-		}
-	}
-}
-
-stock bool IsDemoShield(int entity)
-{
-	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-
-	if(index==131 || index==406 || index==1099 || index==1144)  //Chargin' Targe, Splendid Screen, Tide Turner, Festive Chargin' Targe
-	{
-		return true;
-	}
-
-	return false;
-}
-
-stock RemovePlayerBack(client, indices[], length)
-{
-	if(length<=0)
-	{
-		return;
-	}
-
-	int entity=MaxClients+1;
-	while((entity=FindEntityByClassname2(entity, "tf_wearable"))!=-1)
-	{
-		char netclass[32];
-		if(GetEntityNetClass(entity, netclass, sizeof(netclass)) && StrEqual(netclass, "CTFWearable"))
-		{
-			int index=GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-			if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")==client && !GetEntProp(entity, Prop_Send, "m_bDisguiseWearable"))
-			{
-				for(int i; i<length; i++)
-				{
-					if(index==indices[i])
-					{
-						TF2_RemoveWearable(client, entity);
-					}
-				}
-			}
-		}
-	}
-}
-
-stock FindPlayerBack(client, index)
-{
-	int entity=MaxClients+1;
-	while((entity=FindEntityByClassname2(entity, "tf_wearable"))!=-1)
-	{
-		char netclass[32];
-		if(GetEntityNetClass(entity, netclass, sizeof(netclass)) && StrEqual(netclass, "CTFWearable") && GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex")==index && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity")==client && !GetEntProp(entity, Prop_Send, "m_bDisguiseWearable"))
-		{
-			return entity;
-		}
-	}
-	return -1;
-}
-
 public Action:OnObjectDestroyed(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if(Enabled)
@@ -5567,31 +5443,6 @@ public Action:Command_Point_Enable(client, args)
 		SetControlPoint(true);
 	}
 	return Plugin_Handled;
-}
-
-stock SetControlPoint(bool:enable)
-{
-	int controlPoint=MaxClients+1;
-	while((controlPoint=FindEntityByClassname2(controlPoint, "team_control_point"))!=-1)
-	{
-		if(controlPoint>MaxClients && IsValidEntity(controlPoint))
-		{
-			AcceptEntityInput(controlPoint, (enable ? "ShowModel" : "HideModel"));
-			SetVariantInt(enable ? 0 : 1);
-			AcceptEntityInput(controlPoint, "SetLocked");
-		}
-	}
-}
-
-stock SetArenaCapEnableTime(Float:time)
-{
-	int entity=-1;
-	if((entity=FindEntityByClassname2(-1, "tf_logic_arena"))!=-1 && IsValidEntity(entity))
-	{
-		char timeString[32];
-		FloatToString(time, timeString, sizeof(timeString));
-		DispatchKeyValue(entity, "CapEnableDelay", timeString);
-	}
 }
 
 public OnClientPostAdminCheck(client) // OnClientPutInServer
@@ -6106,18 +5957,7 @@ public Action:ClientTimer(Handle:timer)
 	return Plugin_Continue;
 }
 
-stock FindSentry(client)
-{
-	int entity=-1;
-	while((entity=FindEntityByClassname2(entity, "obj_sentrygun"))!=-1)
-	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
-		{
-			return entity;
-		}
-	}
-	return -1;
-}
+
 
 public Action:BossTimer(Handle:timer)
 {
@@ -6507,7 +6347,7 @@ public Action:BossTimer(Handle:timer)
 
 		if(Boss[boss].GetCharge(0) < Boss[boss].MaxRageCharge)
 		{
-			Boss[boss].SetCharge(0, Boss[boss].GetCharge(0) + (OnlyParisLeft()*0.2)/3.5);
+			Boss[boss].SetCharge(0, Boss[boss].GetCharge(0) + (OnlyParisLeft(BossTeam)*0.2)/3.5);
 		}
 
 		HPTime-=0.2;
@@ -6538,35 +6378,6 @@ public Action:Timer_BotRage(Handle:timer, any:bot)
 	{
 		FakeClientCommandEx(Boss[bot].ClientIndex, "voicemenu 0 0");
 	}
-}
-
-stock OnlyParisLeft()
-{
-	int scouts;
-	for(int client; client<=MaxClients; client++)
-	{
-		if(IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client)!=BossTeam)
-		{
-			if(TF2_GetPlayerClass(client) == TFClass_Scout
-			|| (TF2_GetPlayerClass(client) == TFClass_Soldier && GetIndexOfWeaponSlot(client, TFWeaponSlot_Primary) == 237)
-			|| (TF2_GetPlayerClass(client) == TFClass_Spy && (TF2_IsPlayerInCondition(client, TFCond_Cloaked) || TF2_IsPlayerInCondition(client, TFCond_Stealthed)))
-			)
-			{
-				scouts++;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-	}
-	return scouts;
-}
-
-stock GetIndexOfWeaponSlot(client, slot)
-{
-	int weapon=GetPlayerWeaponSlot(client, slot);
-	return (weapon>MaxClients && IsValidEntity(weapon) ? GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") : -1);
 }
 
 public TF2_OnConditionAdded(client, TFCond:condition)
@@ -8751,63 +8562,6 @@ public Action OnGetMaxHealth(int client, int &maxHealth)
 	return Plugin_Continue;
 }
 
-stock SpawnSmallHealthPackAt(client, team=0)
-{
-	if(!IsValidClient(client, false) || !IsPlayerAlive(client))
-	{
-		return;
-	}
-
-	int healthpack=CreateEntityByName("item_healthkit_small");
-	float position[3];
-	GetClientAbsOrigin(client, position);
-	position[2]+=20.0;
-	if(IsValidEntity(healthpack))
-	{
-		DispatchKeyValue(healthpack, "OnPlayerTouch", "!self,Kill,,0,-1");
-		DispatchSpawn(healthpack);
-		SetEntProp(healthpack, Prop_Send, "m_iTeamNum", team, 4);
-		SetEntityMoveType(healthpack, MOVETYPE_VPHYSICS);
-		float velocity[3];//={float(GetRandomInt(-10, 10)), float(GetRandomInt(-10, 10)), 50.0};  //Q_Q
-		velocity[0]=float(GetRandomInt(-10, 10)), velocity[1]=float(GetRandomInt(-10, 10)), velocity[2]=50.0;  //I did this because setting it on the creation of the vel variable was creating a compiler error for me.
-		TeleportEntity(healthpack, position, NULL_VECTOR, velocity);
-	}
-}
-
-stock IncrementHeadCount(client)
-{
-	if(!TF2_IsPlayerInCondition(client, TFCond_DemoBuff))
-	{
-		TF2_AddCondition(client, TFCond_DemoBuff, -1.0);
-	}
-
-	int decapitations=GetEntProp(client, Prop_Send, "m_iDecapitations");
-	int health=GetClientHealth(client);
-	SetEntProp(client, Prop_Send, "m_iDecapitations", decapitations+1);
-	SetEntityHealth(client, health+15);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.01);
-}
-
-stock FindTeleOwner(client)
-{
-	if(!IsValidClient(client) || !IsPlayerAlive(client))
-	{
-		return -1;
-	}
-
-	int teleporter=GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
-	char classname[32];
-	if(IsValidEntity(teleporter) && GetEntityClassname(teleporter, classname, sizeof(classname)) && !strcmp(classname, "obj_teleporter", false))
-	{
-		int owner=GetEntPropEnt(teleporter, Prop_Send, "m_hBuilder");
-		if(IsValidClient(owner, false))
-		{
-			return owner;
-		}
-	}
-	return -1;
-}
-
 stock TF2_IsPlayerCritBuffed(client)
 {
 	return (TF2_IsPlayerInCondition(client, TFCond_Kritzkrieged) || TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy) || TF2_IsPlayerInCondition(client, TFCond:34) || TF2_IsPlayerInCondition(client, TFCond:35) || TF2_IsPlayerInCondition(client, TFCond_CritOnFirstBlood) || TF2_IsPlayerInCondition(client, TFCond_CritOnWin) || TF2_IsPlayerInCondition(client, TFCond_CritOnFlagCapture) || TF2_IsPlayerInCondition(client, TFCond_CritOnKill) || TF2_IsPlayerInCondition(client, TFCond_CritMmmph));
@@ -8855,54 +8609,6 @@ stock AssignTeam(client, team)
 			TF2_SetPlayerClass(client, TFClass_Scout);
 		}
 		TF2_RespawnPlayer(client);
-	}
-}
-
-stock RandomlyDisguise(client)	//Original code was mecha's, but the original code is broken and this uses a better method now.
-{
-	if(IsValidClient(client) && IsPlayerAlive(client))
-	{
-		int disguiseTarget=-1;
-		int team=GetClientTeam(client);
-
-		Handle disguiseArray=CreateArray();
-		for(int clientcheck; clientcheck<=MaxClients; clientcheck++)
-		{
-			if(IsValidClient(clientcheck) && GetClientTeam(clientcheck)==team && clientcheck!=client)
-			{
-				PushArrayCell(disguiseArray, clientcheck);
-			}
-		}
-
-		if(GetArraySize(disguiseArray)<=0)
-		{
-			disguiseTarget=client;
-		}
-		else
-		{
-			disguiseTarget=GetArrayCell(disguiseArray, GetRandomInt(0, GetArraySize(disguiseArray)-1));
-			if(!IsValidClient(disguiseTarget))
-			{
-				disguiseTarget=client;
-			}
-		}
-
-		int class=GetRandomInt(0, 4);
-		TFClassType classArray[]={TFClass_Scout, TFClass_Pyro, TFClass_Medic, TFClass_Engineer, TFClass_Sniper};
-		CloseHandle(disguiseArray);
-
-		if(TF2_GetPlayerClass(client)==TFClass_Spy)
-		{
-			TF2_DisguisePlayer(client, TFTeam:team, classArray[class], disguiseTarget);
-		}
-		else
-		{
-			TF2_AddCondition(client, TFCond_Disguised, -1.0);
-			SetEntProp(client, Prop_Send, "m_nDisguiseTeam", team);
-			SetEntProp(client, Prop_Send, "m_nDisguiseClass", classArray[class]);
-			SetEntProp(client, Prop_Send, "m_iDisguiseTargetIndex", disguiseTarget);
-			SetEntProp(client, Prop_Send, "m_iDisguiseHealth", 200);
-		}
 	}
 }
 
@@ -9431,19 +9137,6 @@ stock bool RandomSoundAbility(const char[] sound, char[] file, int length, int b
 	}
 */
 	return true;
-}
-
-ForceTeamWin(team)
-{
-	int entity=FindEntityByClassname2(-1, "team_control_point_master");
-	if(!IsValidEntity(entity))
-	{
-		entity=CreateEntityByName("team_control_point_master");
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "Enable");
-	}
-	SetVariantInt(team);
-	AcceptEntityInput(entity, "SetWinner");
 }
 
 public bool:PickCharacter(boss, companion)
@@ -10881,15 +10574,6 @@ public Action:Command_Say(client, args)
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
-}
-
-stock FindEntityByClassname2(startEnt, const String:classname[])
-{
-	while(startEnt>-1 && !IsValidEntity(startEnt))
-	{
-		startEnt--;
-	}
-	return FindEntityByClassname(startEnt, classname);
 }
 
 bool UseAbility(const String:ability_name[], const String:plugin_name[], boss, slot, buttonMode=0)
