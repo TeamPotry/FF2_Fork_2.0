@@ -13,6 +13,16 @@ public int Native_FF2Boss_CharacterIndex_Set(Handle plugin, int numParams)
     view_as<FF2Boss>(GetNativeCell(1)).Set(view_as<int>(Boss_CharacterIndex), GetNativeCell(2));
 }
 
+public int Native_FF2Boss_Team_Get(Handle plugin, int numParams)
+{
+    return view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_Team));
+}
+
+public int Native_FF2Boss_Team_Set(Handle plugin, int numParams)
+{
+    view_as<FF2Boss>(GetNativeCell(1)).Set(view_as<int>(Boss_Team), GetNativeCell(2));
+}
+
 public int Native_FF2Boss_HealthPoint_Get(Handle plugin, int numParams)
 {
     return view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_HP));
@@ -223,4 +233,25 @@ public int Native_FF2Boss_SetMaxAbilityCooldown(Handle plugin, int numParams)
     boss.GetArray(view_as<int>(Boss_MaxAbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
     cooldownTime[index] = time;
     boss.SetArray(view_as<int>(Boss_MaxAbilityCooldown), cooldownTime, MAX_BOSS_SLOT_COUNT);
+}
+
+public int Native_FF2Boss_GetAbilityName(Handle plugin, int numParams)
+{
+    ArrayList nameArray = view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_AbilityName));
+    int index = GetNativeCell(2);
+    int buffer = GetNativeCell(4) + 1;
+    char[] abilityName = new char[buffer];
+
+    nameArray.GetString(index, abilityName, buffer);
+    SetNativeString(3, abilityName, buffer - 1);
+}
+
+public int Native_FF2Boss_SetAbilityName(Handle plugin, int numParams)
+{
+    ArrayList nameArray = view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_AbilityName);
+    int index = GetNativeCell(2);
+    char abilityNameValue[MAX_BOSS_ABILITY_NAME_LEN];
+    GetNativeString(3, abilityNameValue, sizeof(abilityNameValue));
+
+    nameArray.SetString(index, abilityNameValue);
 }
