@@ -123,8 +123,8 @@ methodmap FF2BossInfoTimer < ArrayList
 
 	public void DeleteSelf()
 	{
-		KillTimer(this.Get(view_as<int>(Info_Timer));
-		delete this.Get(view_as<int>(Info_Timer));
+		KillTimer(this.Get(view_as<int>(Info_Timer)));
+		delete view_as<Handle>(this.Get(view_as<int>(Info_Timer)));
 		delete this;
 	}
 }
@@ -241,7 +241,7 @@ methodmap FF2Boss < ArrayList {
 
 	public void DeleteSelf()
 	{
-		delete this.Get(view_as<int>(Boss_AbilityName));
+		delete view_as<ArrayList>(this.Get(view_as<int>(Boss_AbilityName)));
 		delete this;
 	}
 }
