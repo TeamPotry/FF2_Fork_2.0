@@ -141,7 +141,7 @@ methodmap FF2Boss < ArrayList {
 			if(loop == view_as<int>(Boss_AbilityName))
 			{
 				ArrayList tempArray = new ArrayList(MAX_BOSS_ABILITY_NAME_LEN, MAX_BOSS_SLOT_COUNT+1);
-				char nullString[MAX_BOSS_ABILITY_NAME_LEN] = {null, ...};
+				char nullString[MAX_BOSS_ABILITY_NAME_LEN] = {'\0', ...};
 				for(int temp = 0; temp < MAX_BOSS_SLOT_COUNT+1; temp++)
 				{
 					tempArray.PushString(nullString);

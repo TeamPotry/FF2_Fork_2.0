@@ -248,7 +248,7 @@ public int Native_FF2Boss_GetAbilityName(Handle plugin, int numParams)
 
 public int Native_FF2Boss_SetAbilityName(Handle plugin, int numParams)
 {
-    ArrayList nameArray = view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_AbilityName);
+    ArrayList nameArray = view_as<FF2Boss>(GetNativeCell(1)).Get(view_as<int>(Boss_AbilityName));
     int index = GetNativeCell(2);
     char abilityNameValue[MAX_BOSS_ABILITY_NAME_LEN];
     GetNativeString(3, abilityNameValue, sizeof(abilityNameValue));
