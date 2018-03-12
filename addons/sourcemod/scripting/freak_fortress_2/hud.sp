@@ -15,3 +15,11 @@ public Action BossInfoTimer_Loop(Handle timer, any timer)
 
     return Plugin_Continue;
 }
+
+public int Native_OnKillInfoTImer(Handle plugin, int numParams)
+{
+    FF2BossInfoTimer timerArray = view_as<FF2BossInfoTimer>(GetNativeCell(1));
+    Handle timer = timerArray.Get(view_as<int>(Info_Timer)
+    KillTimer(timer);
+    delete timer;
+}

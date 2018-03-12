@@ -233,3 +233,10 @@ public int Native_FF2Boss_SetAbilityName(Handle plugin, int numParams)
 
     nameArray.SetString(index, abilityName);
 }
+
+public int Native_OnKillFF2Boss(Handle plugin, int numParams)
+{
+    FF2Boss bossArray = view_as<FF2Boss>(GetNativeCell(1));
+
+    delete bossArray.Get(view_as<int>(Boss_AbilityName));
+}

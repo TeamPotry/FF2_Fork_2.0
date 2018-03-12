@@ -1208,6 +1208,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("FF2Boss.SetMaxAbilityCooldown", Native_FF2Boss_SetMaxAbilityCooldown);
 	CreateNative("FF2Boss.GetAbilityName", Native_FF2Boss_GetAbilityName);
 	CreateNative("FF2Boss.SetAbilityName", Native_FF2Boss_SetAbilityName);
+	CreateNative("OnKillInfoTImer", Native_OnKillInfoTImer);
+	CreateNative("OnKillFF2Boss", Native_OnKillFF2Boss);
+
 
 	PreAbility=CreateGlobalForward("FF2_PreAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell, Param_CellByRef);  //Boss, plugin name, ability name, slot, enabled
 	OnAbility=CreateGlobalForward("FF2_OnAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell);  //Boss, plugin name, ability name, status
