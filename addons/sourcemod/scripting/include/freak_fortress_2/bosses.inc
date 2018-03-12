@@ -98,13 +98,7 @@ methodmap FF2BossInfoTimer < ArrayList
 
 		return timerArray;
 	}
-
-	public ~FF2BossInfoTimer()
-	{
-		KillTimer(this.Get(view_as<int>(Info_Timer));
-		delete this.Get(view_as<int>(Info_Timer));
-	}
-
+	
 	property bool NoticeReloadAbility {
 		public get()
 		{
@@ -125,6 +119,13 @@ methodmap FF2BossInfoTimer < ArrayList
 		{
 			this.Set(view_as<int>(Info_RightMouseAbility), value);
 		}
+	}
+
+	public void DeleteSelf()
+	{
+		KillTimer(this.Get(view_as<int>(Info_Timer));
+		delete this.Get(view_as<int>(Info_Timer));
+		delete this;
 	}
 }
 
@@ -159,11 +160,6 @@ methodmap FF2Boss < ArrayList {
 		}
 
 		return view_as<FF2Boss>(bossValues);
-	}
-
-	public ~FF2Boss()
-	{
-		delete this.Get(view_as<int>(Boss_AbilityName));
 	}
 
 	property int ClientIndex {
@@ -242,4 +238,10 @@ methodmap FF2Boss < ArrayList {
 	public native void GetAbilityName(const int index, char[] value, int buffer);
 
 	public native void SetAbilityName(const int index, const char[] value);
+
+	public void DeleteSelf()
+	{
+		delete this.Get(view_as<int>(Boss_AbilityName));
+		delete this;
+	}
 }
