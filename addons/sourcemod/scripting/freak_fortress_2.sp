@@ -38,6 +38,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 
 #include "freak_fortress_2/stocks.sp"
 #include "freak_fortress_2/menu.sp"
+#include "freak_fortress_2/hud.sp"
 #include "freak_fortress_2/natives/ff2boss.sp"
 
 #define REQUIRE_PLUGIN
@@ -1177,6 +1178,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("FF2Boss.ClientIndex.get", Native_FF2Boss_ClientIndex_Get);
 	CreateNative("FF2Boss.CharacterIndex.get", Native_FF2Boss_CharacterIndex_Get);
 	CreateNative("FF2Boss.CharacterIndex.set", Native_FF2Boss_CharacterIndex_Set);
+	CreateNative("FF2Boss.Team.get", Native_FF2Boss_Team_Get);
+	CreateNative("FF2Boss.Team.set", Native_FF2Boss_Team_Set);
 	CreateNative("FF2Boss.HealthPoint.get", Native_FF2Boss_HealthPoint_Get);
 	CreateNative("FF2Boss.HealthPoint.set", Native_FF2Boss_HealthPoint_Set);
 	CreateNative("FF2Boss.MaxHealthPoint.get", Native_FF2Boss_MaxHealthPoint_Get);
@@ -1203,7 +1206,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("FF2Boss.SetAbilityCooldown", Native_FF2Boss_SetAbilityCooldown);
 	CreateNative("FF2Boss.GetMaxAbilityCooldown", Native_FF2Boss_GetMaxAbilityCooldown);
 	CreateNative("FF2Boss.SetMaxAbilityCooldown", Native_FF2Boss_SetMaxAbilityCooldown);
-
+	CreateNative("FF2Boss.GetAbilityName", Native_FF2Boss_GetAbilityName);
+	CreateNative("FF2Boss.SetAbilityName", Native_FF2Boss_SetAbilityName);
 
 	PreAbility=CreateGlobalForward("FF2_PreAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell, Param_CellByRef);  //Boss, plugin name, ability name, slot, enabled
 	OnAbility=CreateGlobalForward("FF2_OnAbility", ET_Hook, Param_Cell, Param_String, Param_String, Param_Cell);  //Boss, plugin name, ability name, status
