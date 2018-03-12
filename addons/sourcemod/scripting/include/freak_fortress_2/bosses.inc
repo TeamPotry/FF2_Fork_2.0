@@ -98,7 +98,7 @@ methodmap FF2BossInfoTimer < ArrayList
 
 		return timerArray;
 	}
-	
+
 	property bool NoticeReloadAbility {
 		public get()
 		{
@@ -170,7 +170,7 @@ methodmap FF2Boss < ArrayList {
 			public native get();
 			public native set(const int characterIndex);
 	}
-	property int Team {
+	property TFTeam Team {
 			public native get();
 			public native set(const TFTeam team);
 	}
