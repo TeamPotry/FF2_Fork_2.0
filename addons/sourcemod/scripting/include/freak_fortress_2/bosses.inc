@@ -99,7 +99,11 @@ methodmap FF2BossInfoTimer < ArrayList
 		return timerArray;
 	}
 
-	public ~FF2BossInfoTimer() = OnKillInfoTImer
+	public ~FF2BossInfoTimer()
+	{
+		KillTimer(this.Get(view_as<int>(Info_Timer));
+		delete this.Get(view_as<int>(Info_Timer));
+	}
 
 	property bool NoticeReloadAbility {
 		public get()
@@ -123,9 +127,6 @@ methodmap FF2BossInfoTimer < ArrayList
 		}
 	}
 }
-
-native void OnKillInfoTImer(FF2BossInfoTimer timer);
-////////////////////////////////////////////////////////////////////
 
 methodmap FF2Boss < ArrayList {
 	public FF2Boss(int client)
@@ -160,7 +161,10 @@ methodmap FF2Boss < ArrayList {
 		return view_as<FF2Boss>(bossValues);
 	}
 
-	public FF2Boss() = OnKillFF2Boss
+	public ~FF2Boss()
+	{
+		delete this.Get(view_as<int>(Boss_AbilityName));
+	}
 
 	property int ClientIndex {
 		public native get();
@@ -239,5 +243,3 @@ methodmap FF2Boss < ArrayList {
 
 	public native void SetAbilityName(const int index, const char[] value);
 }
-
-native void OnKillFF2Boss(FF2Boss timer);
