@@ -3918,15 +3918,6 @@ public Action:MakeBoss(Handle:timer, any:boss)
 	Call_PushCell(boss);
 	Call_Finish();
 
-	/*
-	Handle testDeath=CreateEvent("player_death", true);
-	SetEventInt(testDeath, "userid", GetClientUserId(client));
-	SetEventBool(testDeath, "silent_kill", true);
-	FireEvent(testDeath);
-	TF2_RespawnPlayer(client);
-	*/
-	// FormulaBossHealth
-
 	KvRewind(BossKV[Special[boss]]);
 
 	if(GetClientTeam(client)!=BossTeam)
@@ -3957,11 +3948,13 @@ public Action:MakeBoss(Handle:timer, any:boss)
 	Boss[boss].Difficulty = GetClientDifficultyCookie(client);
 	FormulaBossHealth(boss);
 
+	/*
 	if(StrEqual(bossName, "You", true) ||
 	StrEqual(bossName, "당신", true))
 	{
 		IsBossYou[client] = true;
 	}
+	*/
 
 	KvGetString(BossKV[Special[boss]], "ability_name", BossRageName[boss], sizeof(BossRageName[]));
 	KvGetString(BossKV[Special[boss]], "upgrade_ability_name", BossUpgradeRageName[boss], sizeof(BossUpgradeRageName[]));
@@ -4008,11 +4001,13 @@ public Action:MakeBoss(Handle:timer, any:boss)
 			FF2flags[client]|=FF2FLAG_ALLOW_HEALTH_PICKUPS|FF2FLAG_ALLOW_AMMO_PICKUPS;
 		}
 	}
+	/*
 	if(IsBossYou[client])
 	{
 		FF2flags[client]|=FF2FLAG_NOTALLOW_RAGE;
 		FF2flags[client]|=FF2FLAG_ALLOW_HEALTH_PICKUPS|FF2FLAG_ALLOW_AMMO_PICKUPS;
 	}
+	*/
 
 	CreateTimer(0.2, MakeModelTimer, boss, TIMER_FLAG_NO_MAPCHANGE);
 	if(!IsVoteInProgress())
