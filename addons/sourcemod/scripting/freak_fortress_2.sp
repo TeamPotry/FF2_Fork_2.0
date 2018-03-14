@@ -3955,27 +3955,38 @@ public Action MakeBoss(Handle timer, any boss)
 	}
 	*/
 
-	KvGetString(BossKV[Special[boss]], "ability_name", BossRageName[boss], sizeof(BossRageName[]));
-	KvGetString(BossKV[Special[boss]], "upgrade_ability_name", BossUpgradeRageName[boss], sizeof(BossUpgradeRageName[]));
 
-	for(int slot=0; slot<8; slot++)
+	if(KvJumpToKey(BossKV[Special[boss]], "ability_slot_detail"))
 	{
-	 	char durationItem[20];
-		char cooltimeItem[20];
-
-		if(slot == 0)
+		char temp[MAX_BOSS_ABILITY_NAME_LEN];
+		for(int slot = 0; slot < MAX_BOSS_SLOT_COUNT + 1; slot++)
 		{
-			Format(durationItem, sizeof(durationItem), "ability_duration");
-			Format(cooltimeItem, sizeof(cooltimeItem), "cooldown");
-		}
-		else
-		{
-			Format(durationItem, sizeof(durationItem), "ability_duration_slot%i", slot);
-			Format(cooltimeItem, sizeof(cooltimeItem), "cooldown_slot%i", slot);
-		}
+			if(slot == 0)
+			{
+				KvGetString(BossKV[Special[boss]], "rage_name", temp, sizeof(temp));
+				Boss[boss].SetAbilityName(slot, temp);
+				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], "rage_duration", 5.0));
+				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], "rage_cooldown", 10.0));
 
-		Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], durationItem, 5.0));
-		Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], cooltimeItem, 10.0));
+			}
+			else if(slot == MAX_BOSS_SLOT_COUNT)
+			{
+				KvGetString(BossKV[Special[boss]], "upgraded_rage_name", temp, sizeof(temp));
+				Boss[boss].SetAbilityName(slot, temp);
+				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], "upgraded_rage_duration", 5.0));
+				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], "upgraded_rage_cooldown", 10.0));
+			}
+			else
+			{
+				Format(temp, sizeof(temp), "ability_slot%i_name", slot);
+				KvGetString(BossKV[Special[boss]], temp, temp, sizeof(temp));
+				Boss[boss].SetAbilityName(slot, temp);
+				Format(temp, sizeof(temp), "ability_slot%i_duration", slot);
+				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], temp, 5.0));
+				Format(temp, sizeof(temp), "ability_slot%i_cooldown", slot);
+				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], temp, 10.0));
+			}
+		}
 	}
 
 	SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0);
