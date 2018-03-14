@@ -5418,7 +5418,7 @@ public OnClientDisconnect(client)
 			bool omit[MAXPLAYERS+1];
 			omit[client]=true;
 
-			delete Boss[boss];
+			Boss[boss].DeleteSelf();
 			Boss[boss] = new FF2Boss(GetClientWithMostQueuePoints(omit));
 
 			if(Boss[boss].ClientIndex)
@@ -10647,7 +10647,7 @@ public Native_MakeClientToBoss(Handle:plugin, numParams)
 	IsBossDoing[client] = true;
 	if(boss > 0 && Boss[boss].ClientIndex <= 0)
 	{
-		delete Boss[boss];
+		Boss[boss].DeleteSelf();
 		Special[boss] = boss;
 
 		Debug("MakeClientToBoss: %N %i", client, boss);
