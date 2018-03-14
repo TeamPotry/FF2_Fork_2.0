@@ -118,8 +118,8 @@ FF2Boss Boss[MAXPLAYERS+1];
 
 int BossHealthLast[MAXPLAYERS+1];
 
-char BossRageName[MAXPLAYERS+1][68];
-char BossUpgradeRageName[MAXPLAYERS+1][68];
+// char BossRageName[MAXPLAYERS+1][68];
+// char BossUpgradeRageName[MAXPLAYERS+1][68];
 bool IsUpgradeRage[MAXPLAYERS+1];
 
 bool IsBossYou[MAXPLAYERS+1];
@@ -5553,6 +5553,8 @@ public Action:ClientTimer(Handle:timer)
 		DPSTick=0;
 	}
 
+	char BossRageName[MAX_BOSS_ABILITY_NAME_LEN], BossUpgradeRageName[MAX_BOSS_ABILITY_NAME_LEN];
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsValidClient(client) && !IsBoss(client) && !(FF2flags[client] & FF2FLAG_CLASSTIMERDISABLED))
@@ -5579,6 +5581,9 @@ public Action:ClientTimer(Handle:timer)
 						char temp[150];
 						int boss = GetBossIndex(observer);
 
+						Boss[boss].GetAbilityName(0, BossRageName);
+						Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName);
+
 						if(Boss[boss].Lives>1)
 						{
 							Format(temp, sizeof(temp), "%t", "ff2_client_timer_observer_lifes", Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (Boss[boss].Lives - 1), Boss[boss].MaxHealthPoint, Boss[boss].Lives);
@@ -5603,7 +5608,7 @@ public Action:ClientTimer(Handle:timer)
 							if(Boss[boss].GetAbilityDuration(0) > 0.0)
 							{
 								Format(temp2, sizeof(temp), "%.1f", Boss[boss].GetAbilityDuration(0));
-								Format(temp, sizeof(temp), "%s | %t", temp, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp2);
+								Format(temp, sizeof(temp), "%s | %t", temp, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName : BossRageName, temp2);
 							}
 							else if(Boss[boss].GetAbilityCooldown(0) > 0.0)
 							{
@@ -5946,16 +5951,20 @@ public Action:BossTimer(Handle:timer)
 
 				char temp[150];
 				char temp3[100];
+				char BossRageName[MAX_BOSS_ABILITY_NAME_LEN], BossUpgradeRageName[MAX_BOSS_ABILITY_NAME_LEN];
 
 				if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0) > 0.0)
 				{
 					char temp2[30];
+					Boss[boss].GetAbilityName(0, BossRageName);
+					Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName);
+
 					if(Boss[boss].GetAbilityDuration(0) > 0.0)
 					{
 						Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(Boss[boss].GetCharge(0)), RoundFloat(Boss[boss].MaxRageCharge), RoundFloat(Boss[boss].GetCharge(0)*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 						Format(temp2, sizeof(temp2), "%.1f", Boss[boss].GetAbilityDuration(0));
 						SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
-						Format(temp, sizeof(temp), "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp2);
+						Format(temp, sizeof(temp), "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName : BossRageName, temp2);
 					}
 					else if(Boss[boss].GetAbilityCooldown(0) > 0.0)
 					{
@@ -6030,6 +6039,10 @@ public Action:BossTimer(Handle:timer)
 			}
 			else if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0) > 0.0)
 			{
+				char BossRageName[MAX_BOSS_ABILITY_NAME_LEN], BossUpgradeRageName[MAX_BOSS_ABILITY_NAME_LEN];
+
+				Boss[boss].GetAbilityName(0, BossRageName);
+				Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName);
 				char temp[42];
 				char temp3[100];
 
@@ -6038,7 +6051,7 @@ public Action:BossTimer(Handle:timer)
 					Format(temp3, sizeof(temp3), "%t |", "rage_meter", RoundFloat(Boss[boss].GetCharge(0)), RoundFloat(Boss[boss].MaxRageCharge), RoundFloat(Boss[boss].GetCharge(0)*(Boss[boss].RageDamage/100.0)), Boss[boss].RageDamage);
 					Format(temp, sizeof(temp), "%.1f", Boss[boss].GetAbilityDuration(0));
 					SetHudTextParams(-1.0, 0.83, 0.04, 64, 255, 64, 255);
-					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName[boss] : BossRageName[boss], temp);
+					FF2_ShowSyncHudText(client, rageHUD, "%s %t", temp3, "rage_meter_duration", IsUpgradeRage[boss] ? BossUpgradeRageName : BossRageName, temp);
 				}
 				else if(Boss[boss].GetAbilityCooldown(0) > 0.0)
 				{
