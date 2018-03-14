@@ -5587,8 +5587,8 @@ public Action:ClientTimer(Handle:timer)
 						char temp[150];
 						int boss = GetBossIndex(observer);
 
-						Boss[boss].GetAbilityName(0, BossRageName);
-						Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName);
+						Boss[boss].GetAbilityName(0, BossRageName, MAX_BOSS_ABILITY_NAME_LEN);
+						Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName, MAX_BOSS_ABILITY_NAME_LEN);
 
 						if(Boss[boss].Lives>1)
 						{
@@ -5962,8 +5962,8 @@ public Action:BossTimer(Handle:timer)
 				if(Boss[boss].GetAbilityDuration(0) > 0.0 || Boss[boss].GetAbilityCooldown(0) > 0.0)
 				{
 					char temp2[30];
-					Boss[boss].GetAbilityName(0, BossRageName);
-					Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName);
+					Boss[boss].GetAbilityName(0, BossRageName, MAX_BOSS_ABILITY_NAME_LEN);
+					Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName, MAX_BOSS_ABILITY_NAME_LEN);
 
 					if(Boss[boss].GetAbilityDuration(0) > 0.0)
 					{
@@ -6047,8 +6047,8 @@ public Action:BossTimer(Handle:timer)
 			{
 				char BossRageName[MAX_BOSS_ABILITY_NAME_LEN], BossUpgradeRageName[MAX_BOSS_ABILITY_NAME_LEN];
 
-				Boss[boss].GetAbilityName(0, BossRageName);
-				Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName);
+				Boss[boss].GetAbilityName(0, BossRageName, MAX_BOSS_ABILITY_NAME_LEN);
+				Boss[boss].GetAbilityName(MAX_BOSS_SLOT_COUNT, BossUpgradeRageName, MAX_BOSS_ABILITY_NAME_LEN);
 				char temp[42];
 				char temp3[100];
 
