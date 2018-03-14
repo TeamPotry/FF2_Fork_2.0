@@ -3893,7 +3893,7 @@ EquipBoss(boss)
 	}
 }
 
-public Action:MakeBoss(Handle:timer, any:boss)
+public Action MakeBoss(Handle timer, any boss)
 {
 	int client = Boss[boss].ClientIndex;
 	if(!IsValidClient(client) || CheckRoundState()==-1)
@@ -3920,7 +3920,7 @@ public Action:MakeBoss(Handle:timer, any:boss)
 
 	KvRewind(BossKV[Special[boss]]);
 
-	if(GetClientTeam(client)!=BossTeam)
+	if(GetClientTeam(client) != BossTeam)
 	{
 		AssignTeam(client, BossTeam);
 	}
@@ -3929,22 +3929,22 @@ public Action:MakeBoss(Handle:timer, any:boss)
 	char bossName[64];
 	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 
-	Boss[boss].RageDamage=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
-	if(Boss[boss].RageDamage<=0)
+	Boss[boss].RageDamage = KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
+	if(Boss[boss].RageDamage <= 0)
 	{
 		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s's rage damage is 0 or below, setting to 1900", bossName);
 		Boss[boss].RageDamage=1900;
 	}
-/*
-	Boss[boss].MaxLives=KvGetNum(BossKV[Special[boss]], "lives", 1);
-	if(Boss[boss].MaxLives<=0)
+
+	Boss[boss].MaxLives = KvGetNum(BossKV[Special[boss]], "lives", 1);
+	if(Boss[boss].MaxLives <= 0)
 	{
-		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+		KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s has an invalid amount of lives, setting to 1", bossName);
-		Boss[boss].MaxLives=1;
+		Boss[boss].MaxLives = 1;
 	}
-*/
+
 	Boss[boss].Difficulty = GetClientDifficultyCookie(client);
 	FormulaBossHealth(boss);
 
