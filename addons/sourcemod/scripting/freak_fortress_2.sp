@@ -4069,6 +4069,8 @@ public Action MakeBoss(Handle timer, any boss)
 
 void MakeClientToBoss(int boss)
 {
+	/*
+	// TODO: Don't forget
 	int client = Boss[boss].ClientIndex;
 	if(!IsValidClient(client) || CheckRoundState()==-1)
 	{
@@ -4085,14 +4087,10 @@ void MakeClientToBoss(int boss)
 	Call_PushCell(boss);
 	Call_Finish();
 
-	Debug("OnPlayBoss: %N %i", client, boss);
-
 	KvRewind(BossKV[Special[boss]]);
 
 	char bossName[64];
 	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
-
-	Debug("OnPlayBoss: %s", bossName);
 
 	Boss[boss].RageDamage=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
 	if(Boss[boss].RageDamage<=0)
@@ -4110,9 +4108,6 @@ void MakeClientToBoss(int boss)
 	{
 		IsBossYou[client] = true;
 	}
-
-	KvGetString(BossKV[Special[boss]], "ability_name", BossRageName[boss], sizeof(BossRageName[]));
-	KvGetString(BossKV[Special[boss]], "upgrade_ability_name", BossUpgradeRageName[boss], sizeof(BossUpgradeRageName[]));
 
 	for(int slot=0; slot<8; slot++)
 	{
@@ -4213,6 +4208,7 @@ void MakeClientToBoss(int boss)
 	KSpreeCount[boss]=0;
 	Boss[boss].SetCharge(0, 0.0);
 	Boss[boss].MaxRageCharge = 100.0;
+	*/
 }
 
 public Action:TF2Items_OnGiveNamedItem(client, String:classname[], iItemDefinitionIndex, &Handle:item)
