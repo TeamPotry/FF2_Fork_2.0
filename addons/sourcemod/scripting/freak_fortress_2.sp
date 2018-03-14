@@ -91,7 +91,7 @@ int RoundCount;
 // int RPSWinner;
 int RPSLoser[MAXPLAYERS+1];
 int Special[MAXPLAYERS+1];
-int Incoming[MAXPLAYERS+1];
+int Incoming[MAXPLAYERS+1]; // 보스 강제 선택 여부: 캐릭터 index를 담음. 없으면 -1
 
 int Damage[MAXPLAYERS+1];
 int curHelp[MAXPLAYERS+1];
