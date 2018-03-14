@@ -2666,7 +2666,9 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 	for(int client; client<=MaxClients; client++)
 	{
 		if(Boss[client] != null)
-			delete Boss[client];
+		{
+			Boss[client].DeleteSelf();
+		}
 
 		Boss[client] = null;
 		if(IsValidClient(client) && IsPlayerAlive(client) && !(FF2flags[client] & FF2FLAG_HASONGIVED))
