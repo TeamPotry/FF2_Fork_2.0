@@ -3925,7 +3925,6 @@ public Action MakeBoss(Handle timer, any boss)
 		AssignTeam(client, BossTeam);
 	}
 
-
 	char bossName[64];
 	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
 
