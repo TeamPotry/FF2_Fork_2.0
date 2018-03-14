@@ -90,7 +90,7 @@ int BlueAlivePlayers;
 int RoundCount;
 // int RPSWinner;
 int RPSLoser[MAXPLAYERS+1];
-int Special[MAXPLAYERS+1];
+// int Special[MAXPLAYERS+1];
 int Incoming[MAXPLAYERS+1]; // 보스 강제 선택 여부: 캐릭터 index를 담음. 없으면 -1
 
 int Damage[MAXPLAYERS+1];
@@ -2723,7 +2723,7 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 	}
 
 	PickCharacter(0, 0);
-	if((Special[0]<0) || !BossKV[Special[0]])
+	if((Boss[0].CharacterIndex < 0) || !BossKV[Boss[0].CharacterIndex])
 	{
 		LogError("[FF2 Bosses] Couldn't find a boss!");
 		return Plugin_Continue;
@@ -2975,8 +2975,8 @@ public Action:OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 			if(IsBoss(target))
 			{
 				boss=Boss[target];
-				KvRewind(BossKV[Special[boss]]);
-				KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "=Failed name=");
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "=Failed name=");
 				Boss[boss].Lives>1 ? Format(lives, sizeof(lives), "x%i", Boss[boss].Lives) : strcopy(lives, 2, "");
 				Format(text, sizeof(text), "%s\n%t", text, "ff2_alive", bossName, target, BossHealth[boss]-Boss[boss].MaxHealthPoint*(Boss[boss].Lives-1), Boss[boss].MaxHealthPoint, lives);
 				CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_alive", bossName, target, BossHealth[boss]-Boss[boss].MaxHealthPoint*(Boss[boss].Lives-1), Boss[boss].MaxHealthPoint, lives);
@@ -3387,7 +3387,7 @@ PlayBGM(client)
 	if(selected && LoadedMusicData)
 		musicKv=CloneHandle(LoadedMusicData);
 	else
-		musicKv=CloneHandle(BossKV[Special[0]]);
+		musicKv=CloneHandle(BossKV[Boss[0].CharacterIndex]);
 
 	KvRewind(musicKv);
 	if((!selected &&
@@ -3713,8 +3713,8 @@ public Action:MessageTimer(Handle:timer)
 	// char teamname[80];
 	char specialApproach[64];
 
-/*	KvRewind(BossKV[Special[MainBoss]]);
-	KvGetString(BossKV[Special[MainBoss]], "team_name", name, sizeof(name), "");
+/*	KvRewind(BossKV[Boss[MainBoss].CharacterIndex]);
+	KvGetString(BossKV[Boss[MainBoss].CharacterIndex], "team_name", name, sizeof(name), "");
 
 	if(teamname[0] != '\0')
 	{
@@ -3735,9 +3735,9 @@ public Action:MessageTimer(Handle:timer)
 		int collectHp=0;
 		// int mainbossClient;
 
-		KvRewind(BossKV[Special[MainBoss]]);
-		KvGetString(BossKV[Special[MainBoss]], "team_name", teamname, sizeof(teamname), "=Failed name=");
-		KvGetString(BossKV[Special[MainBoss]], "special_approach", specialApproach, sizeof(specialApproach), "");
+		KvRewind(BossKV[Boss[MainBoss].CharacterIndex]);
+		KvGetString(BossKV[Boss[MainBoss].CharacterIndex], "team_name", teamname, sizeof(teamname), "=Failed name=");
+		KvGetString(BossKV[Boss[MainBoss].CharacterIndex], "special_approach", specialApproach, sizeof(specialApproach), "");
 		for(int client; client<=MaxClients; client++)
 		{
 			if(IsBoss(client))
@@ -3755,9 +3755,9 @@ public Action:MessageTimer(Handle:timer)
 		if(IsBoss(client))
 		{
 			int boss = Boss[client].ClientIndex;
-			KvRewind(BossKV[Special[boss]]);
-			KvGetString(BossKV[Special[boss]], "name", name, sizeof(name), "=Failed name=");
-			KvGetString(BossKV[Special[boss]], "special_approach", specialApproach, sizeof(specialApproach), "");
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", name, sizeof(name), "=Failed name=");
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "special_approach", specialApproach, sizeof(specialApproach), "");
 
 			if(Boss[boss].Lives>1)
 			{
@@ -3813,8 +3813,8 @@ public Action:MakeModelTimer(Handle:timer, any:client)
 	if(IsValidClient(Boss[client].ClientIndex) && IsPlayerAlive(Boss[client].ClientIndex) && CheckRoundState()!=2)
 	{
 		char model[PLATFORM_MAX_PATH];
-		KvRewind(BossKV[Special[client]]);
-		KvGetString(BossKV[Special[client]], "model", model, PLATFORM_MAX_PATH);
+		KvRewind(BossKV[Boss[client].CharacterIndex]);
+		KvGetString(BossKV[Boss[client].CharacterIndex], "model", model, PLATFORM_MAX_PATH);
 		SetVariantString(model);
 		AcceptEntityInput(Boss[client].ClientIndex, "SetCustomModel");
 		SetEntProp(Boss[client].ClientIndex, Prop_Send, "m_bUseClassAnimations", 1);
@@ -3831,12 +3831,12 @@ EquipBoss(boss)
 	char key[10], classname[64], attributes[256];
 	for(int i=1; ; i++)
 	{
-		KvRewind(BossKV[Special[boss]]);
+		KvRewind(BossKV[Boss[boss].CharacterIndex]);
 		Format(key, sizeof(key), "weapon%i", i);
-		if(KvJumpToKey(BossKV[Special[boss]], key))
+		if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], key))
 		{
-			KvGetString(BossKV[Special[boss]], "name", classname, sizeof(classname));
-			KvGetString(BossKV[Special[boss]], "attributes", attributes, sizeof(attributes));
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", classname, sizeof(classname));
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "attributes", attributes, sizeof(attributes));
 
 			if(attributes[0]!='\0')
 			{
@@ -3856,7 +3856,7 @@ EquipBoss(boss)
 				Format(attributes, sizeof(attributes), "%s ; 252 ; 0.5", attributes);
 			}
 
-			int index=KvGetNum(BossKV[Special[boss]], "index");
+			int index=KvGetNum(BossKV[Boss[boss].CharacterIndex], "index");
 			int weapon=SpawnWeapon(client, classname, index, 101, GetRandomInt(0, 15), attributes);
 			if(StrEqual(classname, "tf_weapon_builder", false) && index!=735)  //PDA, normal sapper
 			{
@@ -3875,7 +3875,7 @@ EquipBoss(boss)
 				SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 1, _, 3);
 			}
 
-			if(!KvGetNum(BossKV[Special[boss]], "show", 0))
+			if(!KvGetNum(BossKV[Boss[boss].CharacterIndex], "show", 0))
 			{
 				SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
 			}
@@ -3887,8 +3887,8 @@ EquipBoss(boss)
 		}
 	}
 
-	KvGoBack(BossKV[Special[boss]]);
-	TFClassType class = view_as<TFClassType>(KvGetNum(BossKV[Special[boss]], "class", 1));
+	KvGoBack(BossKV[Boss[boss].CharacterIndex]);
+	TFClassType class = view_as<TFClassType>(KvGetNum(BossKV[Boss[boss].CharacterIndex], "class", 1));
 	if(TF2_GetPlayerClass(client) != class)
 	{
 		TF2_SetPlayerClass(client, class, _, !GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass") ? true : false);
@@ -3920,7 +3920,7 @@ public Action MakeBoss(Handle timer, any boss)
 	Call_PushCell(boss);
 	Call_Finish();
 
-	KvRewind(BossKV[Special[boss]]);
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
 
 	if(GetClientTeam(client) != BossTeam)
 	{
@@ -3928,20 +3928,20 @@ public Action MakeBoss(Handle timer, any boss)
 	}
 
 	char bossName[64];
-	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+	KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName));
 
-	Boss[boss].RageDamage = KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
+	Boss[boss].RageDamage = KvGetNum(BossKV[Boss[boss].CharacterIndex], "ragedamage", 1900);
 	if(Boss[boss].RageDamage <= 0)
 	{
-		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+		// KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s's rage damage is 0 or below, setting to 1900", bossName);
 		Boss[boss].RageDamage=1900;
 	}
 
-	Boss[boss].MaxLives = KvGetNum(BossKV[Special[boss]], "lives", 1);
+	Boss[boss].MaxLives = KvGetNum(BossKV[Boss[boss].CharacterIndex], "lives", 1);
 	if(Boss[boss].MaxLives <= 0)
 	{
-		KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s has an invalid amount of lives, setting to 1", bossName);
 		Boss[boss].MaxLives = 1;
 	}
@@ -3958,35 +3958,35 @@ public Action MakeBoss(Handle timer, any boss)
 	*/
 
 
-	if(KvJumpToKey(BossKV[Special[boss]], "ability_slot_detail"))
+	if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], "ability_slot_detail"))
 	{
 		char temp[MAX_BOSS_ABILITY_NAME_LEN];
 		for(int slot = 0; slot < MAX_BOSS_SLOT_COUNT + 1; slot++)
 		{
 			if(slot == 0)
 			{
-				KvGetString(BossKV[Special[boss]], "rage_name", temp, sizeof(temp));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "rage_name", temp, sizeof(temp));
 				Boss[boss].SetAbilityName(slot, temp);
-				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], "rage_duration", 5.0));
-				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], "rage_cooldown", 10.0));
+				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], "rage_duration", 5.0));
+				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], "rage_cooldown", 10.0));
 
 			}
 			else if(slot == MAX_BOSS_SLOT_COUNT)
 			{
-				KvGetString(BossKV[Special[boss]], "upgraded_rage_name", temp, sizeof(temp));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "upgraded_rage_name", temp, sizeof(temp));
 				Boss[boss].SetAbilityName(slot, temp);
-				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], "upgraded_rage_duration", 5.0));
-				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], "upgraded_rage_cooldown", 10.0));
+				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], "upgraded_rage_duration", 5.0));
+				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], "upgraded_rage_cooldown", 10.0));
 			}
 			else
 			{
 				Format(temp, sizeof(temp), "ability_slot%i_name", slot);
-				KvGetString(BossKV[Special[boss]], temp, temp, sizeof(temp));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], temp, temp, sizeof(temp));
 				Boss[boss].SetAbilityName(slot, temp);
 				Format(temp, sizeof(temp), "ability_slot%i_duration", slot);
-				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], temp, 5.0));
+				Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], temp, 5.0));
 				Format(temp, sizeof(temp), "ability_slot%i_cooldown", slot);
-				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], temp, 10.0));
+				Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], temp, 10.0));
 			}
 		}
 	}
@@ -3995,10 +3995,10 @@ public Action MakeBoss(Handle timer, any boss)
 	TF2_RemovePlayerDisguise(client);
 
 	if(!IsBossYou[client])
-		TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Special[boss]], "class", 1), _, !GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass") ? true : false);
+		TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Boss[boss].CharacterIndex], "class", 1), _, !GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass") ? true : false);
 	SDKHook(client, SDKHook_GetMaxHealth, OnGetMaxHealth);  //Temporary:  Used to prevent boss overheal
 
-	switch(KvGetNum(BossKV[Special[boss]], "pickups", 0))  //Check if the boss is allowed to pickup health/ammo
+	switch(KvGetNum(BossKV[Boss[boss].CharacterIndex], "pickups", 0))  //Check if the boss is allowed to pickup health/ammo
 	{
 		case 1:
 		{
@@ -4099,15 +4099,15 @@ void MakeClientToBoss(int boss)
 	Call_PushCell(boss);
 	Call_Finish();
 
-	KvRewind(BossKV[Special[boss]]);
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
 
 	char bossName[64];
-	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+	KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName));
 
-	Boss[boss].RageDamage=KvGetNum(BossKV[Special[boss]], "ragedamage", 1900);
+	Boss[boss].RageDamage=KvGetNum(BossKV[Boss[boss].CharacterIndex], "ragedamage", 1900);
 	if(Boss[boss].RageDamage<=0)
 	{
-		// KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+		// KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s's rage damage is 0 or below, setting to 1900", bossName);
 		Boss[boss].RageDamage=1900;
 	}
@@ -4137,18 +4137,18 @@ void MakeClientToBoss(int boss)
 			Format(cooltimeItem, sizeof(cooltimeItem), "cooldown_slot%i", slot);
 		}
 
-		Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Special[boss]], durationItem, 5.0));
-		Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Special[boss]], cooltimeItem, 10.0));
+		Boss[boss].SetMaxAbilityDuration(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], durationItem, 5.0));
+		Boss[boss].SetMaxAbilityCooldown(slot, KvGetFloat(BossKV[Boss[boss].CharacterIndex], cooltimeItem, 10.0));
 	}
 
 	SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0);
 	TF2_RemovePlayerDisguise(client);
 
 	if(!IsBossYou[client])
-		TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Special[boss]], "class", 1), _, !GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass") ? true : false);
+		TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Boss[boss].CharacterIndex], "class", 1), _, !GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass") ? true : false);
 	SDKHook(client, SDKHook_GetMaxHealth, OnGetMaxHealth);  //Temporary:  Used to prevent boss overheal
 
-	switch(KvGetNum(BossKV[Special[boss]], "pickups", 0))  //Check if the boss is allowed to pickup health/ammo
+	switch(KvGetNum(BossKV[Boss[boss].CharacterIndex], "pickups", 0))  //Check if the boss is allowed to pickup health/ammo
 	{
 		case 1:
 		{
@@ -5066,8 +5066,8 @@ public Action:Command_GetHP(client)  //TODO: This can rarely show a very large n
 			if(IsBoss(target) && IsPlayerAlive(target))
 			{
 				int boss = Boss[target].ClientIndex;
-				KvRewind(BossKV[Special[boss]]);
-				KvGetString(BossKV[Special[boss]], "name", name, sizeof(name), "=Failed name=");
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "name", name, sizeof(name), "=Failed name=");
 				if(Boss[boss].Lives>1)
 				{
 					Format(lives, sizeof(lives), "x%i", Boss[boss].Lives);
@@ -5927,10 +5927,10 @@ public Action:BossTimer(Handle:timer)
 		if(!IsBossYou[client] && IsBoss(client))
 		{
 			if(Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (Boss[boss].Lives - 1) > Boss[boss].MaxHealthPoint)
-				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7);
+				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Boss[boss].CharacterIndex]+0.7);
 
 			else
-				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Special[boss]]+0.7*(100-Boss[boss].HealthPoint*100/Boss[boss].MaxLives/Boss[boss].MaxHealthPoint));
+				SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", BossSpeed[Boss[boss].CharacterIndex]+0.7*(100-Boss[boss].HealthPoint*100/Boss[boss].MaxLives/Boss[boss].MaxHealthPoint));
 		}
 		//
 
@@ -6084,18 +6084,18 @@ public Action:BossTimer(Handle:timer)
 			{
 				char ability[10];
 				Format(ability, sizeof(ability), "ability%i", i);
-				KvRewind(BossKV[Special[boss]]);
-				if(KvJumpToKey(BossKV[Special[boss]], ability))
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 				{
 					// char plugin_name[64];
-					// KvGetString(BossKV[Special[boss]], "plugin_name", plugin_name, sizeof(plugin_name));
-					int targetSlot = KvGetNum(BossKV[Special[boss]], "arg0", 0);
-					// int buttonmode=KvGetNum(BossKV[Special[boss]], "buttonmode", 0);
+					// KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", plugin_name, sizeof(plugin_name));
+					int targetSlot = KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0);
+					// int buttonmode=KvGetNum(BossKV[Boss[boss].CharacterIndex], "buttonmode", 0);
 					if(targetSlot == slot)
 					{
 						char ability_name[64];
 						slotNameCount++;
-						KvGetString(BossKV[Special[boss]], "name", ability_name, sizeof(ability_name));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "name", ability_name, sizeof(ability_name));
 						PushArrayString(slotNamePack, ability_name);
 					}
 					else
@@ -6190,23 +6190,23 @@ public Action:BossTimer(Handle:timer)
 		{
 			char ability[10];
 			Format(ability, sizeof(ability), "ability%i", i);
-			KvRewind(BossKV[Special[boss]]);
-			if(KvJumpToKey(BossKV[Special[boss]], ability))
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 			{
 				char plugin_name[64];
-				KvGetString(BossKV[Special[boss]], "plugin_name", plugin_name, sizeof(plugin_name));
-				int slot=KvGetNum(BossKV[Special[boss]], "arg0", 0);
-				int buttonmode=KvGetNum(BossKV[Special[boss]], "buttonmode", 0);
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", plugin_name, sizeof(plugin_name));
+				int slot=KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0);
+				int buttonmode=KvGetNum(BossKV[Boss[boss].CharacterIndex], "buttonmode", 0);
 				if(slot<1)
 				{
 					continue;
 				}
 
-				KvGetString(BossKV[Special[boss]], "life", ability, sizeof(ability), "");
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, sizeof(ability), "");
 				if(!ability[0])
 				{
 					char ability_name[64];
-					KvGetString(BossKV[Special[boss]], "name", ability_name, sizeof(ability_name));
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "name", ability_name, sizeof(ability_name));
 					UseAbility(ability_name, plugin_name, boss, slot, buttonmode);
 				}
 				else
@@ -6217,7 +6217,7 @@ public Action:BossTimer(Handle:timer)
 						if(StringToInt(lives[n])==Boss[boss].Lives)
 						{
 							char ability_name[64];
-							KvGetString(BossKV[Special[boss]], "name", ability_name, sizeof(ability_name));
+							KvGetString(BossKV[Boss[boss].CharacterIndex], "name", ability_name, sizeof(ability_name));
 							UseAbility(ability_name, plugin_name, boss, slot, buttonmode);
 							break;
 						}
@@ -6239,8 +6239,8 @@ public Action:BossTimer(Handle:timer)
 				if(IsBoss(target) && IsPlayerAlive(target))
 				{
 					int boss2=GetBossIndex(target);
-					KvRewind(BossKV[Special[boss2]]);
-					KvGetString(BossKV[Special[boss2]], "name", name, sizeof(name), "=Failed name=");
+					KvRewind(BossKV[Boss[boss2].CharacterIndex]);
+					KvGetString(BossKV[Boss[boss2].CharacterIndex], "name", name, sizeof(name), "=Failed name=");
 					//Format(bossLives, sizeof(bossLives), ((BossLives[boss2]>1) ? ("x%i", BossLives[boss2]) : ("")));
 					char bossLives[10];
 					if(Boss[boss2].Lives>1)
@@ -6415,30 +6415,30 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		for(int i=1; i<MAXRANDOMS; i++) // 강화 분노 체크용도로만.
 		{
 			Format(ability, sizeof(ability), "ability%i", i);
-			KvRewind(BossKV[Special[boss]]);
-			if(KvJumpToKey(BossKV[Special[boss]], ability))
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 			{
-				if(KvGetNum(BossKV[Special[boss]], "arg0", 0))
+				if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0))
 				{
 					continue;
 				}
 
-				KvGetString(BossKV[Special[boss]], "life", ability, sizeof(ability));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, sizeof(ability));
 				if(!ability[0])
 				{
 					char abilityName[64], pluginName[64];
-					KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-					KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 					if(doUpgradeRage)
 					{
-						if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+						if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 							continue;
 						else
 							hasUpgradeRage = true;
 					}
 					else
 					{
-						if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+						if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 							continue;
 					}
 					/*
@@ -6456,19 +6456,19 @@ public Action:OnCallForMedic(client, const String:command[], args)
 						if(StringToInt(lives[j])==Boss[boss].Lives)
 						{
 							char abilityName[64], pluginName[64];
-							KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-							KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+							KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+							KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 
 							if(doUpgradeRage)
 							{
-								if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+								if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 									continue;
 								else
 									hasUpgradeRage = true;
 							}
 							else
 							{
-								if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+								if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 									continue;
 							}
 							/*
@@ -6489,20 +6489,20 @@ public Action:OnCallForMedic(client, const String:command[], args)
 			for(int i=1; i<MAXRANDOMS; i++)
 			{
 				Format(ability, sizeof(ability), "ability%i", i);
-				KvRewind(BossKV[Special[boss]]);
-				if(KvJumpToKey(BossKV[Special[boss]], ability))
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 				{
-					if(KvGetNum(BossKV[Special[boss]], "arg0", 0))
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0))
 					{
 						continue;
 					}
 
-					KvGetString(BossKV[Special[boss]], "life", ability, sizeof(ability));
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, sizeof(ability));
 					if(!ability[0])
 					{
 						char abilityName[64], pluginName[64];
-						KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-						KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 
 						if(!UseAbility(abilityName, pluginName, boss, 0))
 						{
@@ -6517,8 +6517,8 @@ public Action:OnCallForMedic(client, const String:command[], args)
 							if(StringToInt(lives[j])==Boss[boss].Lives)
 							{
 								char abilityName[64], pluginName[64];
-								KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-								KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 
 								if(!UseAbility(abilityName, pluginName, boss, 0))
 								{
@@ -6535,8 +6535,8 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		if(doUpgradeRage && hasUpgradeRage)
 		{
 			IsUpgradeRage[boss] = true;
-			KvRewind(BossKV[Special[boss]]);
-			Boss[boss].SetAbilityDuration(0, KvGetFloat(BossKV[Special[boss]], "upgrade_ability_duration"));
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			Boss[boss].SetAbilityDuration(0, KvGetFloat(BossKV[Boss[boss].CharacterIndex], "upgrade_ability_duration"));
 			Boss[boss].SetCharge(0, Boss[boss].GetCharge(0) - 200.0);
 		}
 		else
@@ -6552,7 +6552,7 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		float position[3];
 		float victimPos[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
-		float rageDist=KvGetFloat(BossKV[Special[boss]], "ragedist", 300.0);
+		float rageDist=KvGetFloat(BossKV[Boss[boss].CharacterIndex], "ragedist", 300.0);
 		char bossName[80];
 		int find=0; TFTeam team;
 
@@ -6571,8 +6571,8 @@ public Action:OnCallForMedic(client, const String:command[], args)
 		if(find == 1)
 		{
 			isSoloRage = true;
-			KvRewind(BossKV[Special[boss]]);
-			KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "ERROR NAME");
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "ERROR NAME");
 			CPrintToChatAll("{olive}[FF2]{default} %t", "oneperson_rage", bossName);
 			Boss[boss].SetAbilityDuration(0, Boss[boss].GetMaxAbilityDuration(0) + 2.0);
 
@@ -6595,30 +6595,30 @@ public Action:OnCallForMedic(client, const String:command[], args)
 			for(int i=1; i<MAXRANDOMS; i++)
 			{
 				Format(ability, sizeof(ability), "ability%i", i);
-				KvRewind(BossKV[Special[boss]]);
-				if(KvJumpToKey(BossKV[Special[boss]], ability))
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 				{
-					if(KvGetNum(BossKV[Special[boss]], "arg0", 0))
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0))
 					{
 						continue;
 					}
 
-					KvGetString(BossKV[Special[boss]], "life", ability, sizeof(ability));
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, sizeof(ability));
 					if(!ability[0])
 					{
 						char abilityName[64], pluginName[64];
-						KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-						KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 						if(doUpgradeRage)
 						{
-							if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+							if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 								continue;
 							else
 								hasUpgradeRage = true;
 						}
 						else
 						{
-							if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+							if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 								continue;
 						}
 						if(!UseAbility(abilityName, pluginName, boss, 0))
@@ -6634,19 +6634,19 @@ public Action:OnCallForMedic(client, const String:command[], args)
 							if(StringToInt(lives[j])==Boss[boss].Lives)
 							{
 								char abilityName[64], pluginName[64];
-								KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-								KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 
 								if(doUpgradeRage)
 								{
-									if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+									if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 										continue;
 									else
 										hasUpgradeRage = true;
 								}
 								else
 								{
-									if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+									if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 										continue;
 								}
 								if(!UseAbility(abilityName, pluginName, boss, 0))
@@ -6700,28 +6700,28 @@ public Action SoloRageDelayTimer(Handle timer, Handle data)
 	for(int i=1; i<MAXRANDOMS; i++)
 	{
 		Format(ability, sizeof(ability), "ability%i", i);
-		KvRewind(BossKV[Special[boss]]);
-		if(KvJumpToKey(BossKV[Special[boss]], ability))
+		KvRewind(BossKV[Boss[boss].CharacterIndex]);
+		if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 		{
-			if(KvGetNum(BossKV[Special[boss]], "arg0", 0))
+			if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0))
 			{
 				continue;
 			}
 
-			KvGetString(BossKV[Special[boss]], "life", ability, sizeof(ability));
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, sizeof(ability));
 			if(!ability[0])
 			{
 				char abilityName[64], pluginName[64];
-				KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-				KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 				if(doUpgradeRage)
 				{
-					if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 						continue;
 				}
 				else
 				{
-					if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 						continue;
 				}
 				if(!UseAbility(abilityName, pluginName, boss, 0))
@@ -6737,18 +6737,18 @@ public Action SoloRageDelayTimer(Handle timer, Handle data)
 					if(StringToInt(lives[j])==Boss[boss].Lives)
 					{
 						char abilityName[64], pluginName[64];
-						KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-						KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 
 						if(doUpgradeRage)
 						{
-							if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+							if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 								continue;
 
 						}
 						else
 						{
-							if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+							if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 								continue;
 						}
 						if(!UseAbility(abilityName, pluginName, boss, 0))
@@ -7315,20 +7315,20 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 			for(int n=1; n<MAXRANDOMS; n++)
 			{
 				Format(ability, 10, "ability%i", n);
-				KvRewind(BossKV[Special[boss]]);
-				if(KvJumpToKey(BossKV[Special[boss]], ability))
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
 				{
-					if(KvGetNum(BossKV[Special[boss]], "arg0", 0)!=-1)
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0)!=-1)
 					{
 						continue;
 					}
 
-					KvGetString(BossKV[Special[boss]], "life", ability, 10);
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, 10);
 					if(!ability[0])
 					{
 						char abilityName[64], pluginName[64];
-						KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-						KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 						UseAbility(abilityName, pluginName, boss, -1);
 					}
 					else
@@ -7340,8 +7340,8 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 							if(StringToInt(stringLives[j])==Boss[boss].Lives)
 							{
 								char abilityName[64], pluginName[64];
-								KvGetString(BossKV[Special[boss]], "plugin_name", pluginName, sizeof(pluginName));
-								KvGetString(BossKV[Special[boss]], "name", abilityName, sizeof(abilityName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
 								UseAbility(abilityName, pluginName, boss, -1);
 								break;
 							}
@@ -7352,8 +7352,8 @@ public Action:OnPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast
 			Boss[boss].Lives=lives;
 
 			char bossName[64];
-			KvRewind(BossKV[Special[boss]]);
-			KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "=Failed name=");
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "=Failed name=");
 
 			strcopy(ability, sizeof(ability), Boss[boss].Lives==1 ? "ff2_life_left" : "ff2_lives_left");
 			for(int target=1; target<=MaxClients; target++)
@@ -7976,8 +7976,8 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 							GetClientName(attacker, playerName, sizeof(playerName));
 
 							char bossName[64];
-							KvRewind(BossKV[Special[boss]]);
-							KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "ERROR NAME");
+							KvRewind(BossKV[Boss[boss].CharacterIndex]);
+							KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "ERROR NAME");
 
 							damage=(((float(Boss[boss].MaxHealthPoint)*float(Boss[boss].MaxLives))*0.07)/3.0);
 							damagetype|=DMG_CRIT;
@@ -8273,8 +8273,8 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 					GetClientName(attacker, playerName, sizeof(playerName));
 
 					char bossName[64];
-					KvRewind(BossKV[Special[boss]]);
-					KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "ERROR NAME");
+					KvRewind(BossKV[Boss[boss].CharacterIndex]);
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "ERROR NAME");
 
 					CPrintToChatAll("{olive}[FF2]{default} %t", "Someone_do", playerName, bIsFacestab ? "페이스스탭" : "백스탭", bossName, RoundFloat(damage*(255.0/85.0)), Stabbed[attacker]);
 					// if(slienced) CPrintToChatAll("{olive}[FF2]{default} %t", "ff2_slienced", RoundFloat(BossAbilityCooldown[boss][0]));
@@ -8463,8 +8463,8 @@ public Action:OnStomp(attacker, victim, &Float:damageMultiplier, &Float:damageBo
 		PrintHintText(attacker, "%t", "ff2_goomba_user");
 
 		char bossName[64];
-		KvRewind(BossKV[Special[GetBossIndex(victim)]]);
-		KvGetString(BossKV[Special[GetBossIndex(victim)]], "name", bossName, sizeof(bossName), "ERROR NAME");
+		KvRewind(BossKV[Boss[GetBossIndex(victim)].CharacterIndex]);
+		KvGetString(BossKV[Boss[GetBossIndex(victim)].CharacterIndex], "name", bossName, sizeof(bossName), "ERROR NAME");
 
 		CPrintToChatAll("{olive}[FF2]{default} %t", "Someone_do", playerName, "굼바 스톰프", bossName, !TF2_IsPlayerInCondition(attacker, TFCond_Buffed) ? 180*combo : 243*combo, combo); // 굼바 데미지는 굼바 플러그인에서 고정데미지로 정함.
 		return Plugin_Changed;
@@ -8523,7 +8523,7 @@ stock AssignTeam(client, team)
 		Debug("%N does not have a desired class!", client);
 		if(IsBoss(client))
 		{
-			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", KvGetNum(BossKV[Special[Boss[client].ClientIndex]], "class", 1));  //So we assign one to prevent living spectators
+			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", KvGetNum(BossKV[Boss[client].CharacterIndex], "class", 1));  //So we assign one to prevent living spectators
 		}
 		else
 		{
@@ -8540,7 +8540,7 @@ stock AssignTeam(client, team)
 		Debug("%N is a living spectator!  Please report this to https://github.com/50DKP/FF2-Official", client);
 		if(IsBoss(client))
 		{
-			TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Special[Boss[client].ClientIndex]], "class", 1));
+			TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Boss[client].CharacterIndex], "class", 1));
 		}
 		else
 		{
@@ -8650,9 +8650,9 @@ stock OperateString(Handle:sumArray, &bracket, String:value[], size, Handle:_ope
 stock ParseFormula(boss, const String:key[], const String:defaultFormula[], defaultValue)
 {
 	char formula[1024], bossName[64];
-	KvRewind(BossKV[Special[boss]]);
-	KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName), "=Failed name=");
-	KvGetString(BossKV[Special[boss]], key, formula, sizeof(formula), defaultFormula);
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
+	KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "=Failed name=");
+	KvGetString(BossKV[Boss[boss].CharacterIndex], key, formula, sizeof(formula), defaultFormula);
 
 	int size=1;
 	int matchingBrackets;
@@ -8778,42 +8778,42 @@ stock ParseFormula(boss, const String:key[], const String:defaultFormula[], defa
 
 stock GetAbilityArgument(index,const String:plugin_name[],const String:ability_name[],arg,defvalue=0)
 {
-	if(index==-1 || Special[index]==-1 || !BossKV[Special[index]])
+	if(index==-1 || Boss[index].CharacterIndex==-1 || !BossKV[Boss[index].CharacterIndex])
 		return 0;
-	KvRewind(BossKV[Special[index]]);
+	KvRewind(BossKV[Boss[index].CharacterIndex]);
 	char s[10];
 	for(int i=1; i<MAXRANDOMS; i++)
 	{
 		Format(s,10,"ability%i",i);
-		if(KvJumpToKey(BossKV[Special[index]],s))
+		if(KvJumpToKey(BossKV[Boss[index].CharacterIndex],s))
 		{
 			if(IsUpgradeRage[index])
 			{
-				if(KvGetNum(BossKV[Special[index]], "is_upgrade_rage", 0) <= 0)
+				if(KvGetNum(BossKV[Boss[index].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 					continue;
 			}
 			else
 			{
-				if(KvGetNum(BossKV[Special[index]], "is_upgrade_rage", 0) > 0)
+				if(KvGetNum(BossKV[Boss[index].CharacterIndex], "is_upgrade_rage", 0) > 0)
 					continue;
 			}
 
 			char ability_name2[64];
-			KvGetString(BossKV[Special[index]], "name",ability_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "name",ability_name2,64);
 			if(strcmp(ability_name,ability_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
 			char plugin_name2[64];
-			KvGetString(BossKV[Special[index]], "plugin_name",plugin_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "plugin_name",plugin_name2,64);
 			if(plugin_name[0] && plugin_name2[0] && strcmp(plugin_name,plugin_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
 			Format(s,10,"arg%i",arg);
-			return KvGetNum(BossKV[Special[index]], s,defvalue);
+			return KvGetNum(BossKV[Boss[index].CharacterIndex], s,defvalue);
 		}
 	}
 	return 0;
@@ -8821,42 +8821,42 @@ stock GetAbilityArgument(index,const String:plugin_name[],const String:ability_n
 
 stock Float:GetAbilityArgumentFloat(index,const String:plugin_name[],const String:ability_name[],arg,Float:defvalue=0.0)
 {
-	if(index==-1 || Special[index]==-1 || !BossKV[Special[index]])
+	if(index==-1 || Boss[index].CharacterIndex==-1 || !BossKV[Boss[index].CharacterIndex])
 		return 0.0;
-	KvRewind(BossKV[Special[index]]);
+	KvRewind(BossKV[Boss[index].CharacterIndex]);
 	char s[10];
 	for(int i=1; i<MAXRANDOMS; i++)
 	{
 		Format(s,10,"ability%i",i);
-		if(KvJumpToKey(BossKV[Special[index]],s))
+		if(KvJumpToKey(BossKV[Boss[index].CharacterIndex],s))
 		{
 			if(IsUpgradeRage[index])
 			{
-				if(KvGetNum(BossKV[Special[index]], "is_upgrade_rage", 0) <= 0)
+				if(KvGetNum(BossKV[Boss[index].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 					continue;
 			}
 			else
 			{
-				if(KvGetNum(BossKV[Special[index]], "is_upgrade_rage", 0) > 0)
+				if(KvGetNum(BossKV[Boss[index].CharacterIndex], "is_upgrade_rage", 0) > 0)
 					continue;
 			}
 
 			char ability_name2[64];
-			KvGetString(BossKV[Special[index]], "name",ability_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "name",ability_name2,64);
 			if(strcmp(ability_name,ability_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
 			char plugin_name2[64];
-			KvGetString(BossKV[Special[index]], "plugin_name",plugin_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "plugin_name",plugin_name2,64);
 			if(plugin_name[0] && plugin_name2[0] && strcmp(plugin_name,plugin_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
 			Format(s,10,"arg%i",arg);
-			float see=KvGetFloat(BossKV[Special[index]], s,defvalue);
+			float see=KvGetFloat(BossKV[Boss[index].CharacterIndex], s,defvalue);
 			return see;
 		}
 	}
@@ -8865,45 +8865,45 @@ stock Float:GetAbilityArgumentFloat(index,const String:plugin_name[],const Strin
 
 stock GetAbilityArgumentString(index,const String:plugin_name[],const String:ability_name[],arg,String:buffer[],buflen,const String:defvalue[]="")
 {
-	if(index==-1 || Special[index]==-1 || !BossKV[Special[index]])
+	if(index==-1 || Boss[index].CharacterIndex==-1 || !BossKV[Boss[index].CharacterIndex])
 	{
 		strcopy(buffer,buflen,"");
 		return;
 	}
-	KvRewind(BossKV[Special[index]]);
+	KvRewind(BossKV[Boss[index].CharacterIndex]);
 	char s[10];
 	for(int i=1; i<MAXRANDOMS; i++)
 	{
 		Format(s,10,"ability%i",i);
-		if(KvJumpToKey(BossKV[Special[index]],s))
+		if(KvJumpToKey(BossKV[Boss[index].CharacterIndex],s))
 		{
 			if(IsUpgradeRage[index])
 			{
-				if(KvGetNum(BossKV[Special[index]], "is_upgrade_rage", 0) <= 0)
+				if(KvGetNum(BossKV[Boss[index].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 					continue;
 			}
 			else
 			{
-				if(KvGetNum(BossKV[Special[index]], "is_upgrade_rage", 0) > 0)
+				if(KvGetNum(BossKV[Boss[index].CharacterIndex], "is_upgrade_rage", 0) > 0)
 					continue;
 			}
 
 			char ability_name2[64];
-			KvGetString(BossKV[Special[index]], "name",ability_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "name",ability_name2,64);
 			if(strcmp(ability_name,ability_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
 			char plugin_name2[64];
-			KvGetString(BossKV[Special[index]], "plugin_name",plugin_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "plugin_name",plugin_name2,64);
 			if(plugin_name[0] && plugin_name2[0] && strcmp(plugin_name,plugin_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
 			Format(s,10,"arg%i",arg);
-			KvGetString(BossKV[Special[index]], s,buffer,buflen,defvalue);
+			KvGetString(BossKV[Boss[index].CharacterIndex], s,buffer,buflen,defvalue);
 		}
 	}
 }
@@ -8914,7 +8914,7 @@ public void GetSoundCode(String:musicPath[],  String:codeString[], int buffer)
 		return;
 
 	// int boss = MainBoss;
-	// Handle clonedHandle = CloneHandle(BossKV[Special[boss]]);
+	// Handle clonedHandle = CloneHandle(BossKV[Boss[boss].CharacterIndex]);
 	int sizeString = strlen(musicPath);
 	// int startcount = strlen(codeString) - 1;
 	// char code[1];
@@ -8937,15 +8937,15 @@ public void GetSoundCode(String:musicPath[],  String:codeString[], int buffer)
 
 stock bool RandomSound(const char[] sound, char[] file, int length, int boss = 0)
 {
-	if(boss<0 || Special[boss]<0 || !BossKV[Special[boss]])
+	if(boss<0 || Boss[boss].CharacterIndex<0 || !BossKV[Boss[boss].CharacterIndex])
 	{
 		return false;
 	}
 
-	KvRewind(BossKV[Special[boss]]);
-	if(!KvJumpToKey(BossKV[Special[boss]], sound))
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
+	if(!KvJumpToKey(BossKV[Boss[boss].CharacterIndex], sound))
 	{
-		KvRewind(BossKV[Special[boss]]);
+		KvRewind(BossKV[Boss[boss].CharacterIndex]);
 		return false;  //Requested sound not implemented for this boss
 	}
 
@@ -8954,7 +8954,7 @@ stock bool RandomSound(const char[] sound, char[] file, int length, int boss = 0
 	while(++sounds)  //Just keep looping until there's no keys left
 	{
 		IntToString(sounds, key, sizeof(key));
-		KvGetString(BossKV[Special[boss]], key, file, length);
+		KvGetString(BossKV[Boss[boss].CharacterIndex], key, file, length);
 		if(!file[0])
 		{
 			sounds--;  //This sound wasn't valid, so don't include it
@@ -8969,28 +8969,28 @@ stock bool RandomSound(const char[] sound, char[] file, int length, int boss = 0
 
 	int randomNum = GetRandomInt(1, sounds);
 	IntToString(randomNum, key, sizeof(key));
-	KvGetString(BossKV[Special[boss]], key, file, length);  //Populate file
+	KvGetString(BossKV[Boss[boss].CharacterIndex], key, file, length);  //Populate file
 /*
 	Format(key, sizeof(key), "text%i", randomNum);
-	if(KvJumpToKey(BossKV[Special[boss]], key))
+	if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], key))
 	{
 		Handle kv = CreateKeyValues("text");
 		char item[100];
 
-		KvGetString(BossKV[Special[boss]], "title", item, sizeof(item));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "title", item, sizeof(item));
 		KvSetString(kv, "title", item);
 		Debug("%s", item);
 
-		KvGetString(BossKV[Special[boss]], "msg", item, sizeof(item));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "msg", item, sizeof(item));
 		KvSetString(kv, "msg", item);
 
-		KvGetString(BossKV[Special[boss]], "color", item, sizeof(item));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "color", item, sizeof(item));
 		KvSetString(kv, "color", item);
 
-		KvGetString(BossKV[Special[boss]], "level", item, sizeof(item), "1");
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "level", item, sizeof(item), "1");
 		KvSetString(kv, "level", item);
 
-		KvGetString(BossKV[Special[boss]], "time", item, sizeof(item), "15");
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "time", item, sizeof(item), "15");
 		KvSetString(kv, "time", item);
 
 		for(int client=1; client<=MaxClients; client++)
@@ -9006,13 +9006,13 @@ stock bool RandomSound(const char[] sound, char[] file, int length, int boss = 0
 
 stock bool RandomSoundAbility(const char[] sound, char[] file, int length, int boss = 0, int slot=0)
 {
-	if(boss<0 || Special[boss]<0 || !BossKV[Special[boss]])
+	if(boss<0 || Boss[boss].CharacterIndex<0 || !BossKV[Boss[boss].CharacterIndex])
 	{
 		return false;
 	}
 
-	KvRewind(BossKV[Special[boss]]);
-	if(!KvJumpToKey(BossKV[Special[boss]], sound))
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
+	if(!KvJumpToKey(BossKV[Boss[boss].CharacterIndex], sound))
 	{
 		return false;  //Sound doesn't exist
 	}
@@ -9022,14 +9022,14 @@ stock bool RandomSoundAbility(const char[] sound, char[] file, int length, int b
 	while(++sounds)
 	{
 		IntToString(sounds, key, 4);
-		KvGetString(BossKV[Special[boss]], key, file, length);
+		KvGetString(BossKV[Boss[boss].CharacterIndex], key, file, length);
 		if(!file[0])
 		{
 			break;  //Assume that there's no more sounds
 		}
 
 		Format(key, sizeof(key), "slot%i", sounds);
-		if(KvGetNum(BossKV[Special[boss]], key, 0)==slot)
+		if(KvGetNum(BossKV[Boss[boss].CharacterIndex], key, 0)==slot)
 		{
 			match[matches]=sounds;  //Found a match: let's store it in the array
 			matches++;
@@ -9042,29 +9042,29 @@ stock bool RandomSoundAbility(const char[] sound, char[] file, int length, int b
 	}
 	int randomNum = GetRandomInt(0, matches-1);
 	IntToString(match[randomNum], key, 4);
-	KvGetString(BossKV[Special[boss]], key, file, length);  //Populate file
+	KvGetString(BossKV[Boss[boss].CharacterIndex], key, file, length);  //Populate file
 
 /*
 	Format(key, sizeof(key), "text%i", randomNum);
-	if(KvJumpToKey(BossKV[Special[boss]], key))
+	if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], key))
 	{
 		Handle kv = CreateKeyValues("text");
 		char item[100];
 
-		KvGetString(BossKV[Special[boss]], "title", item, sizeof(item));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "title", item, sizeof(item));
 		KvSetString(kv, "title", item);
 		Debug("%s", item);
 
-		KvGetString(BossKV[Special[boss]], "msg", item, sizeof(item));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "msg", item, sizeof(item));
 		KvSetString(kv, "msg", item);
 
-		KvGetString(BossKV[Special[boss]], "color", item, sizeof(item));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "color", item, sizeof(item));
 		KvSetString(kv, "color", item);
 
-		KvGetString(BossKV[Special[boss]], "level", item, sizeof(item), "1");
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "level", item, sizeof(item), "1");
 		KvSetString(kv, "level", item);
 
-		KvGetString(BossKV[Special[boss]], "time", item, sizeof(item), "15");
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "time", item, sizeof(item), "15");
 		KvSetString(kv, "time", item);
 
 		for(int client=1; client<=MaxClients; client++)
@@ -9082,18 +9082,18 @@ public bool:PickCharacter(boss, companion)
 {
 	if(boss==companion)
 	{
-		Special[boss]=Incoming[boss];
+		Boss[boss].CharacterIndex=Incoming[boss];
 		Incoming[boss]=-1;
-		if(Special[boss]!=-1)  //We've already picked a boss through Command_SetNextBoss
+		if(Boss[boss].CharacterIndex!=-1)  //We've already picked a boss through Command_SetNextBoss
 		{
 			Action action;
 			Call_StartForward(OnSpecialSelected);
 			Call_PushCell(boss);
-			int characterIndex=Special[boss];
+			int characterIndex=Boss[boss].CharacterIndex;
 			Call_PushCellRef(characterIndex);
 			char newName[64];
-			KvRewind(BossKV[Special[boss]]);
-			KvGetString(BossKV[Special[boss]], "name", newName, sizeof(newName));
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", newName, sizeof(newName));
 			Call_PushStringEx(newName, sizeof(newName), SM_PARAM_STRING_UTF8 | SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 			Call_PushCell(true);  //Preset
 			Call_Finish(action);
@@ -9132,24 +9132,24 @@ public bool:PickCharacter(boss, companion)
 
 					if(foundExactMatch!=-1)
 					{
-						Special[boss]=foundExactMatch;
+						Boss[boss].CharacterIndex=foundExactMatch;
 					}
 					else if(foundPartialMatch!=-1)
 					{
-						Special[boss]=foundPartialMatch;
+						Boss[boss].CharacterIndex=foundPartialMatch;
 					}
 					else
 					{
 						return false;
 					}
-					PrecacheCharacter(Special[boss]);
+					PrecacheCharacter(Boss[boss].CharacterIndex);
 					return true;
 				}
-				Special[boss]=characterIndex;
-				PrecacheCharacter(Special[boss]);
+				Boss[boss].CharacterIndex=characterIndex;
+				PrecacheCharacter(Boss[boss].CharacterIndex);
 				return true;
 			}
-			PrecacheCharacter(Special[boss]);
+			PrecacheCharacter(Boss[boss].CharacterIndex);
 			return true;
 		}
 
@@ -9166,32 +9166,32 @@ public bool:PickCharacter(boss, companion)
 
 				while(characterIndex>=2 && i<chances[characterIndex-1])
 				{
-					Special[boss]=chances[characterIndex-2]-1;
+					Boss[boss].CharacterIndex=chances[characterIndex-2]-1;
 					characterIndex-=2;
 				}
 			}
 			else
 			{
-				Special[boss]=GetRandomInt(0, Specials-1);
+				Boss[boss].CharacterIndex=GetRandomInt(0, Specials-1);
 			}
 
-			KvRewind(BossKV[Special[boss]]);
-			KvGetString(BossKV[Special[boss]], "ban_map", banMaps, sizeof(banMaps), "");
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "ban_map", banMaps, sizeof(banMaps), "");
 			/*
-			if(KvGetNum(BossKV[Special[boss]], "blocked"))
+			if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "blocked"))
 			{
-				Special[boss]=-1;
+				Boss[boss].CharacterIndex=-1;
 				continue;
 			}
 			*/
-			if(KvGetNum(BossKV[Special[boss]], "not_able_in_random"))
+			if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "not_able_in_random"))
 			{
-				Special[boss]=-1;
+				Boss[boss].CharacterIndex=-1;
 				continue;
 			}
 			else if(banMaps[0] != '\0' &&  !StrContains(banMaps, map, false))
 			{
-				Special[boss]=-1;
+				Boss[boss].CharacterIndex=-1;
 				continue;
 			}
 			break;
@@ -9201,8 +9201,8 @@ public bool:PickCharacter(boss, companion)
 	{
 		MainBoss=boss;
 		char bossName[64], companionName[64];
-		KvRewind(BossKV[Special[boss]]);
-		KvGetString(BossKV[Special[boss]], "companion", companionName, sizeof(companionName), "=Failed companion name=");
+		KvRewind(BossKV[Boss[boss].CharacterIndex]);
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "companion", companionName, sizeof(companionName), "=Failed companion name=");
 
 		int character;
 		while(character<Specials)  //Loop through all the bosses to find the companion we're looking for
@@ -9211,14 +9211,14 @@ public bool:PickCharacter(boss, companion)
 			KvGetString(BossKV[character], "name", bossName, sizeof(bossName), "=Failed name=");
 			if(StrEqual(bossName, companionName, false))
 			{
-				Special[companion]=character;
+				Boss[companion].CharacterIndex=character;
 				break;
 			}
 
 			KvGetString(BossKV[character], "filename", bossName, sizeof(bossName), "=Failed name=");
 			if(StrEqual(bossName, companionName, false))
 			{
-				Special[companion]=character;
+				Boss[companion].CharacterIndex=character;
 				break;
 			}
 			character++;
@@ -9234,11 +9234,11 @@ public bool:PickCharacter(boss, companion)
 	Action action;
 	Call_StartForward(OnSpecialSelected);
 	Call_PushCell(companion);
-	int characterIndex=Special[companion];
+	int characterIndex=Boss[companion].CharacterIndex;
 	Call_PushCellRef(characterIndex);
 	char newName[64];
-	KvRewind(BossKV[Special[companion]]);
-	KvGetString(BossKV[Special[companion]], "name", newName, sizeof(newName));
+	KvRewind(BossKV[Boss[companion].CharacterIndex]);
+	KvGetString(BossKV[Boss[companion].CharacterIndex], "name", newName, sizeof(newName));
 	Call_PushStringEx(newName, sizeof(newName), SM_PARAM_STRING_UTF8 | SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 	Call_PushCell(false);  //Not preset
 	Call_Finish(action);
@@ -9277,24 +9277,24 @@ public bool:PickCharacter(boss, companion)
 
 			if(foundExactMatch!=-1)
 			{
-				Special[companion]=foundExactMatch;
+				Boss[companion].CharacterIndex=foundExactMatch;
 			}
 			else if(foundPartialMatch!=-1)
 			{
-				Special[companion]=foundPartialMatch;
+				Boss[companion].CharacterIndex=foundPartialMatch;
 			}
 			else
 			{
 				return false;
 			}
-			PrecacheCharacter(Special[companion]);
+			PrecacheCharacter(Boss[companion].CharacterIndex);
 			return true;
 		}
-		Special[companion]=characterIndex;
-		PrecacheCharacter(Special[companion]);
+		Boss[companion].CharacterIndex=characterIndex;
+		PrecacheCharacter(Boss[companion].CharacterIndex);
 		return true;
 	}
-	PrecacheCharacter(Special[companion]);
+	PrecacheCharacter(Boss[companion].CharacterIndex);
 	return true;
 }
 
@@ -9302,8 +9302,8 @@ FindCompanion(boss, players, bool:omit[])
 {
 	static playersNeeded=3;
 	char companionName[64];
-	KvRewind(BossKV[Special[boss]]);
-	KvGetString(BossKV[Special[boss]], "companion", companionName, sizeof(companionName));
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
+	KvGetString(BossKV[Boss[boss].CharacterIndex], "companion", companionName, sizeof(companionName));
 	if(playersNeeded<players && strlen(companionName))  //Only continue if we have enough players and if the boss has a companion
 	{
 		int companion = GetClientWithMostQueuePoints(omit);
@@ -9921,20 +9921,20 @@ HelpPanelBoss(client=0)
 
 	if(bossIndex == -1)
 	{
-		KvRewind(BossKV[Special[MainBoss]]);
-		KvGetString(BossKV[Special[MainBoss]], "description", text, sizeof(text));  // NO 다국어 지원.
+		KvRewind(BossKV[Boss[MainBoss].CharacterIndex]);
+		KvGetString(BossKV[Boss[MainBoss].CharacterIndex], "description", text, sizeof(text));  // NO 다국어 지원.
 	}
 	else
 	{
-		KvRewind(BossKV[Special[bossIndex]]);
-		KvGetString(BossKV[Special[bossIndex]], "description", text, sizeof(text));  // NO 다국어 지원.
+		KvRewind(BossKV[Boss[bossIndex].CharacterIndex]);
+		KvGetString(BossKV[Boss[bossIndex].CharacterIndex], "description", text, sizeof(text));  // NO 다국어 지원.
 	}
 	if(!text[0])
 	{
 		return;
 	}
 	ReplaceString(text, sizeof(text), "\\n", "\n");
-	//KvSetEscapeSequences(BossKV[Special[boss]], false);  //We don't want to interfere with the download paths
+	//KvSetEscapeSequences(BossKV[Boss[boss].CharacterIndex], false);  //We don't want to interfere with the download paths
 
 	Handle panel=CreatePanel();
 	SetPanelTitle(panel, text);
@@ -9993,7 +9993,7 @@ public Action:MusicTogglePanel(client)
 	SetMenuTitle(menu, "보스들의 BGM을..");
 	AddMenuItem(menu, "켜기", "켜기");
 	AddMenuItem(menu, "끄기", "끄기");
-	AddMenuItem(menu, "곡 선택하기", "현재 보스 BGM 선택", !KvJumpToKey(BossKV[Special[0]], "sound_bgm") || FF2ServerFlag & FF2SERVERFLAG_UNCHANGE_BOSSBGM_USER ? ITEMDRAW_DISABLED : 0);
+	AddMenuItem(menu, "곡 선택하기", "현재 보스 BGM 선택", !KvJumpToKey(BossKV[Boss[0].CharacterIndex], "sound_bgm") || FF2ServerFlag & FF2SERVERFLAG_UNCHANGE_BOSSBGM_USER ? ITEMDRAW_DISABLED : 0);
 	AddMenuItem(menu, "외부 곡 선택하기", "현재 외부 BGM 선택", !LoadedMusicData || FF2ServerFlag & FF2SERVERFLAG_UNCHANGE_BGM_USER ? ITEMDRAW_DISABLED : 0);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 	return Plugin_Continue;
@@ -10047,7 +10047,7 @@ public Action MusicListCmd(int client, int args)
 
 void CreateClientMuteMenu(client)
 {
-	// Handle BossMusicKv = CloneHandle(LoadedMusicData ? LoadedMusicData : BossKV[Special[0]]);
+	// Handle BossMusicKv = CloneHandle(LoadedMusicData ? LoadedMusicData : BossKV[Boss[0].CharacterIndex]);
 
 	Handle menu=CreateMenu(BossMuteSelectionMenu);
 
@@ -10089,7 +10089,7 @@ public BossMuteSelectionMenu(Handle:menu, MenuAction:action, client, selection)
 
 void ViewClientBossMusicMenu(client, bool enableMute = false)
 {
-	Handle clonedHandle = CloneHandle(BossKV[Special[0]]);
+	Handle clonedHandle = CloneHandle(BossKV[Boss[0].CharacterIndex]);
 	KvRewind(clonedHandle);
 	if(!KvJumpToKey(clonedHandle, "sound_bgm"))
 	{
@@ -10158,7 +10158,7 @@ public MuteClientBossMusic(Handle:menu, MenuAction:action, client, selection)
 	if(!IsValidClient(client) || action==MenuAction_End) CloseHandle(menu);
 	else if(action==MenuAction_Select)
 	{
-		Handle clonedHandle = CloneHandle(BossKV[Special[0]]);
+		Handle clonedHandle = CloneHandle(BossKV[Boss[0].CharacterIndex]);
 		KvRewind(clonedHandle);
 		if(!KvJumpToKey(clonedHandle, "sound_bgm"))
 		{
@@ -10333,7 +10333,7 @@ public Action:HookSound(clients[64], &numClients, String:sound[PLATFORM_MAX_PATH
 			return Plugin_Changed;
 		}
 
-		if(bBlockVoice[Special[boss]])
+		if(bBlockVoice[Boss[boss].CharacterIndex])
 		{
 			return Plugin_Stop;
 		}
@@ -10650,7 +10650,7 @@ public Native_MakeClientToBoss(Handle:plugin, numParams)
 	if(boss > 0 && Boss[boss].ClientIndex <= 0)
 	{
 		Boss[boss].DeleteSelf();
-		Special[boss] = boss;
+		Boss[boss].CharacterIndex = boss;
 
 		Debug("MakeClientToBoss: %N %i", client, boss);
 		MakeClientToBoss(boss);
@@ -10706,10 +10706,10 @@ public Native_GetSpecial(Handle:plugin, numParams)
 	else
 	{
 		if(index<0) return false;
-		if(Special[index]<0) return false;
-		if(!BossKV[Special[index]]) return false;
-		KvRewind(BossKV[Special[index]]);
-		KvGetString(BossKV[Special[index]], "name", s, dstrlen);
+		if(Boss[index].CharacterIndex<0) return false;
+		if(!BossKV[Boss[index].CharacterIndex]) return false;
+		KvRewind(BossKV[Boss[index].CharacterIndex]);
+		KvGetString(BossKV[Boss[index].CharacterIndex], "name", s, dstrlen);
 		SetNativeString(2, s,dstrlen);
 	}
 	return true;
@@ -10795,30 +10795,30 @@ public Native_GetRageDist(Handle:plugin, numParams)
 	char ability_name[64];
 	GetNativeString(3,ability_name,64);
 
-	if(!BossKV[Special[index]]) return _:0.0;
-	KvRewind(BossKV[Special[index]]);
+	if(!BossKV[Boss[index].CharacterIndex]) return _:0.0;
+	KvRewind(BossKV[Boss[index].CharacterIndex]);
 	decl Float:see;
 	if(!ability_name[0])
 	{
-		return _:KvGetFloat(BossKV[Special[index]],"ragedist",400.0);
+		return _:KvGetFloat(BossKV[Boss[index].CharacterIndex],"ragedist",400.0);
 	}
 	char s[10];
 	for(int i=1; i<MAXRANDOMS; i++)
 	{
 		Format(s,10,"ability%i",i);
-		if(KvJumpToKey(BossKV[Special[index]],s))
+		if(KvJumpToKey(BossKV[Boss[index].CharacterIndex],s))
 		{
 			char ability_name2[64];
-			KvGetString(BossKV[Special[index]], "name",ability_name2,64);
+			KvGetString(BossKV[Boss[index].CharacterIndex], "name",ability_name2,64);
 			if(strcmp(ability_name,ability_name2))
 			{
-				KvGoBack(BossKV[Special[index]]);
+				KvGoBack(BossKV[Boss[index].CharacterIndex]);
 				continue;
 			}
-			if((see=KvGetFloat(BossKV[Special[index]],"dist",-1.0))<0)
+			if((see=KvGetFloat(BossKV[Boss[index].CharacterIndex],"dist",-1.0))<0)
 			{
-				KvRewind(BossKV[Special[index]]);
-				see=KvGetFloat(BossKV[Special[index]],"ragedist",400.0);
+				KvRewind(BossKV[Boss[index].CharacterIndex]);
+				see=KvGetFloat(BossKV[Boss[index].CharacterIndex],"ragedist",400.0);
 			}
 			return _:see;
 		}
@@ -10834,7 +10834,7 @@ public Native_HasAbility(Handle:plugin, numParams)
 	GetNativeString(2, pluginName, sizeof(pluginName));
 	GetNativeString(3, abilityName, sizeof(abilityName));
 	// bool IsUpgradeRage = false;
-	if(boss==-1 || Special[boss]==-1 || !BossKV[Special[boss]])
+	if(boss==-1 || Boss[boss].CharacterIndex==-1 || !BossKV[Boss[boss].CharacterIndex])
 	{
 		return false;
 	}
@@ -10845,10 +10845,10 @@ public Native_HasAbility(Handle:plugin, numParams)
 		IsUpgradeRage = GetNativeCell(4);
 	}
 */
-	KvRewind(BossKV[Special[boss]]);
-	if(!BossKV[Special[boss]])
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
+	if(!BossKV[Boss[boss].CharacterIndex])
 	{
-		LogError("Failed KV: %i %i", boss, Special[boss]);
+		LogError("Failed KV: %i %i", boss, Boss[boss].CharacterIndex);
 		return false;
 	}
 
@@ -10856,36 +10856,36 @@ public Native_HasAbility(Handle:plugin, numParams)
 	for(int i=1; i<MAXRANDOMS; i++)
 	{
 		Format(ability, sizeof(ability), "ability%i", i);
-		if(KvJumpToKey(BossKV[Special[boss]], ability))  //Does this ability number exist?
+		if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))  //Does this ability number exist?
 		{
 			char abilityName2[64];
-			KvGetString(BossKV[Special[boss]], "name", abilityName2, sizeof(abilityName2));
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName2, sizeof(abilityName2));
 			if(StrEqual(abilityName, abilityName2))  //Make sure the ability names are equal
 			{
 				char pluginName2[64];
-				KvGetString(BossKV[Special[boss]], "plugin_name", pluginName2, sizeof(pluginName2));
+				KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName2, sizeof(pluginName2));
 				if(!pluginName[0] || !pluginName2[0] || StrEqual(pluginName, pluginName2))  //Make sure the plugin names are equal
 				{
 					/*
 					if(IsUpgradeRage)
 					{
-						if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) <= 0)
+						if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) <= 0)
 							continue;
 					}
 					else
 					{
-						if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+						if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 							continue;
 					}
 					*/
 
-					if(KvGetNum(BossKV[Special[boss]], "is_upgrade_rage", 0) > 0)
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "is_upgrade_rage", 0) > 0)
 						continue;
 
 					return true;
 				}
 			}
-			KvGoBack(BossKV[Special[boss]]);
+			KvGoBack(BossKV[Boss[boss].CharacterIndex]);
 		}
 	}
 	return false;
@@ -10992,13 +10992,13 @@ public Native_GetSpecialKV(Handle:plugin, numParams)
 	}
 	else
 	{
-		if(index!=-1 && index<=MaxClients && Special[index]!=-1 && Special[index]<MAXSPECIALS)
+		if(index!=-1 && index<=MaxClients && Boss[index].CharacterIndex!=-1 && Boss[index].CharacterIndex<MAXSPECIALS)
 		{
-			if(BossKV[Special[index]]!=INVALID_HANDLE)
+			if(BossKV[Boss[index].CharacterIndex]!=INVALID_HANDLE)
 			{
-				KvRewind(BossKV[Special[index]]);
+				KvRewind(BossKV[Boss[index].CharacterIndex]);
 			}
-			return _:BossKV[Special[index]];
+			return _:BossKV[Boss[index].CharacterIndex];
 		}
 	}
 	return _:INVALID_HANDLE;
@@ -11157,7 +11157,7 @@ public Action:VSH_OnGetSpecialRoundIndex(&result)
 {
 	if(Enabled)
 	{
-		result=Special[0];
+		result=Boss[0].CharacterIndex;
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
@@ -11345,13 +11345,13 @@ FormulaBossHealth(int boss, bool includeHealth = true)
 {
 	int damaged = (Boss[boss].MaxHealthPoint*Boss[boss].MaxLives) - Boss[boss].HealthPoint;
 
-	KvRewind(BossKV[Special[boss]]);
+	KvRewind(BossKV[Boss[boss].CharacterIndex]);
 
-	Boss[boss].MaxLives=KvGetNum(BossKV[Special[boss]], "lives", 1);
+	Boss[boss].MaxLives=KvGetNum(BossKV[Boss[boss].CharacterIndex], "lives", 1);
 	if(Boss[boss].MaxLives<=0)
 	{
 		char bossName[80];
-		KvGetString(BossKV[Special[boss]], "name", bossName, sizeof(bossName));
+		KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName));
 		PrintToServer("[FF2 Bosses] Warning: Boss %s has an invalid amount of lives, setting to 1", bossName);
 		Boss[boss].MaxLives=1;
 	}
