@@ -152,6 +152,10 @@ methodmap FF2Boss < ArrayList {
 			{
 				bossValues.PushArray({0.0, 0.0}, MAX_BOSS_SLOT_COUNT);
 			}
+			else if(loop == view_as<int>(Boss_KeyValue))
+			{
+				bossValues.Push(new KeyValue(""));
+			}
 			else
 			{
 				bossValues.Push(0.0);
@@ -241,6 +245,7 @@ methodmap FF2Boss < ArrayList {
 	public void DeleteSelf()
 	{
 		delete view_as<ArrayList>(this.Get(view_as<int>(Boss_AbilityName)));
+		delete view_as<KeyValues>(this.Get(view_as<int>(Boss_KeyValue)));
 		delete this;
 	}
 }
