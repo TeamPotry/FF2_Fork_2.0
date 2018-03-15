@@ -2705,23 +2705,6 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 		}
 	}
 
-	if(!teamHasPlayers[TFTeam_Blue] || !teamHasPlayers[TFTeam_Red])  //If there's an empty team make sure it gets populated
-	{
-		if(IsValidClient(Boss[0].ClientIndex) && GetClientTeam(Boss[0].ClientIndex)!=BossTeam)
-		{
-			AssignTeam(Boss[0].ClientIndex, BossTeam);
-		}
-
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsValidClient(client) && !IsBoss(client) && GetClientTeam(client)!=OtherTeam)
-			{
-				CreateTimer(0.1, MakeNotBoss, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-			}
-		}
-		return Plugin_Continue;  //NOTE: This is needed because OnRoundStart gets fired a second time once both teams have players
-	}
-
 	PickCharacter(0, 0);
 	if((Boss[0].CharacterIndex < 0) || !BossKV[Boss[0].CharacterIndex])
 	{
@@ -2741,6 +2724,23 @@ public Action:OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast
 			CreateTimer(0.3, MakeBoss, boss, TIMER_FLAG_NO_MAPCHANGE);
 			BossInfoTimer[boss][0]=CreateTimer(30.2, BossInfoTimer_Begin, boss, TIMER_FLAG_NO_MAPCHANGE);
 		}
+	}
+
+	if(!teamHasPlayers[TFTeam_Blue] || !teamHasPlayers[TFTeam_Red])  //If there's an empty team make sure it gets populated
+	{
+		if(IsValidClient(Boss[0].ClientIndex) && GetClientTeam(Boss[0].ClientIndex)!=BossTeam)
+		{
+			AssignTeam(Boss[0].ClientIndex, BossTeam);
+		}
+
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsValidClient(client) && !IsBoss(client) && GetClientTeam(client)!=OtherTeam)
+			{
+				CreateTimer(0.1, MakeNotBoss, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
+		return Plugin_Continue;  //NOTE: This is needed because OnRoundStart gets fired a second time once both teams have players
 	}
 
 	CreateTimer(3.5, StartResponseTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -9194,6 +9194,8 @@ public bool:PickCharacter(boss, companion)
 				Boss[boss].CharacterIndex=-1;
 				continue;
 			}
+
+			view_as<KeyValues>(Boss[boss].KeyValue).Import(BossKV[Boss[boss].CharacterIndex]);
 			break;
 		}
 	}
