@@ -154,7 +154,7 @@ methodmap FF2Boss < ArrayList {
 			}
 			else if(loop == view_as<int>(Boss_KeyValue))
 			{
-				bossValues.Push(new KeyValue(""));
+				bossValues.Push(new KeyValues(""));
 			}
 			else
 			{
