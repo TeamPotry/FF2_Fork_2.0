@@ -4,7 +4,6 @@
 enum BossValues
 {
 	Boss_ClientIndex = 0,
-	Boss_BossIndex,
 	Boss_CharacterIndex,
 	Boss_Team,
 	Boss_HP,
