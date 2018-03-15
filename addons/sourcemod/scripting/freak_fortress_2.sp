@@ -9296,6 +9296,7 @@ public bool:PickCharacter(boss, companion)
 		PrecacheCharacter(Boss[companion].CharacterIndex);
 		return true;
 	}
+	view_as<KeyValues>(Boss[companion].KeyValue).Import(BossKV[Boss[companion].CharacterIndex]);
 	PrecacheCharacter(Boss[companion].CharacterIndex);
 	return true;
 }
