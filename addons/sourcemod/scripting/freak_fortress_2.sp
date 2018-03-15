@@ -9195,7 +9195,7 @@ public bool:PickCharacter(boss, companion)
 				continue;
 			}
 
-			view_as<KeyValues>(Boss[boss].KeyValue).Import(BossKV[Boss[boss].CharacterIndex]);
+			view_as<KeyValues>(Boss[boss].KeyValue).Import(view_as<KeyValues>(BossKV[Boss[boss].CharacterIndex]));
 			break;
 		}
 	}
@@ -9296,7 +9296,7 @@ public bool:PickCharacter(boss, companion)
 		PrecacheCharacter(Boss[companion].CharacterIndex);
 		return true;
 	}
-	view_as<KeyValues>(Boss[companion].KeyValue).Import(BossKV[Boss[companion].CharacterIndex]);
+	view_as<KeyValues>(Boss[companion].KeyValue).Import(view_as<KeyValues>(BossKV[Boss[companion].CharacterIndex]));
 	PrecacheCharacter(Boss[companion].CharacterIndex);
 	return true;
 }
