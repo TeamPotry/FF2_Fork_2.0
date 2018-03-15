@@ -1,28 +1,32 @@
 #define HEALTHBAR_CLASS "monster_resource"
 
-public void GetDifficultyString(int difficulty, char[] diff, buffer)
+public void GetDifficultyString(BossDifficulty difficulty, char[] diff, int buffer)
 {
 	char item[50];
 	// TODO: 다국어 지원
 	switch(difficulty)
 	{
-	  case 1:
-	  {
+		case Difficulty_Easy:
+		{
+			Format(item, sizeof(item), "%s", "쉬움");
+		}
+		case Difficulty_Normal:
+		{
 			Format(item, sizeof(item), "%s", "보통");
-	  }
-		case 2:
+		}
+		case Difficulty_Hard:
 		{
 			Format(item, sizeof(item), "%s", "어려움");
 		}
-		case 3:
+		case Difficulty_Tryhard:
 		{
-			Format(item, sizeof(item), "%s", "매우 어려움");
+			Format(item, sizeof(item), "%s", "빡시게 어려움");
 		}
-		case 4:
+		case Difficulty_Expert:
 		{
-			Format(item, sizeof(item), "%s", "너무 어려움");
+			Format(item, sizeof(item), "%s", "전문가");
 		}
-		case 5:
+		case Difficulty_Hell:
 		{
 			Format(item, sizeof(item), "%s", "불지옥");
 		}

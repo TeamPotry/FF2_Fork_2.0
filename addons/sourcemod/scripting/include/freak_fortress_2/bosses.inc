@@ -4,7 +4,6 @@
 enum BossValues
 {
 	Boss_ClientIndex = 0,
-	Boss_BossIndex,
 	Boss_CharacterIndex,
 	Boss_Team,
 	Boss_HP,
@@ -151,11 +150,15 @@ methodmap FF2Boss < ArrayList {
 			}
 			else if(loop >= view_as<int>(Boss_Charge) && view_as<int>(Boss_KeyValue) > loop)
 			{
-				bossValues.PushArray(null, MAX_BOSS_SLOT_COUNT);
+				bossValues.PushArray({0.0, 0.0}, MAX_BOSS_SLOT_COUNT);
+			}
+			else if(loop == view_as<int>(Boss_KeyValue))
+			{
+				bossValues.Push(new KeyValues(""));
 			}
 			else
 			{
-				bossValues.Push(null);
+				bossValues.Push(0.0);
 			}
 		}
 
@@ -242,6 +245,7 @@ methodmap FF2Boss < ArrayList {
 	public void DeleteSelf()
 	{
 		delete view_as<ArrayList>(this.Get(view_as<int>(Boss_AbilityName)));
+		delete view_as<KeyValues>(this.Get(view_as<int>(Boss_KeyValue)));
 		delete this;
 	}
 }
