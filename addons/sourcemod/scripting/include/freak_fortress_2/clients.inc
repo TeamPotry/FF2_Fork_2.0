@@ -5,7 +5,6 @@ enum ClientValues
     Client_Assist,
     Client_GlowTime,
     Client_Flags,
-    Client_EnabledSpecialAttack, // NOTE: This is array.
     Client_SpecialAttackCount, // NOTE: This is array.
     Client_MusicData // NOTE: This is array.
 };
