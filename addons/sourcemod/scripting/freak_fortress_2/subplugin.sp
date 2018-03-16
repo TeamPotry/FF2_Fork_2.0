@@ -25,7 +25,7 @@ void EnableSubPlugins(bool force = false)
 	}
 
 	directory = OpenDirectory(path);
-	while(directory.GetNext(directory, filename, PLATFORM_MAX_PATH, filetype))
+	while(directory.GetNext(filename, PLATFORM_MAX_PATH, filetype))
 	{
 		if(filetype == FileType_File && StrContains(filename, ".ff2", false) != -1)
 		{
@@ -44,15 +44,15 @@ void DisableSubPlugins(bool force = false)
 
 	char path[PLATFORM_MAX_PATH], filename[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "plugins/freaks");
-	FileType filetype;
+    FileType filetype;
     DirectoryListing directory = OpenDirectory(path);
-	while(directory.GetNext(filename, PLATFORM_MAX_PATH, filetype))
-	{
-		if(filetype==FileType_File && StrContains(filename, ".ff2", false) != -1)
-		{
-			InsertServerCommand("sm plugins unload freaks/%s", filename);  //ServerCommand will not work when switching maps
-		}
-	}
+    while(directory.GetNext(filename, PLATFORM_MAX_PATH, filetype))
+    {
+        if(filetype == FileType_File && StrContains(filename, ".ff2", false) != -1)
+        {
+        	InsertServerCommand("sm plugins unload freaks/%s", filename);  //ServerCommand will not work when switching maps
+        }
+    }
 	ServerExecute();
 	areSubPluginsEnabled = false;
 }

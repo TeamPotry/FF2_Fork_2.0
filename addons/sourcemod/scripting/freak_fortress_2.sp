@@ -42,10 +42,11 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 
 #include "freak_fortress_2/natives/ff2boss.sp"
 
-// #include "freak_fortress_2/events.sp"
+#include "freak_fortress_2/events.sp"
 #include "freak_fortress_2/hud.sp"
 #include "freak_fortress_2/menu.sp"
 #include "freak_fortress_2/subplugin.sp"
+#include "freak_fortress_2/commands.sp"
 
 #define REQUIRE_PLUGIN
 
@@ -148,8 +149,6 @@ char currentmap[99];
 bool checkDoors=false;
 bool bMedieval;
 bool firstBlood;
-
-bool areSubPluginsEnabled;
 
 int FF2CharSet;
 int validCharsets[64];
