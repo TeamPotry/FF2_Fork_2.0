@@ -8979,7 +8979,7 @@ FindCompanion(boss, players, bool:omit[])
 		else  //Can't find the companion's character, so just play without the companion
 		{
 			LogError("[FF2 Bosses] Could not find boss %s!", companionName);
-			delete Boss[companion];
+			Boss[companion].DeleteSelf();
 			omit[companion]=false;
 		}
 	}
