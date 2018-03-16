@@ -42,8 +42,8 @@ void DisableSubPlugins(bool force = false)
 		return;
 	}
 
-	char path[PLATFORM_MAX_PATH], filename[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "plugins/freaks");
+    char path[PLATFORM_MAX_PATH], filename[PLATFORM_MAX_PATH];
+    BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "plugins/freaks");
     FileType filetype;
     DirectoryListing directory = OpenDirectory(path);
     while(directory.GetNext(filename, PLATFORM_MAX_PATH, filetype))
@@ -53,6 +53,6 @@ void DisableSubPlugins(bool force = false)
         	InsertServerCommand("sm plugins unload freaks/%s", filename);  //ServerCommand will not work when switching maps
         }
     }
-	ServerExecute();
-	areSubPluginsEnabled = false;
+    ServerExecute();
+    areSubPluginsEnabled = false;
 }
