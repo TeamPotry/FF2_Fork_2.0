@@ -42,7 +42,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 
 #include "freak_fortress_2/natives/ff2boss.sp"
 
-#include "freak_fortress_2/event.sp"
+#include "freak_fortress_2/events.sp"
 #include "freak_fortress_2/hud.sp"
 #include "freak_fortress_2/menu.sp"
 
