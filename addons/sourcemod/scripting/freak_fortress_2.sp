@@ -149,9 +149,7 @@ char currentmap[99];
 bool checkDoors=false;
 bool bMedieval;
 bool firstBlood;
-float circuitStun;
 
-Handle cvarNextmap;
 bool areSubPluginsEnabled;
 
 int FF2CharSet;
@@ -164,8 +162,6 @@ int g_Monoculus=-1;
 
 static bool executed=false;
 static bool executed2=false;
-
-int changeGamemode;
 
 enum Operators
 {
@@ -1147,6 +1143,7 @@ public OnPluginStart()
 	LogMessage("===Freak Fortress 2 Initializing-v%s===", PLUGIN_VERSION);
 
 	FF2Cvar_Init();
+	cvarVersion=CreateConVar("ff2_version", PLUGIN_VERSION, "Freak Fortress 2 Version", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_SPONLY|FCVAR_DONTRECORD);
 
 	HookEvent("teamplay_round_start", OnRoundStart);
 	HookEvent("teamplay_round_win", OnRoundEnd);
