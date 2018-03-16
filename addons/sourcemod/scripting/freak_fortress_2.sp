@@ -36,10 +36,15 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 
 #include <freak_fortress_2/bosses>
 
+#include "freak_fortress_2/bosses.sp"
 #include "freak_fortress_2/stocks.sp"
-#include "freak_fortress_2/menu.sp"
-#include "freak_fortress_2/hud.sp"
+#include "freak_fortress_2/gamemode.sp"
+
 #include "freak_fortress_2/natives/ff2boss.sp"
+
+#include "freak_fortress_2/event.sp"
+#include "freak_fortress_2/hud.sp"
+#include "freak_fortress_2/menu.sp"
 
 #define REQUIRE_PLUGIN
 
@@ -78,18 +83,12 @@ bool goomba=false;
 #endif
 
 bool smac=false;
-bool CheckedFirstRound=false;
+
 // bool MapIsRunning=false;
 
 int OtherTeam=2;
 int BossTeam=3;
-int playing;
-int healthcheckused;
-int RedAlivePlayers;
-int BlueAlivePlayers;
-int RoundCount;
-// int RPSWinner;
-int RPSLoser[MAXPLAYERS+1];
+
 // int Special[MAXPLAYERS+1];
 int Incoming[MAXPLAYERS+1]; // 보스 강제 선택 여부: 캐릭터 index를 담음. 없으면 -1
 
@@ -113,13 +112,6 @@ float PlayerDamageDPS[MAXPLAYERS+1][5];
 int HighestDPSClient;
 float HighestDPS;
 
-int MainBoss;
-FF2Boss Boss[MAXPLAYERS+1];
-
-int BossHealthLast[MAXPLAYERS+1];
-
-// char BossRageName[MAXPLAYERS+1][68];
-// char BossUpgradeRageName[MAXPLAYERS+1][68];
 bool IsUpgradeRage[MAXPLAYERS+1];
 
 bool IsBossYou[MAXPLAYERS+1];
@@ -135,11 +127,6 @@ bool bossHasReloadAbility[MAXPLAYERS+1];
 bool bossHasRightMouseAbility[MAXPLAYERS+1];
 bool playingCustomBossBGM[MAXPLAYERS+1];
 bool playingCustomBGM[MAXPLAYERS+1];
-bool DEVmode=false;
-
-int timeleft;
-float AFKTime;
-bool IsBossDoing[MAXPLAYERS+1];
 
 Handle cvarVersion;
 Handle cvarPointDelay;
@@ -183,29 +170,6 @@ Handle timeleftHUD;
 Handle abilitiesHUD;
 Handle infoHUD;
 
-bool Enabled=true;
-bool Enabled2=true;
-int PointDelay=6;
-float Announce=120.0;
-int AliveToEnable=5;
-int PointType;
-bool BossCrits = true;
-int arenaRounds;
-float circuitStun;
-int countdownPlayers=1;
-int countdownTime=120;
-int countdownHealth=2000;
-bool SpecForceBoss;
-bool lastPlayerGlow=true;
-bool bossTeleportation=true;
-int shieldCrits;
-int allowedDetonations;
-float GoombaDamage=0.05;
-float reboundPower=300.0;
-bool canBossRTD;
-bool HasCompanions;
-bool NoticedLastman=false;
-
 Handle MusicTimer[MAXPLAYERS+1];
 // Handle BossSoloRageDelayTimer[MAXPLAYERS+1];
 Handle BossInfoTimer[MAXPLAYERS+1][2];
@@ -219,15 +183,7 @@ char currentmap[99];
 bool checkDoors=false;
 bool bMedieval;
 bool firstBlood;
-
-int tf_arena_use_queue;
-int mp_teams_unbalance_limit;
-int tf_arena_first_blood;
-int mp_forcecamera;
-int tf_dropped_weapon_lifetime;
-float tf_feign_death_activate_damage_scale;
-float tf_feign_death_damage_scale;
-char mp_humans_must_join_team[16];
+float circuitStun;
 
 Handle cvarNextmap;
 bool areSubPluginsEnabled;
@@ -8516,41 +8472,6 @@ public Action:Timer_DisguiseBackstab(Handle:timer, any:userid)
 	return Plugin_Continue;
 }
 
-stock AssignTeam(client, team)
-{
-	if(!GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"))  //Living spectator check: 0 means that no class is selected
-	{
-		Debug("%N does not have a desired class!", client);
-		if(IsBoss(client))
-		{
-			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", KvGetNum(BossKV[Boss[client].CharacterIndex], "class", 1));  //So we assign one to prevent living spectators
-		}
-		else
-		{
-			Debug("%N was not a boss and did not have a desired class!  Please report this to https://github.com/50DKP/FF2-Official");
-		}
-	}
-
-	SetEntProp(client, Prop_Send, "m_lifeState", 2);
-	ChangeClientTeam(client, team);
-	TF2_RespawnPlayer(client);
-
-	if(GetEntProp(client, Prop_Send, "m_iObserverMode") && IsPlayerAlive(client))  //Welp
-	{
-		Debug("%N is a living spectator!  Please report this to https://github.com/50DKP/FF2-Official", client);
-		if(IsBoss(client))
-		{
-			TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Boss[client].CharacterIndex], "class", 1));
-		}
-		else
-		{
-			Debug("Additional information: %N was not a boss");
-			TF2_SetPlayerClass(client, TFClass_Scout);
-		}
-		TF2_RespawnPlayer(client);
-	}
-}
-
 stock GetClientWithMostQueuePoints(bool:omit[])
 {
 	int winner;
@@ -8579,25 +8500,7 @@ stock LastBossIndex()
 	return 0;
 }
 
-stock GetBossIndex(int client)
-{
-	if(client == 0)
-	{
-		return MainBoss;
-	}
 
-	if(client>0 && client<=MaxClients)
-	{
-		for(int boss; boss<=MaxClients; boss++)
-		{
-			if(Boss[boss].ClientIndex == client)
-			{
-				return boss;
-			}
-		}
-	}
-	return -1;
-}
 
 stock Operate(Handle:sumArray, &bracket, Float:value, Handle:_operator)
 {
@@ -9328,55 +9231,6 @@ FindCompanion(boss, players, bool:omit[])
 	playersNeeded=3;  //Reset the amount of players needed back to 3 after we're done
 }
 
-stock SpawnWeapon(client, String:name[], index, level, qual, String:att[])
-{
-	Handle hWeapon=TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION);
-	if(hWeapon==INVALID_HANDLE)
-	{
-		return -1;
-	}
-
-	TF2Items_SetClassname(hWeapon, name);
-	TF2Items_SetItemIndex(hWeapon, index);
-	TF2Items_SetLevel(hWeapon, level);
-	TF2Items_SetQuality(hWeapon, qual);
-	char atts[32][32];
-	int count=ExplodeString(att, ";", atts, 32, 32);
-
-	if(count % 2)
-	{
-		--count;
-	}
-
-	if(count>0)
-	{
-		TF2Items_SetNumAttributes(hWeapon, count/2);
-		int i2;
-		for(int i; i<count; i+=2)
-		{
-			int attrib=StringToInt(atts[i]);
-			if(!attrib)
-			{
-				LogError("Bad weapon attribute passed: %s ; %s", atts[i], atts[i+1]);
-				CloseHandle(hWeapon);
-				return -1;
-			}
-
-			TF2Items_SetAttribute(hWeapon, i2, attrib, StringToFloat(atts[i+1]));
-			i2++;
-		}
-	}
-	else
-	{
-		TF2Items_SetNumAttributes(hWeapon, 0);
-	}
-
-	int entity=TF2Items_GiveNamedItem(client, hWeapon);
-	CloseHandle(hWeapon);
-	EquipPlayerWeapon(client, entity);
-	return entity;
-}
-
 public HintPanelH(Handle:menu, MenuAction:action, client, selection)
 {
 	if(IsValidClient(client) && (action==MenuAction_Select || (action==MenuAction_Cancel && selection==MenuCancel_Exit)))
@@ -9609,21 +9463,6 @@ SetClientQueuePoints(client, points)
 		Format(cookies, sizeof(cookies), "%i %s %s %s %s %s %s %s", points, cookieValues[1], cookieValues[2], cookieValues[3], cookieValues[4], cookieValues[5], cookieValues[6], cookieValues[7]);
 		SetClientCookie(client, FF2Cookies, cookies);
 	}
-}
-
-stock bool IsBoss(int client)
-{
-	if(IsValidClient(client))
-	{
-		for(int boss; boss<=MaxClients; boss++)
-		{
-			if(Boss[boss].ClientIndex == client)
-			{
-				return true;
-			}
-		}
-	}
-	return false;
 }
 
 public FF2PanelH(Handle:menu, MenuAction:action, client, selection)
@@ -9955,7 +9794,8 @@ HelpPanelBoss(client=0)
 	}
 	CloseHandle(panel);
 }
-stock RemoveShield(client, attacker, Float:position[3])
+
+stock void RemoveShield(client, attacker, Float:position[3])
 {
 	TF2_RemoveWearable(client, shield[client]);
 	EmitSoundToClient(client, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
@@ -9964,14 +9804,6 @@ stock RemoveShield(client, attacker, Float:position[3])
 	EmitSoundToClient(attacker, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
 	TF2_AddCondition(client, TFCond_Bonked, 0.1); // Shows "MISS!" upon breaking shield
 	shield[client]=0;
-}
-
-stock StingShield(client, attacker, Float:position[3])
-{
-	EmitSoundToClient(client, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
-	EmitSoundToClient(client, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
-	EmitSoundToClient(attacker, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
-	EmitSoundToClient(attacker, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
 }
 
 public Action:MusicTogglePanelCmd(client, args)

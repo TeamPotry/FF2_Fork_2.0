@@ -257,6 +257,90 @@ stock void SetArenaCapEnableTime(float time)
 	}
 }
 
+stock AssignTeam(int client, int team)
+{
+	if(!GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"))  //Living spectator check: 0 means that no class is selected
+	{
+		Debug("%N does not have a desired class!", client);
+		if(IsBoss(client))
+		{
+			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", KvGetNum(BossKV[Boss[client].CharacterIndex], "class", 1));  //So we assign one to prevent living spectators
+		}
+		else
+		{
+			Debug("%N was not a boss and did not have a desired class!  Please report this to https://github.com/50DKP/FF2-Official");
+		}
+	}
+
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	ChangeClientTeam(client, team);
+	TF2_RespawnPlayer(client);
+
+	if(GetEntProp(client, Prop_Send, "m_iObserverMode") && IsPlayerAlive(client))  //Welp
+	{
+		Debug("%N is a living spectator!  Please report this to https://github.com/50DKP/FF2-Official", client);
+		if(IsBoss(client))
+		{
+			TF2_SetPlayerClass(client, TFClassType:KvGetNum(BossKV[Boss[client].CharacterIndex], "class", 1));
+		}
+		else
+		{
+			Debug("Additional information: %N was not a boss");
+			TF2_SetPlayerClass(client, TFClass_Scout);
+		}
+		TF2_RespawnPlayer(client);
+	}
+}
+
+stock int SpawnWeapon(int client, char name[], int index, int level, int qual, char[] att)
+{
+	Handle hWeapon = TF2Items_CreateItem(OVERRIDE_ALL | FORCE_GENERATION);
+	if(hWeapon == null)
+	{
+		return -1;
+	}
+
+	TF2Items_SetClassname(hWeapon, name);
+	TF2Items_SetItemIndex(hWeapon, index);
+	TF2Items_SetLevel(hWeapon, level);
+	TF2Items_SetQuality(hWeapon, qual);
+	char atts[32][32];
+	int count=ExplodeString(att, ";", atts, 32, 32);
+
+	if(count % 2)
+	{
+		--count;
+	}
+
+	if(count>0)
+	{
+		TF2Items_SetNumAttributes(hWeapon, count/2);
+		int i2;
+		for(int i; i<count; i+=2)
+		{
+			int attrib=StringToInt(atts[i]);
+			if(!attrib)
+			{
+				LogError("Bad weapon attribute passed: %s ; %s", atts[i], atts[i+1]);
+				hWeapon.Close();
+				return -1;
+			}
+
+			TF2Items_SetAttribute(hWeapon, i2, attrib, StringToFloat(atts[i+1]));
+			i2++;
+		}
+	}
+	else
+	{
+		TF2Items_SetNumAttributes(hWeapon, 0);
+	}
+
+	int entity = TF2Items_GiveNamedItem(client, hWeapon);
+	hWeapon.Close();
+	EquipPlayerWeapon(client, entity);
+	return entity;
+}
+
 stock int OnlyParisLeft(int bossTeam)
 {
 	int scouts;
@@ -284,6 +368,14 @@ stock int GetIndexOfWeaponSlot(int client, int slot)
 {
 	int weapon = GetPlayerWeaponSlot(client, slot);
 	return (weapon>MaxClients && IsValidEntity(weapon) ? GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") : -1);
+}
+
+stock void StingShield(int client, int attacker, float position[3])
+{
+	EmitSoundToClient(client, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
+	EmitSoundToClient(client, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
+	EmitSoundToClient(attacker, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
+	EmitSoundToClient(attacker, "player/spy_shield_break.wav", _, _, _, _, 0.7, _, _, position, _, false);
 }
 
 
