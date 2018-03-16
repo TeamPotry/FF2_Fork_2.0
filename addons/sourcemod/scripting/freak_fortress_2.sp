@@ -62,7 +62,6 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 // #define UPDATE_URL "http://50dkp.github.io/FF2-Official/update.txt"
 
 #define MAXENTITIES 2048
-#define MAXSPECIALS 64
 #define MAXRANDOMS 16
 
 #define HEALTHBAR_PROPERTY "m_iBossHealthPercentageByte"
@@ -1023,7 +1022,6 @@ stock FindVersionData(Handle:panel, versionIndex)
 static const int maxVersion=sizeof(ff2versiontitles)-1;
 //
 int Specials;
-Handle BossKV[MAXSPECIALS];
 Handle PreAbility;
 Handle OnAbility;
 Handle OnMusic;

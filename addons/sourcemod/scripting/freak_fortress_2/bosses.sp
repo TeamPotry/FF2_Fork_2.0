@@ -1,4 +1,8 @@
+#define MAXSPECIALS 64
+Handle BossKV[MAXSPECIALS];
+
 FF2Boss Boss[MAXPLAYERS+1];
+int MainBoss;
 int BossHealthLast[MAXPLAYERS+1];
 bool IsBossDoing[MAXPLAYERS+1];
 bool BossCrits = false;
