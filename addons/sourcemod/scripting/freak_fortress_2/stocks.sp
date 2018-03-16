@@ -292,7 +292,7 @@ stock AssignTeam(int client, int team)
 	}
 }
 
-stock int SpawnWeapon(int client, char name[], int index, int level, int qual, char[] att)
+stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, char[] att)
 {
 	Handle hWeapon = TF2Items_CreateItem(OVERRIDE_ALL | FORCE_GENERATION);
 	if(hWeapon == null)
