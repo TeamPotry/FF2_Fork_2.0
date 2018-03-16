@@ -84,3 +84,15 @@ public Action Listener_Say(int client, const char[] command, int argc)
 	return handleChat ? Plugin_Handled : Plugin_Continue;
 	*/
 }
+
+public Action Command_DevMode(int client, int args)
+{
+	if(DEVmode)
+		DEVmode = false;
+	else
+		DEVmode = true;
+
+	CPrintToChatAll("{olive}[FF2]{default} DEVmode: %s", DEVmode ? "ON" : "OFF");
+
+	return Plugin_Continue;
+}

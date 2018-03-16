@@ -1,5 +1,7 @@
 #define MAXSPECIALS 64
 Handle BossKV[MAXSPECIALS];
+bool bBlockVoice[MAXSPECIALS];
+float BossSpeed[MAXSPECIALS];
 
 FF2Boss Boss[MAXPLAYERS+1];
 int MainBoss;

@@ -1,3 +1,10 @@
+Handle jumpHUD;
+Handle rageHUD;
+Handle livesHUD;
+Handle timeleftHUD;
+Handle abilitiesHUD;
+Handle infoHUD;
+
 public Action InitialBossInfo(Handle timer, any bossInfoTimer)
 {
     FF2BossInfoTimer timerArray = view_as<FF2BossInfoTimer>(bossInfoTimer);
