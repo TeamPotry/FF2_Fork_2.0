@@ -72,18 +72,6 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #define MONOCULUS "eyeball_boss"
 #define DISABLED_PERKS "toxic,noclip,uber,ammo,instant,jump,tinyplayer"
 
-#if defined _steamtools_included
-bool steamtools=false;
-#endif
-
-#if defined _tf2attributes_included
-bool tf2attributes=false;
-#endif
-
-#if defined _goomba_included
-bool goomba=false;
-#endif
-
 bool smac=false;
 
 // bool MapIsRunning=false;

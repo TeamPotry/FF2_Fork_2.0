@@ -1,5 +1,17 @@
 bool areSubPluginsEnabled;
 
+#if defined _steamtools_included
+bool steamtools=false;
+#endif
+
+#if defined _tf2attributes_included
+bool tf2attributes=false;
+#endif
+
+#if defined _goomba_included
+bool goomba=false;
+#endif
+
 void EnableSubPlugins(bool force = false)
 {
 	if(areSubPluginsEnabled && !force)
