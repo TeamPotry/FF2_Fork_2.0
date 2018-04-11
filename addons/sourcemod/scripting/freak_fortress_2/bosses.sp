@@ -1,4 +1,5 @@
 #define MAXSPECIALS 64
+
 Handle BossKV[MAXSPECIALS];
 bool bBlockVoice[MAXSPECIALS];
 float BossSpeed[MAXSPECIALS];
@@ -8,6 +9,9 @@ int MainBoss;
 int BossHealthLast[MAXPLAYERS+1];
 bool IsBossDoing[MAXPLAYERS+1];
 bool BossCrits = false;
+
+int OtherTeam=2; // TODO: DELETE IT.
+int BossTeam=3;
 
 stock bool IsBoss(int client)
 {
