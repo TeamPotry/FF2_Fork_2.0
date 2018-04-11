@@ -76,9 +76,6 @@ bool smac=false;
 
 // bool MapIsRunning=false;
 
-int OtherTeam=2;
-int BossTeam=3;
-
 // int Special[MAXPLAYERS+1];
 int Incoming[MAXPLAYERS+1]; // 보스 강제 선택 여부: 캐릭터 index를 담음. 없으면 -1
 
