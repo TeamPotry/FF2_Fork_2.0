@@ -98,3 +98,114 @@ public Action Command_DevMode(int client, int args)
 
 	return Plugin_Continue;
 }
+
+public Action OnSuicide(int client, const char[] command, int args)
+{
+	bool canBossSuicide = GetConVarBool(cvarBossSuicide);
+	if(Enabled && IsBoss(client) && (canBossSuicide ? !CheckRoundState() : true) && CheckRoundState()!=2)
+	{
+		CPrintToChat(client, "{olive}[FF2]{default} %t", canBossSuicide ? "Boss Suicide Pre-round" : "Boss Suicide Denied");
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
+public Action OnChangeClass(int client, const char[] command, int args)
+{
+	if(Enabled && IsBoss(client) && IsPlayerAlive(client))
+	{
+		//Don't allow the boss to switch classes but instead set their *desired* class (for the next round)
+		char class[16];
+		GetCmdArg(1, class, sizeof(class));
+		if(TF2_GetClass(class) != TFClass_Unknown)  //Ignore cases where the client chooses an invalid class through the console
+		{
+			SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TF2_GetClass(class));
+		}
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
+public Action OnJoinTeam(int client, const char[] command, int args)
+{
+	if(!Enabled || RoundCount < arenaRounds || CheckRoundState() == -1) // 1.10.15
+	{
+		return Plugin_Continue;
+	}
+
+	// autoteam doesn't come with arguments
+ 	if(StrEqual(command, "autoteam", false))
+ 	{
+ 		int team = view_as<int>(TFTeam_Unassigned), oldTeam = GetClientTeam(client);
+ 		if(IsBoss(client))
+ 		{
+ 			team = BossTeam;
+ 		}
+ 		else
+ 		{
+ 			team = OtherTeam;
+ 		}
+
+ 		if(team != oldTeam)
+ 		{
+ 			ChangeClientTeam(client, team);
+ 		}
+ 		return Plugin_Handled;
+ 	}
+
+	if(!args)
+ 	{
+ 		return Plugin_Continue;
+ 	}
+
+	int team = view_as<int>(TFTeam_Unassigned), oldTeam = GetClientTeam(client);
+	char teamString[10];
+	GetCmdArg(1, teamString, sizeof(teamString));
+
+	if(StrEqual(teamString, "red", false))
+	{
+		team = view_as<int>(TFTeam_Red);
+	}
+	else if(StrEqual(teamString, "blue", false))
+	{
+		team = view_as<int>(TFTeam_Blue);
+	}
+	else if(StrEqual(teamString, "auto", false))
+	{
+		team = view_as<int>(OtherTeam);
+	}
+	else if(StrEqual(teamString, "spectate", false) && !IsBoss(client) && GetConVarBool(FindConVar("mp_allowspectators")))
+	{
+		team = view_as<int>(TFTeam_Spectator);
+	}
+
+	if(team == BossTeam && !IsBoss(client))
+	{
+		team = OtherTeam;
+	}
+	else if(team == OtherTeam && IsBoss(client))
+	{
+		team = BossTeam;
+	}
+
+	if(team > view_as<int>(TFTeam_Unassigned) && team != oldTeam)
+	{
+		ChangeClientTeam(client, team);
+	}
+
+	if(CheckRoundState() != 1 && !IsBoss(client) || !IsPlayerAlive(client))  //No point in showing the VGUI if they can't change teams
+	{
+		switch(team)
+		{
+			case TFTeam_Red:
+			{
+				ShowVGUIPanel(client, "class_red");
+			}
+			case TFTeam_Blue:
+			{
+				ShowVGUIPanel(client, "class_blue");
+			}
+		}
+	}
+	return Plugin_Handled;
+}
