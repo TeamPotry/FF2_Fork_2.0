@@ -65,7 +65,6 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 // #define UPDATE_URL "http://50dkp.github.io/FF2-Official/update.txt"
 
 #define MAXENTITIES 2048
-#define MAXRANDOMS 16
 
 #define HEALTHBAR_PROPERTY "m_iBossHealthPercentageByte"
 #define HEALTHBAR_MAX 255
@@ -94,8 +93,6 @@ int DPSTick;
 float PlayerDamageDPS[MAXPLAYERS+1][5];
 int HighestDPSClient;
 float HighestDPS;
-
-bool IsUpgradeRage[MAXPLAYERS+1];
 
 bool IsBossYou[MAXPLAYERS+1];
 int Stabbed[MAXPLAYERS+1];

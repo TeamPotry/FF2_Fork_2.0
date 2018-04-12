@@ -1,4 +1,5 @@
 #define MAXSPECIALS 64
+#define MAXRANDOMS 16
 
 Handle BossKV[MAXSPECIALS];
 bool bBlockVoice[MAXSPECIALS];
@@ -9,6 +10,7 @@ int MainBoss;
 int BossHealthLast[MAXPLAYERS+1];
 bool IsBossDoing[MAXPLAYERS+1];
 bool BossCrits = false;
+bool IsUpgradeRage[MAXPLAYERS+1];
 
 int OtherTeam=2; // TODO: DELETE IT.
 int BossTeam=3;
