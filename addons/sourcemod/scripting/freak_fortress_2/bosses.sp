@@ -12,6 +12,8 @@ bool IsBossDoing[MAXPLAYERS+1];
 bool BossCrits = false;
 bool IsUpgradeRage[MAXPLAYERS+1];
 
+bool emitRageSound[MAXPLAYERS+1];
+
 int OtherTeam=2; // TODO: DELETE IT.
 int BossTeam=3;
 

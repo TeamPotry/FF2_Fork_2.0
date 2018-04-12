@@ -102,7 +102,6 @@ float KSpreeTimer[MAXPLAYERS+1];
 int KSpreeCount[MAXPLAYERS+1];
 float GlowTimer[MAXPLAYERS+1];
 int shortname[MAXPLAYERS+1];
-bool emitRageSound[MAXPLAYERS+1];
 bool bossHasReloadAbility[MAXPLAYERS+1];
 bool bossHasRightMouseAbility[MAXPLAYERS+1];
 bool playingCustomBossBGM[MAXPLAYERS+1];
