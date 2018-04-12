@@ -90,10 +90,6 @@ bool playBGM[MAXPLAYERS+1]=true;
 
 char currentBGM[MAXPLAYERS+1][PLATFORM_MAX_PATH];
 
-int FF2flags[MAXPLAYERS+1];
-int FF2Userflags[MAXPLAYERS+1];
-int FF2ServerFlag;
-
 int DPSTick;
 float PlayerDamageDPS[MAXPLAYERS+1][5];
 int HighestDPSClient;

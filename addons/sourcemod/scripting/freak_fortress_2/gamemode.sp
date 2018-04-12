@@ -1,3 +1,7 @@
+int FF2flags[MAXPLAYERS+1];
+int FF2Userflags[MAXPLAYERS+1];
+int FF2ServerFlag;
+
 bool CheckedFirstRound=false;
 int RoundCount;
 int playing;
