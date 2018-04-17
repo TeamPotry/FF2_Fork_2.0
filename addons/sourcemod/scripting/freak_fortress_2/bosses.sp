@@ -12,6 +12,11 @@ bool IsBossDoing[MAXPLAYERS+1];
 bool BossCrits = false;
 bool IsUpgradeRage[MAXPLAYERS+1];
 
+bool IsBossYou[MAXPLAYERS+1];
+int Stabbed[MAXPLAYERS+1];
+int Marketed[MAXPLAYERS+1];
+float KSpreeTimer[MAXPLAYERS+1];
+
 bool emitRageSound[MAXPLAYERS+1];
 
 int OtherTeam=2; // TODO: DELETE IT.

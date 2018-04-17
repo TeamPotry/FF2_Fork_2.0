@@ -95,10 +95,6 @@ float PlayerDamageDPS[MAXPLAYERS+1][5];
 int HighestDPSClient;
 float HighestDPS;
 
-bool IsBossYou[MAXPLAYERS+1];
-int Stabbed[MAXPLAYERS+1];
-int Marketed[MAXPLAYERS+1];
-float KSpreeTimer[MAXPLAYERS+1];
 // float playerDPS=0.0;
 int KSpreeCount[MAXPLAYERS+1];
 float GlowTimer[MAXPLAYERS+1];
