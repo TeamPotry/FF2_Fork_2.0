@@ -39,6 +39,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #include "freak_fortress_2/bosses.sp"
 #include "freak_fortress_2/stocks.sp"
 #include "freak_fortress_2/gamemode.sp"
+#include "freak_fortress_2/forwards.sp"
 
 #include "freak_fortress_2/natives/ff2boss.sp"
 
@@ -961,20 +962,6 @@ stock FindVersionData(Handle:panel, versionIndex)
 static const int maxVersion=sizeof(ff2versiontitles)-1;
 //
 int Specials;
-Handle PreAbility;
-Handle OnAbility;
-Handle OnMusic;
-Handle OnTriggerHurt;
-Handle OnSpecialSelected;
-Handle OnAddQueuePoints;
-Handle OnLoadCharacterSet;
-Handle OnLoseLife;
-Handle OnAlivePlayersChanged;
-Handle OnAbilityTime;
-Handle OnAbilityTimeEnd;
-Handle OnPlayBoss;
-Handle OnTakePercentDamage;
-Handle OnTakePercentDamagePost;
 
 char ChancesString[512];
 int chances[MAXSPECIALS*2];  //This is multiplied by two because it has to hold both the boss indices and chances

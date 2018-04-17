@@ -1,0 +1,14 @@
+Handle PreAbility;
+Handle OnAbility;
+Handle OnMusic;
+Handle OnTriggerHurt;
+Handle OnSpecialSelected;
+Handle OnAddQueuePoints;
+Handle OnLoadCharacterSet;
+Handle OnLoseLife;
+Handle OnAlivePlayersChanged;
+Handle OnAbilityTime;
+Handle OnAbilityTimeEnd;
+Handle OnPlayBoss;
+Handle OnTakePercentDamage;
+Handle OnTakePercentDamagePost;
