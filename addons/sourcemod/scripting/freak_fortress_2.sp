@@ -118,10 +118,6 @@ Handle LoadedMusicData;
 
 int botqueuepoints;
 float HPTime;
-char currentmap[99];
-bool checkDoors=false;
-bool bMedieval;
-bool firstBlood;
 
 int FF2CharSet;
 int validCharsets[64];
