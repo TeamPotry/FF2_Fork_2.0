@@ -8,7 +8,6 @@ int playing;
 int healthcheckused;
 int RedAlivePlayers;
 int BlueAlivePlayers;
-int RPSLoser[MAXPLAYERS+1];
 bool DEVmode=false;
 int timeleft;
 float AFKTime;

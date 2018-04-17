@@ -1,3 +1,5 @@
+int RPSLoser[MAXPLAYERS+1];
+
 public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)
 {
     char sound[PLATFORM_MAX_PATH];
@@ -8,6 +10,34 @@ public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)
     }
     return Plugin_Continue;
 }
+
+public Action:OnRPS(Handle:event, const String:name[], bool:dont)
+{
+	int winner = GetEventInt(event, "winner");
+	int loser = GetEventInt(event, "loser");
+
+	if(!IsValidClient(winner) || !IsValidClient(loser)) // Check for valid clients
+	{
+			return;
+	}
+	if(!IsBoss(winner) && IsBoss(loser) && GetBossIndex(loser)>=0) // Boss Loses on RPS? Kill current boss.
+	{
+			// RPSWinner=winner;
+			RPSLoser[winner]=loser;
+			CreateTimer(3.1, OnRPS_Timer, winner);
+			return;
+	}
+}
+
+public Action:OnRPS_Timer(Handle:timer, any:client)
+{
+	if(!IsValidClient(RPSLoser[client])) return Plugin_Continue;
+	if(!IsValidClient(client)) ForcePlayerSuicide(RPSLoser[client]);
+
+	SDKHooks_TakeDamage(RPSLoser[client], client, client, float(FF2_GetBossHealth(GetBossIndex(RPSLoser[client]))), DMG_GENERIC, -1);
+	return Plugin_Continue;
+}
+
 
 public Action OnCallForMedic(int client, const char[] command, int args)
 {
