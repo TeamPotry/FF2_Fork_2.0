@@ -206,7 +206,6 @@ public Action OnTakeDamage(int client, int &attacker,  int &inflictor, float &da
 				}
 
 				int index;
-				char classname[64];
 				if(IsValidEntity(weapon) && weapon>MaxClients && attacker <= MaxClients)
 				{
 					GetEntityClassname(weapon, classname, sizeof(classname));

@@ -96,7 +96,6 @@ float HighestDPS;
 
 // float playerDPS=0.0;
 int KSpreeCount[MAXPLAYERS+1];
-float GlowTimer[MAXPLAYERS+1];
 int shortname[MAXPLAYERS+1];
 bool bossHasReloadAbility[MAXPLAYERS+1];
 bool bossHasRightMouseAbility[MAXPLAYERS+1];
