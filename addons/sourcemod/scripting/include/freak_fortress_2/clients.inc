@@ -6,7 +6,7 @@ enum ClientValues
     Client_GlowTime,
     Client_Flags,
     Client_SpecialAttackCount, // NOTE: This is array.
-    Client_MusicData, // NOTE: This is array.
+    Client_MusicData, // TODO: This is array?
 
 	ClientValues_Last
 };
