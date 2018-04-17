@@ -15,14 +15,8 @@ public Action OnTakeDamage(int client, int &attacker,  int &inflictor, float &da
 		return Plugin_Continue;
 	}
 
-	static bool foundDmgCustom, bool dmgCustomInOTD;
+	// TODO: 본 플러그인을 1.8 이상에서만 작동되도록 변경.
 	bool Change = false;
-
-	if(!foundDmgCustom)
-	{
-		dmgCustomInOTD = (GetFeatureStatus(FeatureType_Capability, "SDKHook_DmgCustomInOTD") == FeatureStatus_Available);
-		foundDmgCustom = true;
-	}
 
 	if(attacker <= 0 || client == attacker)
 	{
@@ -146,6 +140,24 @@ public Action OnTakeDamage(int client, int &attacker,  int &inflictor, float &da
 			if(attacker <= MaxClients)
 			{
 				bool bIsTelefrag, bIsBackstab, bIsFacestab;
+
+				char classname[32];
+
+				if(damagecustom == TF_CUSTOM_BACKSTAB)
+				{
+					bIsBackstab = true;
+				}
+				else if(FF2Userflags[attacker] & FF2USERFLAG_ALLOW_FACESTAB &&
+				IsValidEntity(weapon) && GetEntityClassname(weapon, classname, sizeof(classname)) &&
+					!StrContains(classname, "tf_weapon_knife", false) && !(damagecustom & TF_CUSTOM_BACKSTAB))
+				{
+					bIsFacestab = true;
+				}
+				else if(damagecustom == TF_CUSTOM_TELEFRAG)
+				{
+					bIsTelefrag = true;
+				}
+				/*
 				if(dmgCustomInOTD)
 				{
 					char classname[32];
@@ -177,6 +189,8 @@ public Action OnTakeDamage(int client, int &attacker,  int &inflictor, float &da
 				{
 					bIsTelefrag = true;
 				}
+				*/
+
 				/////////////////
 				if(GetClientButtons(client) & IN_DUCK && GetEntityFlags(client) & FL_ONGROUND)
 				{

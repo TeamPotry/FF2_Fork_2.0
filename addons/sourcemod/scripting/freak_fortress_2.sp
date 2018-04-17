@@ -40,6 +40,7 @@ Updated by Wliu, Chris, Lawd, and Carge after Powerlord quit FF2
 #include "freak_fortress_2/stocks.sp"
 #include "freak_fortress_2/gamemode.sp"
 #include "freak_fortress_2/forwards.sp"
+#include "freak_fortress_2/clients.sp"
 
 #include "freak_fortress_2/natives/ff2boss.sp"
 
@@ -80,11 +81,8 @@ bool smac=false;
 // int Special[MAXPLAYERS+1];
 int Incoming[MAXPLAYERS+1]; // 보스 강제 선택 여부: 캐릭터 index를 담음. 없으면 -1
 
-int Damage[MAXPLAYERS+1];
 int curHelp[MAXPLAYERS+1];
 int uberTarget[MAXPLAYERS+1];
-int shield[MAXPLAYERS+1];
-int detonations[MAXPLAYERS+1];
 int GoombaCount[MAXPLAYERS+1];
 int selectedBGM[MAXPLAYERS+1];
 bool playBGM[MAXPLAYERS+1]=true;
