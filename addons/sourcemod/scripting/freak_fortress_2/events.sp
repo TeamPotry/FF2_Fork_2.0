@@ -349,3 +349,235 @@ public Action OnCallForMedic(int client, const char[] command, int args)
 	}
 	return Plugin_Continue;
 }
+
+public Action OnPlayerHurt(Event event, const char[] name, bool dontBroadcast)
+{
+	if(!Enabled || !CheckRoundState())
+	{
+		return Plugin_Continue;
+	}
+
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int boss = GetBossIndex(client);
+	int damage = GetEventInt(event, "damageamount");
+	int custom = GetEventInt(event, "custom");
+	// bool changeResult = false;
+
+	if(boss == -1 || !Boss[boss].ClientIndex || !IsValidEntity(Boss[boss].ClientIndex) || client == attacker)
+	{
+		return Plugin_Continue;
+	}
+
+	if(custom == TF_CUSTOM_TELEFRAG)
+	{
+		damage=IsPlayerAlive(attacker) ? 9001 : 1;
+	}
+	else if(custom == TF_CUSTOM_BOOTS_STOMP)
+	{
+		if(IsBoss(attacker))
+			damage *= 50;
+
+		else
+			damage *= 5;
+	}
+
+	if(GetEventBool(event, "minicrit") && GetEventBool(event, "allseecrit"))
+	{
+		event.SetBool("allseecrit", false);
+	}
+
+	if(custom == TF_CUSTOM_TELEFRAG || custom == TF_CUSTOM_BOOTS_STOMP)
+	{
+		event.SetInt("damageamount", damage);
+	}
+
+/*
+	if(Boss[boss].HealthPoint - damage < 1 && Boss[boss].Difficulty > 1 &&
+		(FF2_GetGameState() != Game_LastManStanding && FF2_GetGameState() != Game_SpecialLastManStanding)
+	&& POTRY_IsClientVIP(client) && POTRY_IsClientEnableVIPEffect(client, VIPEffect_BossStandard))
+	{
+		// changeResult = true;
+		// BossCharge[boss][0] = 100.0;
+		Boss[boss].Difficulty = 1;
+		FormulaBossHealth(boss, false);
+
+		SetEntityHealth(client, Boss[boss].HealthPoint - Boss[boss].MaxHealthPoint * (Boss[boss].Lives-1));
+
+		CPrintToChatAll("{olive}[FF2]{default} 이 보스는 {red}보스 스탠다드 플레이{default}가 활성화된 상태입니다. '{green}보통{default}' 난이도로 되돌아가 다시 싸웁니다!");
+		event.SetInt("damageamount", 0);
+		return Plugin_Changed;
+	}
+*/
+
+
+	for(int lives = 1; lives < Boss[boss].Lives; lives++)
+	{
+		if(Boss[boss].HealthPoint - damage <= Boss[boss].MaxHealthPoint * lives)
+		{
+			SetEntityHealth(client, (Boss[boss].HealthPoint - damage) - Boss[boss].MaxHealthPoint * (lives - 1)); //Set the health early to avoid the boss dying from fire, etc.
+
+			int bossLives = Boss[boss].Lives;  //Used for the forward
+			Action action = Plugin_Continue;
+			Call_StartForward(OnLoseLife);
+			Call_PushCell(boss);
+			Call_PushCellRef(bossLives);
+			Call_PushCell(Boss[boss].MaxLives);
+			Call_Finish(action);
+			if(action == Plugin_Stop || action == Plugin_Handled)
+			{
+				return action;
+			}
+			else if(action == Plugin_Changed)
+			{
+				if(bossLives > Boss[boss].MaxLives)
+				{
+					Boss[boss].MaxLives = bossLives;
+				}
+				Boss[boss].Lives = bossLives;
+			}
+
+			char ability[PLATFORM_MAX_PATH];
+			for(int n = 1; n < MAXRANDOMS; n++)
+			{
+				Format(ability, 10, "ability%i", n);
+				KvRewind(BossKV[Boss[boss].CharacterIndex]);
+				if(KvJumpToKey(BossKV[Boss[boss].CharacterIndex], ability))
+				{
+					if(KvGetNum(BossKV[Boss[boss].CharacterIndex], "arg0", 0) != -1)
+					{
+						continue;
+					}
+
+					KvGetString(BossKV[Boss[boss].CharacterIndex], "life", ability, 10);
+					if(!ability[0])
+					{
+						char abilityName[64], pluginName[64];
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+						KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
+						UseAbility(abilityName, pluginName, boss, -1);
+					}
+					else
+					{
+						char stringLives[MAXRANDOMS][3];
+						int count = ExplodeString(ability, " ", stringLives, MAXRANDOMS, 3);
+						for(int j; j < count; j++)
+						{
+							if(StringToInt(stringLives[j]) == Boss[boss].Lives)
+							{
+								char abilityName[64], pluginName[64];
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "plugin_name", pluginName, sizeof(pluginName));
+								KvGetString(BossKV[Boss[boss].CharacterIndex], "name", abilityName, sizeof(abilityName));
+								UseAbility(abilityName, pluginName, boss, -1);
+								break;
+							}
+						}
+					}
+				}
+			}
+			Boss[boss].Lives = lives;
+
+			char bossName[64];
+			KvRewind(BossKV[Boss[boss].CharacterIndex]);
+			KvGetString(BossKV[Boss[boss].CharacterIndex], "name", bossName, sizeof(bossName), "=Failed name=");
+
+			strcopy(ability, sizeof(ability), Boss[boss].Lives == 1 ? "ff2_life_left" : "ff2_lives_left");
+			for(int target = 1; target <= MaxClients; target++)
+			{
+				if(IsValidClient(target) && !(FF2flags[target] & FF2FLAG_HUDDISABLED))
+				{
+					PrintCenterText(target, "%t", ability, bossName, Boss[boss].Lives);
+				}
+			}
+
+			if(Boss[boss].Lives == 1 && RandomSound("sound_last_life", ability, sizeof(ability), boss))
+			{
+				EmitSoundToAll(ability);
+				EmitSoundToAll(ability);
+			}
+			else if(RandomSound("sound_nextlife", ability, sizeof(ability), boss))
+			{
+				EmitSoundToAll(ability);
+				EmitSoundToAll(ability);
+			}
+
+			UpdateHealthBar();
+			break;
+		}
+	}
+
+	Boss[boss].HealthPoint -= damage;
+	Boss[boss].SetCharge(0, Boss[boss].GetCharge(0) + (damage * 100.0 / Boss[boss].RageDamage));
+
+	if(!(FF2ServerFlag & FF2SERVERFLAG_UNCOLLECTABLE_DAMAGE)) Damage[attacker]+=damage;
+
+	int healers[MAXPLAYERS];
+	int healerCount;
+	for(int target; target <= MaxClients; target++)
+	{
+		if(IsValidClient(target) && IsPlayerAlive(target) && (GetHealingTarget(target, true) == attacker))
+		{
+			healers[healerCount]=target;
+			healerCount++;
+		}
+	}
+
+	for(int target; target < healerCount; target++)
+	{
+		if(IsValidClient(healers[target]) && IsPlayerAlive(healers[target]))
+		{
+			if(damage < 10 || uberTarget[healers[target]] == attacker)
+			{
+				Damage[healers[target]]+=damage;
+			}
+			else
+			{
+				Damage[healers[target]] += damage / (healerCount + 1);
+			}
+		}
+	}
+
+	if(IsValidClient(attacker))
+	{
+		int weapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+		if(IsValidEntity(weapon) && GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 1104)  //Air Strike-moved from OTD
+		{//
+			static airStrikeDamage;
+			airStrikeDamage += damage;
+			if(airStrikeDamage >= 200)
+			{
+				SetEntProp(attacker, Prop_Send, "m_iDecapitations", GetEntProp(attacker, Prop_Send, "m_iDecapitations") + 1);
+				airStrikeDamage -= 200;
+			}
+		}
+		// 이 코드는 타인의 코드에서 따옴.
+		if(!IsBoss(attacker) && IsValidEntity(weapon))
+		{
+			static kStreakCount;
+			kStreakCount += damage;
+			if(kStreakCount >= 200)// TODO: 헬 예아.
+			{
+				SetEntProp(attacker, Prop_Send, "m_nStreaks", GetEntProp(attacker, Prop_Send, "m_nStreaks") + 1);
+				switch(GetEntProp(attacker, Prop_Send, "m_nStreaks"))
+				{
+				  case 5, 10, 15, 20, 25, 50, 75, 100, 150, 200, 250, 500, 750, 1000:
+				  {
+						if(CheckedFirstRound)
+						{
+							Handle hStreak=CreateEvent("player_death", false);
+							SetEventInt(hStreak, "attacker", GetClientUserId(attacker));
+							SetEventInt(hStreak, "userid", GetClientUserId(client));
+							SetEventInt(hStreak, "death_flags", TF_DEATHFLAG_DEADRINGER);
+							SetEventInt(hStreak, "kill_streak_wep", GetEntProp(attacker, Prop_Send, "m_nStreaks"));
+							SetEventInt(hStreak, "kill_streak_total", GetEntProp(attacker, Prop_Send, "m_nStreaks"));
+							FireEvent(hStreak, true);
+						}
+				  }
+				}
+				kStreakCount -= 200;
+			}
+		}
+	}
+	// return changeResult ? Plugin_Handled : Plugin_Continue;
+	return Plugin_Continue;
+}
