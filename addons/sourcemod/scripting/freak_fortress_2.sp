@@ -82,12 +82,6 @@ bool smac=false;
 int Incoming[MAXPLAYERS+1]; // 보스 강제 선택 여부: 캐릭터 index를 담음. 없으면 -1
 
 int curHelp[MAXPLAYERS+1];
-int uberTarget[MAXPLAYERS+1];
-int GoombaCount[MAXPLAYERS+1];
-int selectedBGM[MAXPLAYERS+1];
-bool playBGM[MAXPLAYERS+1]=true;
-
-char currentBGM[MAXPLAYERS+1][PLATFORM_MAX_PATH];
 
 int DPSTick;
 float PlayerDamageDPS[MAXPLAYERS+1][5];
